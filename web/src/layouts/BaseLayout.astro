@@ -1,0 +1,92 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Silos aufbrechen – Zukunft bauen | HAW Kiel',
+  description = 'Interdisziplinärer Workshop für visionäre Köpfe unserer Region. 7. Mai 2026, HAW Kiel.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+  </head>
+  <body class="min-h-screen flex flex-col bg-white">
+    <!-- Header -->
+    <header class="w-full bg-white">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-end">
+        <a href="/" aria-label="HAW Kiel Startseite">
+          <img
+            src="/images/haw_kiel_logo.svg"
+            alt="HAW Kiel – Hochschule für Angewandte Wissenschaften Kiel"
+            class="h-12 sm:h-16"
+          />
+        </a>
+      </div>
+      <div class="haw-gradient-line"></div>
+    </header>
+
+    <!-- Main -->
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-haw-blau text-white mt-16">
+      <div class="haw-gradient-line"></div>
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
+          <div>
+            <p class="font-bold mb-2">Kontakt</p>
+            <p>Prof. Dr.-Ing. Christoph Göbel</p>
+            <p>Institut für Bauwesen</p>
+            <p>HAW Kiel</p>
+          </div>
+          <div>
+            <p class="font-bold mb-2">Veranstaltung</p>
+            <p>7. Mai 2026, 14:30 – 20:00 Uhr</p>
+            <p>HAW Kiel</p>
+            <p class="text-haw-hellblau mt-1">(genaue Ortsangabe folgt nach dem 24. April)</p>
+          </div>
+          <div>
+            <p class="font-bold mb-2">Links</p>
+            <a
+              href="https://www.haw-kiel.de"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-haw-hellblau hover:text-white transition-colors block"
+            >
+              www.haw-kiel.de
+            </a>
+            <a
+              href="https://www.haw-kiel.de/interdisziplinaere-wochen/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-haw-hellblau hover:text-white transition-colors block"
+            >
+              Interdisziplinäre Wochen
+            </a>
+          </div>
+        </div>
+        <div class="border-t border-white/20 mt-8 pt-4 text-xs text-white/60">
+          <p>&copy; 2026 HAW Kiel – Hochschule für Angewandte Wissenschaften Kiel</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

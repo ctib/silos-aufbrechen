@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Astro build output
+web/dist/
+web/.astro/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Licensed fonts (not to be committed)
+Fonts/
+
+# Claude Code config
+.claude/
+
+# Lokale Daten (nicht ins Repo)
+Anmeldungen/
+Archiv/
+
+# Editor
+.vscode/
+.idea/
+
+# Temporary npm files from root-level experiments (not web/)
+/package.json
+/package-lock.json

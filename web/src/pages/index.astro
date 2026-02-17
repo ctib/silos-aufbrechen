@@ -1,0 +1,205 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CountdownBanner from '../components/CountdownBanner.svelte';
+---
+
+<BaseLayout>
+  <!-- Hero -->
+  <section class="bg-haw-blau-10 py-12 sm:py-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-haw-blau leading-tight">
+        Silos aufbrechen –<br />Zukunft bauen
+      </h1>
+      <p class="mt-4 text-xl sm:text-2xl text-haw-blau-70 font-serif italic">
+        Interdisziplinärer Workshop für visionäre Köpfe unserer Region
+      </p>
+      <div class="mt-6 flex flex-wrap gap-4 text-sm sm:text-base text-haw-blau">
+        <span class="bg-white rounded-full px-4 py-2 shadow-sm">
+          7. Mai 2026
+        </span>
+        <span class="bg-white rounded-full px-4 py-2 shadow-sm">
+          14:30 – 20:00 Uhr
+        </span>
+        <span class="bg-white rounded-full px-4 py-2 shadow-sm">
+          HAW Kiel
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Countdown / Anmelde-Banner -->
+  <CountdownBanner client:load />
+
+  <!-- Einführung -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <p class="text-lg leading-relaxed italic text-haw-blau-70">
+      Wie versorgen wir die Städte von morgen und wie begegnen wir den drängenden
+      Herausforderungen unserer Zeit? Wie lösen wir Probleme des Klimawandels, der
+      Ressourcenschonung, der sozial gerechten Versorgung der Bevölkerung? Wie sorgen
+      wir für lebenswerte Stadtteile für alle? Die Antworten liegen nicht in einer
+      einzelnen Disziplin, sondern im Zusammenspiel.
+    </p>
+    <div class="haw-gradient-line mt-8 w-24"></div>
+    <p class="mt-8 text-lg leading-relaxed">
+      Wir laden Sie ein, die Grenzen des eigenen Fachbereichs zu verlassen. In unserem
+      Workshop an der HAW Kiel bringen wir Wissenschaft, regionale Wirtschaft und die
+      Kieler Stadtgesellschaft an einen Tisch. Am Beispiel von
+      <strong>„Smart Green Cities & Buildings"</strong> entwickeln wir neue Ideen für
+      unsere Region und darüber hinaus.
+    </p>
+  </section>
+
+  <!-- Professores -->
+  <section class="bg-haw-blau-10 py-12">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="font-serif text-3xl font-bold text-haw-blau mb-8">
+        Impulse & Antrittsvorlesung
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Meike Wocken -->
+        <div class="bg-white rounded-lg shadow-sm p-6 border-t-4 border-haw-hellblau">
+          <p class="text-sm text-haw-blau-50 mb-1">Impulsvortrag</p>
+          <h3 class="font-bold text-lg text-haw-blau">Prof. Dr. Meike Wocken</h3>
+          <p class="text-haw-blau-70 text-sm mt-1">Wirtschaftsinformatik</p>
+          <div class="haw-gradient-line mt-4 w-12"></div>
+          <p class="mt-4 text-sm leading-relaxed">
+            „Citizen Science und Open Data: wie Bürgerprojekte Umweltdaten sichtbar
+            machen" – am Beispiel von bodenfeuchte.org
+          </p>
+          <p class="mt-2 text-xs text-haw-blau-50">15:15 – 15:30 Uhr</p>
+        </div>
+        <!-- Christoph Göbel -->
+        <div class="bg-white rounded-lg shadow-sm p-6 border-t-4 border-haw-blau">
+          <p class="text-sm text-haw-blau-50 mb-1">Antrittsvorlesung</p>
+          <h3 class="font-bold text-lg text-haw-blau">Prof. Dr.-Ing. Christoph Göbel</h3>
+          <p class="text-haw-blau-70 text-sm mt-1">Gebäudetechnologie, Institut für Bauwesen</p>
+          <div class="haw-gradient-line mt-4 w-12"></div>
+          <p class="mt-4 text-sm leading-relaxed">
+            „Nachhaltige Energieversorgung – Es ist doch alles da! Oder?"
+          </p>
+          <p class="mt-2 text-xs text-haw-blau-50">15:30 – 16:30 Uhr</p>
+        </div>
+        <!-- Tammo Peters -->
+        <div class="bg-white rounded-lg shadow-sm p-6 border-t-4 border-haw-hellblau">
+          <p class="text-sm text-haw-blau-50 mb-1">Impulsvortrag</p>
+          <h3 class="font-bold text-lg text-haw-blau">Prof. Dr. Tammo Peters</h3>
+          <p class="text-haw-blau-70 text-sm mt-1">Grünlandwirtschaft, FB Agrarwirtschaft</p>
+          <div class="haw-gradient-line mt-4 w-12"></div>
+          <p class="mt-4 text-sm leading-relaxed">
+            „Es grünt so grün – die Rolle von Grasland zur Lösung von Umweltproblemen
+            – auch in der Stadt?"
+          </p>
+          <p class="mt-2 text-xs text-haw-blau-50">16:30 – 16:45 Uhr</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Programm -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h2 class="font-serif text-3xl font-bold text-haw-blau mb-8">Programm</h2>
+    <div class="space-y-0">
+      {[
+        { time: '14:30', title: 'Empfang', highlight: false },
+        { time: '15:00', title: 'Willkommensgruß, Vorstellung und Einführung', highlight: false },
+        { time: '15:15', title: 'Impulsvortrag Prof. Dr. Meike Wocken', highlight: false },
+        { time: '15:30', title: 'Antrittsvorlesung Prof. Dr.-Ing. Christoph Göbel', highlight: true },
+        { time: '16:30', title: 'Impulsvortrag Prof. Dr. Tammo Peters', highlight: false },
+        { time: '16:45', title: 'Kaffeepause', highlight: false },
+        { time: '17:15', title: 'Workshop – moderierte Arbeitstische', highlight: true },
+        { time: '18:30', title: 'Vorstellung der Ergebnisse und Abschlussworte', highlight: false },
+        { time: 'Ab 19:00', title: 'Gemeinsamer Ausklang mit musikalischer Begleitung', highlight: false },
+      ].map((item) => (
+        <div class={`flex border-b border-haw-blau-10 py-4 ${item.highlight ? 'bg-haw-blau-10 -mx-4 px-4 rounded' : ''}`}>
+          <span class="w-24 shrink-0 font-bold text-haw-blau">{item.time}</span>
+          <span class={item.highlight ? 'font-bold' : ''}>{item.title}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Workshop-Tische -->
+  <section class="bg-haw-blau-10 py-12">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="font-serif text-3xl font-bold text-haw-blau mb-2">Workshop</h2>
+      <p class="text-haw-blau-70 mb-8">Moderierte Arbeitstische mit unterschiedlichen Schwerpunkten</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[
+          {
+            nr: 1,
+            title: 'Nahrungsmittelproduktion in der Stadt',
+            desc: 'DIY-Kit für urbane Lebensmittelproduktion',
+            color: 'border-haw-hellblau',
+          },
+          {
+            nr: 2,
+            title: 'Umweltbildung',
+            desc: 'Praktisches Wissen für Schülerinnen und Schüler vermittelt (Jugendbildung)',
+            color: 'border-haw-orange',
+          },
+          {
+            nr: 3,
+            title: 'Sensorik & Datenauswertung',
+            desc: 'Mehrwert der smarten City – Citizen Science möglich',
+            color: 'border-haw-blau',
+          },
+          {
+            nr: 4,
+            title: 'Gerechten Städtebau fördern',
+            desc: 'Nachhaltige Stadtentwicklung als Grundlage',
+            color: 'border-haw-gelb',
+          },
+          {
+            nr: 5,
+            title: 'Gebäudetechnik aufwerten',
+            desc: 'Überführung des „Stand der Technik" in den Gebäudebestand',
+            color: 'border-haw-hellblau',
+          },
+        ].map((table) => (
+          <div class={`bg-white rounded-lg shadow-sm p-6 border-l-4 ${table.color}`}>
+            <p class="text-xs text-haw-blau-50 mb-1">Tisch {table.nr}</p>
+            <h3 class="font-bold text-haw-blau">{table.title}</h3>
+            <p class="text-sm text-haw-blau-70 mt-2">{table.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Warum dabei sein -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h2 class="font-serif text-3xl font-bold text-haw-blau mb-8">Warum Sie dabei sein sollten</h2>
+    <div class="space-y-6">
+      <div>
+        <h3 class="font-bold text-haw-blau">Für Unternehmen</h3>
+        <p class="mt-1 text-haw-blau-70">
+          Vernetzen Sie sich mit der Hochschule und bringen Sie Ihre Praxiserfahrung in
+          die Forschung ein. Profitieren Sie von frischen Impulsen für nachhaltige
+          Geschäftsmodelle.
+        </p>
+      </div>
+      <div class="haw-line-light border-b"></div>
+      <div>
+        <h3 class="font-bold text-haw-blau">Für Stadtakteur:innen</h3>
+        <p class="mt-1 text-haw-blau-70">
+          Gestalten Sie Ihren Lebensraum aktiv mit. Hier treffen Ihre Bedürfnisse vor Ort
+          auf innovative Lösungsansätze der Wissenschaft.
+        </p>
+      </div>
+      <div class="haw-line-light border-b"></div>
+      <div>
+        <h3 class="font-bold text-haw-blau">Gemeinsamer Mehrwert</h3>
+        <p class="mt-1 text-haw-blau-70">
+          Interdisziplinarität ist kein Schlagwort, sondern unser Werkzeug. Durch den
+          Perspektivwechsel entstehen Lösungen, die in Einzelarbeit niemals denkbar wären.
+        </p>
+      </div>
+    </div>
+    <div class="haw-gradient-line mt-8 w-24"></div>
+    <p class="mt-8 text-lg">
+      <strong>Das Ziel:</strong> Schaffung einer Grundlage für die weitere Zusammenarbeit.
+      Ob als „Science comes to town"-Event, als Basis für geförderte Verbundprojekte oder
+      gemeinsame Publikationen – wir schaffen Ergebnisse, die bleiben.
+    </p>
+  </section>
+</BaseLayout>
