@@ -11,6 +11,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
   <script>
     import { supabase } from '../../lib/supabase';
+    import { basePath } from '../../lib/paths';
 
     async function handleCallback() {
       const statusEl = document.getElementById('callback-status');
@@ -57,13 +58,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           if (regError) console.error('Registration error:', regError);
 
           // Redirect to internal area
-          window.location.href = '/intern';
+          window.location.href = basePath('/intern');
         } else {
           statusEl.innerHTML = `
             <h2 class="font-serif text-2xl font-bold text-haw-blau mb-2">Link ungültig</h2>
             <p class="text-haw-blau-70">
               Der Bestätigungslink ist abgelaufen oder ungültig.
-              <a href="/anmeldung" class="text-haw-hellblau underline">Erneut anmelden</a>.
+              <a href="${basePath('/anmeldung')}" class="text-haw-hellblau underline">Erneut anmelden</a>.
             </p>
           `;
         }
@@ -72,7 +73,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           <h2 class="font-serif text-2xl font-bold text-haw-blau mb-2">Fehler</h2>
           <p class="text-haw-blau-70">
             Ein Fehler ist aufgetreten. Bitte
-            <a href="/anmeldung" class="text-haw-hellblau underline">versuchen Sie es erneut</a>.
+            <a href="${basePath('/anmeldung')}" class="text-haw-hellblau underline">versuchen Sie es erneut</a>.
           </p>
         `;
       }

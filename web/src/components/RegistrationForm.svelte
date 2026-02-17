@@ -1,5 +1,6 @@
 <script lang="ts">
   import { supabase } from '../lib/supabase';
+  import { basePath } from '../lib/paths';
 
   // Form state
   let fullName = $state('');
@@ -79,7 +80,7 @@
             show_name_public: showNamePublic,
             gdpr_consent: gdprConsent,
           },
-          emailRedirectTo: window.location.origin + '/intern',
+          emailRedirectTo: window.location.origin + basePath('/auth/callback'),
         },
       });
 

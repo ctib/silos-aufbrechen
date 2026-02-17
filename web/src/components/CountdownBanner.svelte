@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
+  import { basePath } from '../lib/paths';
 
   const FORMS_URL = 'https://forms.office.com/pages/responsepage.aspx?id=SlFZYNubNECdLWtc9Zdpa95yTsFJlbBDntdDxMV4KBtUNjdTUzM4NVpXSkc5Tk9OM1JEUlJNNFNPMi4u&route=shorturl';
   const REG_DEADLINE = new Date('2026-04-24T23:59:59');
@@ -120,7 +121,7 @@
             <p class="text-xs text-white/50">bis zum 24. April 2026</p>
           {:else}
             <a
-              href="/anmeldung"
+              href={basePath('/anmeldung')}
               class="inline-block bg-haw-hellblau text-haw-blau font-bold py-3 px-8 rounded hover:bg-white transition-colors text-lg"
             >
               Verbindlich anmelden

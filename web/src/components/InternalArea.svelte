@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { supabase } from '../lib/supabase';
+  import { basePath } from '../lib/paths';
 
   type UserRole = 'gast' | 'teilnehmer' | 'studi' | 'admin' | 'orga';
 
@@ -74,7 +75,7 @@
 
   async function handleLogout() {
     await supabase.auth.signOut();
-    window.location.href = '/';
+    window.location.href = basePath('/');
   }
 
   function callTypeLabel(type: string): string {
@@ -100,7 +101,7 @@
       Bitte melden Sie sich an, um den internen Bereich zu sehen.
     </p>
     <a
-      href="/anmeldung"
+      href={basePath('/anmeldung')}
       class="inline-block bg-haw-blau text-white font-bold py-3 px-8 rounded hover:bg-haw-blau-90 transition-colors"
     >
       Zur Anmeldung
@@ -122,12 +123,12 @@
     </div>
     <div class="flex gap-3">
       {#if userRole === 'admin' || userRole === 'orga'}
-        <a href="/admin" class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">
+        <a href={basePath('/admin')} class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">
           Admin
         </a>
       {/if}
       {#if userRole === 'orga'}
-        <a href="/orga" class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">
+        <a href={basePath('/orga')} class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">
           Orga
         </a>
       {/if}
@@ -256,7 +257,7 @@
           <div class="space-y-2">
             {#each tables as table}
               <a
-                href={`/tisch/${table.id}`}
+                href={basePath(`/tisch/${table.id}`)}
                 class="block p-3 rounded border border-haw-blau-10 hover:bg-haw-blau-10 transition-colors"
               >
                 <p class="font-bold text-sm text-haw-blau">Tisch {table.number}: {table.title}</p>

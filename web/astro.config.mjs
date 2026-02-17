@@ -6,6 +6,8 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://ctib.github.io',
+  base: '/silos-aufbrechen',
   integrations: [svelte()],
 
   vite: {
