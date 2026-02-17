@@ -1,0 +1,83 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Anmeldung bestätigt | Silos aufbrechen">
+  <section class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+    <div id="callback-status">
+      <p class="text-haw-blau-70">Anmeldung wird verarbeitet...</p>
+    </div>
+  </section>
+
+  <script>
+    import { supabase } from '../../lib/supabase';
+
+    async function handleCallback() {
+      const statusEl = document.getElementById('callback-status');
+      if (!statusEl) return;
+
+      try {
+        // Supabase handles the token exchange from URL hash automatically
+        const { data: { session }, error } = await supabase.auth.getSession();
+
+        if (error) throw error;
+
+        if (session) {
+          const meta = session.user.user_metadata;
+
+          // Update profile with registration data
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .update({
+              full_name: meta.full_name || '',
+              background: meta.background || '',
+              show_name_public: meta.show_name_public || false,
+              gdpr_consent: meta.gdpr_consent || false,
+              gdpr_consent_date: meta.gdpr_consent ? new Date().toISOString() : null,
+            })
+            .eq('id', session.user.id);
+
+          if (profileError) console.error('Profile update error:', profileError);
+
+          // Create registration
+          const { error: regError } = await supabase
+            .from('registrations')
+            .upsert({
+              profile_id: session.user.id,
+              attends_lecture: meta.attends_lecture ?? true,
+              attends_workshop: meta.attends_workshop ?? true,
+              attends_dinner: meta.attends_dinner ?? false,
+              table_preference: meta.table_preference || null,
+              companion_count: meta.companion_count ?? 0,
+              companion_under_16: meta.companion_under_16 ?? false,
+              companion_under_12: meta.companion_under_12 ?? false,
+              source: 'website',
+            }, { onConflict: 'profile_id' });
+
+          if (regError) console.error('Registration error:', regError);
+
+          // Redirect to internal area
+          window.location.href = '/intern';
+        } else {
+          statusEl.innerHTML = `
+            <h2 class="font-serif text-2xl font-bold text-haw-blau mb-2">Link ungültig</h2>
+            <p class="text-haw-blau-70">
+              Der Bestätigungslink ist abgelaufen oder ungültig.
+              <a href="/anmeldung" class="text-haw-hellblau underline">Erneut anmelden</a>.
+            </p>
+          `;
+        }
+      } catch (err) {
+        statusEl.innerHTML = `
+          <h2 class="font-serif text-2xl font-bold text-haw-blau mb-2">Fehler</h2>
+          <p class="text-haw-blau-70">
+            Ein Fehler ist aufgetreten. Bitte
+            <a href="/anmeldung" class="text-haw-hellblau underline">versuchen Sie es erneut</a>.
+          </p>
+        `;
+      }
+    }
+
+    handleCallback();
+  </script>
+</BaseLayout>

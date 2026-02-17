@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RegistrationForm from '../components/RegistrationForm.svelte';
+---
+
+<BaseLayout title="Anmeldung | Silos aufbrechen – Zukunft bauen">
+  <section class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h1 class="font-serif text-3xl sm:text-4xl font-bold text-haw-blau mb-2">
+      Verbindliche Anmeldung
+    </h1>
+    <p class="text-haw-blau-70 mb-8">
+      Silos aufbrechen – Zukunft bauen &middot; 7. Mai 2026 &middot; HAW Kiel
+    </p>
+    <div class="haw-gradient-line w-16 mb-8"></div>
+
+    <RegistrationForm client:load />
+  </section>
+</BaseLayout>
