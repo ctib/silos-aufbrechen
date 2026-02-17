@@ -1,0 +1,14 @@
+[x] Untertitel noch Erweitern mit "... für unsere Region - und darüber Hinaus"
+[x] Termin für den 7. Mai, 14:30 bis 20:00 als ical / Google / … Termin exportieren und runterladen können. Inkl. Ortsangabe und Einladungstext / Anmeldelink als Beschreibung.
+[x] Der Countdown ist für die Anmeldung richtig? Countdown für Anmeldung auf Tage begrenzen und direkt neben das Datum mit Kalendereintragexport packen.
+[x] Zusätzlicher Countdown bis auf Sekundenebene für die Veranstaltung selbst.
+[x] Link zur HAW-Personenseite bei Meike, Christoph und Tammo
+[x] Kontakt ganz unten auch mit Email hinterlegen
+
+[x] Countdown bis zur Veranstaltung außerhalb, direkt unter dem dunkelblauen Banner platzieren.
+[x] Erst der Countdown und darunter der Text "bis zum Start der Veranstaltung."
+[x] link zu Christoph Göbel endet in 404, richtige Seite: https://www.haw-kiel.de/person/christoph-goebel
+
+[x] Logo für die Registrierkarte im Browser soll auch das HAW Kiel logo sein
+
+- Ergänzung bei Meike Wocken: FB Wirtschaft und bei Christoph Göbel FB Medien/Bauwesen statt Institut für Bauwesen
