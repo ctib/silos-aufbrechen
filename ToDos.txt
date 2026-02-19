@@ -11,4 +11,7 @@
 
 [x] Logo für die Registrierkarte im Browser soll auch das HAW Kiel logo sein
 
-- Ergänzung bei Meike Wocken: FB Wirtschaft und bei Christoph Göbel FB Medien/Bauwesen statt Institut für Bauwesen
+[X] Ergänzung bei Meike Wocken: FB Wirtschaft und bei Christoph Göbel FB Medien/Bauwesen statt Institut für Bauwesen
+
+- umlaute ä ö ü einfügen 
+- Vorbereitungsphase auch mit internem Bereich um forschungscalls einzufügen, die Teilnehmerliste zu bearbeiten und etherpads für workshoptische vorzubereiten

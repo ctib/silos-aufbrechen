@@ -6,11 +6,11 @@ import CountdownBanner from '../components/CountdownBanner.svelte';
 <BaseLayout>
   <!-- Hero -->
   <section class="bg-haw-blau-10 py-12 sm:py-16">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-haw-blau leading-tight">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-haw-blau leading-tight text-justify">
         Silos aufbrechen –<br />Zukunft bauen
       </h1>
-      <p class="mt-4 text-xl sm:text-2xl text-haw-blau-70 font-serif italic">
+      <p class="mt-4 text-xl sm:text-2xl text-haw-blau-70 font-serif italic text-justify">
         Interdisziplinärer Workshop für visionäre Köpfe unserer Region – und darüber hinaus
       </p>
       <p class="mt-6 text-haw-blau-70">
@@ -102,7 +102,10 @@ import CountdownBanner from '../components/CountdownBanner.svelte';
 
   <!-- Programm -->
   <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <h2 class="font-serif text-3xl font-bold text-haw-blau mb-8">Programm</h2>
+    <div class="flex items-baseline justify-between mb-8">
+      <h2 class="font-serif text-3xl font-bold text-haw-blau">Programm</h2>
+      <p class="text-xs text-haw-blau-50">Vorläufiges Programm, Stand: 24.04.2026</p>
+    </div>
     <div class="space-y-0">
       {[
         { time: '14:30', title: 'Empfang', highlight: false },

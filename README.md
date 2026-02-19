@@ -59,24 +59,44 @@ koennen sich ueber die IDW anmelden und erhalten spezielle Aufgaben:
 
 | Komponente     | Technologie | Grund |
 |---------------|-------------|-------|
-| **Frontend**   | Astro + Svelte | Statische Seiten (schnell, SEO), Svelte fuer interaktive Teile (Etherpad, Formulare) |
+| **Frontend**   | Astro + Svelte 5 | Statische Seiten (schnell, SEO), Svelte fuer interaktive Teile (Etherpad, Formulare) |
 | **Backend/DB** | Supabase | Auth (Magic Links), PostgreSQL, Realtime, Row Level Security |
-| **Hosting**    | GitHub Pages | Zunaechst GitHub-Pages-URL, spaeter Custom Domain (Pfad oder Subdomain, wird mit HAW-IT geklaert) |
-| **Styling**    | Tailwind CSS | Mit HAW-Design-Tokens aus dem CD Manual |
-| **Deployment** | GitHub Actions | Auto-Deploy bei Push auf main |
+| **Hosting**    | GitHub Pages | `https://ctib.github.io/silos-aufbrechen/`, spaeter eigene Domain |
+| **Styling**    | Tailwind CSS v4 | Mit HAW-Design-Tokens aus dem CD Manual |
+| **Deployment** | GitHub Actions | Auto-Deploy bei Push auf master |
 
 ### Supabase
 
 - **Projekt-ID:** `cbybfmnbojklqbkmuwto`
+- **URL:** `https://cbybfmnbojklqbkmuwto.supabase.co`
+- **API Key:** Publishable Key (neues Format, nicht legacy anon key) -- in `.env` und GitHub Variables gespeichert
 - **Auth-Methode:** Magic Links per E-Mail (kein Passwort noetig)
-- **Account:** Ueber GitHub-Account von Christoph Goebel erstellt
+- **Account:** Ueber GitHub-Account von Christoph Goebel (ctib) erstellt
+
+### GitHub
+
+- **Repository:** `https://github.com/ctib/silos-aufbrechen`
+- **GitHub-Account:** `ctib`
+- **Pages URL:** `https://ctib.github.io/silos-aufbrechen/`
+- **Branch:** `master` (nicht main!)
+- **GitHub Variables:** `PUBLIC_SUPABASE_URL` und `PUBLIC_SUPABASE_ANON_KEY` als Repository-Variablen gesetzt
+- **Environment:** `github-pages` mit `master` als erlaubtem Branch
 
 ### Hosting / Domain
 
-Zunaechst wird die Standard-GitHub-Pages-URL verwendet. Ob spaeter ein Pfad
-(`haw-kiel.de/silos-aufbrechen`) oder eine Subdomain (`silos.haw-kiel.de`) eingerichtet wird,
-wird mit der HAW-IT geklaert. Die Webseite ist so gebaut, dass die Domain jederzeit per
-CNAME-Eintrag und GitHub-Pages-Custom-Domain-Setting umgestellt werden kann.
+Zunaechst wird die GitHub-Pages-URL `https://ctib.github.io/silos-aufbrechen/` verwendet.
+Eine HAW-Institutsseite (`haw-kiel.de/index.php?id=31260`) wurde abgelehnt.
+Christoph moechte eine eigene Domain, hat aber noch keine Erfahrung damit.
+Die Webseite ist so gebaut, dass die Domain jederzeit per CNAME-Eintrag und
+GitHub-Pages-Custom-Domain-Setting umgestellt werden kann. Beim Domainwechsel
+muss nur `site` und `base` in `web/astro.config.mjs` angepasst werden.
+
+### Base Path
+
+Da die Seite unter `/silos-aufbrechen/` laeuft, muessen alle internen Links den Base-Pfad
+beruecksichtigen. Dafuer gibt es den Helper `web/src/lib/paths.ts` mit der Funktion
+`basePath('/pfad')`, die in allen Svelte-Komponenten verwendet wird. In Astro-Templates
+wird `import.meta.env.BASE_URL` direkt genutzt.
 
 ---
 
@@ -98,17 +118,13 @@ CNAME-Eintrag und GitHub-Pages-Custom-Domain-Setting umgestellt werden kann.
 
 ### Schriften
 
-| Schrift              | Verwendung | Web-Verfuegbarkeit |
-|---------------------|------------|-------------------|
-| ITC Officina Sans Book | Mengentexte (Fliesstext) | Wird ueber Stabsstelle beschafft -> `Fonts/` Ordner |
-| ITC Officina Sans Bold | Zwischenueberschriften, Auszeichnungen | Wird ueber Stabsstelle beschafft |
-| ITC Officina Serif Book | Ueberschriften | Wird ueber Stabsstelle beschafft |
-| ITC Officina Serif Bold | Auszeichnungen in Ueberschriften | Wird ueber Stabsstelle beschafft |
-| **Verdana** (Ersatz) | Fuer alle Zwecke, wo Officina nicht verfuegbar | System-Font, sofort nutzbar |
+| Schrift      | Verwendung |
+|-------------|------------|
+| **Verdana** | Fliesstext, Zwischenueberschriften, allgemeiner Text |
+| **Georgia** | Ueberschriften (serif) |
 
-**Strategie:** Webseite wird zunaechst mit Verdana entwickelt. Sobald die Officina-Webfonts
-(WOFF/WOFF2) im Ordner `Fonts/` liegen, werden sie als primaere `@font-face` eingebunden
-mit Verdana als Fallback.
+**Entscheidung (2026-02-17):** ITC Officina Fonts werden nicht geliefert. Verdana und Georgia
+sind die endgueltigen Schriften. Officina-Referenzen wurden aus `global.css` entfernt.
 
 ### Gestaltungsprinzipien
 
@@ -260,44 +276,69 @@ table_notes (
 
 ## Phasen & Timeline
 
-### Phase 0: Projekt-Setup (jetzt)
+### Phase 0: Projekt-Setup -- ERLEDIGT
 - [x] README.md mit Gesamtplan erstellen
-- [ ] Git-Repository initialisieren
-- [ ] Astro-Projekt aufsetzen mit Svelte + Tailwind
-- [ ] Tailwind-Config mit HAW-Design-Tokens (Farben, Schriften)
-- [ ] Supabase-Client einbinden (Projekt-ID: `cbybfmnbojklqbkmuwto`)
-- [ ] Basis-Layout mit HAW-Header (Logo oben rechts) und Footer
-- [ ] Ordnerstruktur fuer Fonts vorbereiten (Fallback auf Verdana)
+- [x] Git-Repository initialisieren + GitHub Repo (`ctib/silos-aufbrechen`)
+- [x] Astro-Projekt aufsetzen mit Svelte 5 + Tailwind CSS v4
+- [x] Tailwind-Config mit HAW-Design-Tokens (Farben, Schriften) in `web/src/styles/global.css`
+- [x] Supabase-Client einbinden (`web/src/lib/supabase.ts`, mit Placeholder-Fallback fuer SSG Build)
+- [x] Basis-Layout mit HAW-Header (Logo oben rechts) und Footer (`web/src/layouts/BaseLayout.astro`)
+- [x] Ordnerstruktur fuer Fonts vorbereiten (`@font-face` auskommentiert in global.css)
+- [x] HAW Kiel Favicon heruntergeladen und eingebunden
+- [x] GitHub Pages Deployment-Workflow (`.github/workflows/deploy.yml`)
 
-### Phase 1: Landingpage -- Bewerbungsphase (bis 24. April 2026)
-- [ ] Startseite mit vollstaendigem Programm
-- [ ] Prominenter Banner: "Jetzt anmelden!" -> MS Forms Link
-- [ ] Countdown bis Anmeldeschluss 24.04.2026
-- [ ] Vorstellung der drei Professores (Fotos aus Einladungs-PDF oder eigene)
-- [ ] Workshop-Themen mit Beschreibungen
-- [ ] Responsive Design (mobil + Desktop)
-- [ ] Deployment auf GitHub Pages
+### Phase 1: Landingpage -- ERLEDIGT
+- [x] Startseite mit vollstaendigem Programm (`web/src/pages/index.astro`)
+- [x] Prominenter Banner: "Jetzt anmelden!" -> MS Forms Link (vor 24.04.)
+- [x] Countdown: Anmeldetage (im Banner) + Veranstaltungs-Countdown (Tage:Std:Min:Sek, unterhalb)
+- [x] Vorstellung der drei Professores mit Links zu HAW-Personalseiten
+- [x] Workshop-Themen mit Beschreibungen (5 Tische)
+- [x] Kalender-Export (iCal Download + Google Calendar Link)
+- [x] Responsive Design (mobil + Desktop)
+- [x] CountdownBanner schaltet nach 24.04. automatisch auf "Verbindlich anmelden" -> /anmeldung um
+- [x] FB-Labels: Meike -> "FB Wirtschaft", Christoph -> "FB Medien/Bauwesen", Tammo -> "FB Agrarwirtschaft"
+- [x] Phasen-Zeitleiste ueber dem Countdown-Banner (Anmeldephase / Vorbereitungsphase / Durchfuehrungsphase)
+- [x] Phase-Override: Per Klick umschaltbar (spaeter nur fuer Orga), mit "Vorschau"-Hinweis und Reset-Button
+- [x] Phasenabhaengiges UI: Banner-Buttons und Countdown passen sich der aktiven Phase an
+- [x] Schriften finalisiert: Verdana + Georgia (ITC Officina entfaellt)
+- [x] Header-Navigation: "Start" + "Interner Bereich" Links oben links, Logo oben rechts
+- [x] Vorbereitungsphase: Info-Banner ("Vorbereitung laeuft, Teilnehmer werden informiert")
+- [x] Vorbereitungsphase: "Nachmeldung anfragen" Button statt Anmeldung
+- [x] Nachmeldungs-Seite (`/nachmeldung`, `NachmeldungForm.svelte`): Nur Name + Email, Magic Link
+- [x] Programm-Hinweis: "Vorlaeufiges Programm, Stand: 24.04.2026"
+- [x] Base-Path-Bug gefixt: Fehlender Slash bei Logo/Favicon-Pfaden in BaseLayout
 
-### Phase 2: Datenbank & Auth (vor 25. April)
-- [ ] Supabase-Schema erstellen (alle Tabellen, RLS Policies)
-- [ ] Magic-Link-Auth konfigurieren
-- [ ] Rollen-System implementieren (Orga, Admin, Studi, Teilnehmer)
-- [ ] MS-Forms-Daten importieren (CSV/Excel -> Supabase)
-- [ ] Initiale Workshop-Tische anlegen
+### Phase 2: Datenbank & Auth -- IN ARBEIT
+- [x] SQL-Schema erstellt (`web/supabase/001_initial_schema.sql`) mit Enums, Tabellen, RLS, Triggers, Seed-Daten
+- [x] Anmeldeformular (`web/src/components/RegistrationForm.svelte`) mit Magic Link per `signInWithOtp()`
+- [x] Auth-Callback-Seite (`web/src/pages/auth/callback.astro`) fuer Profil-Update + Registration-Upsert
+- [x] Interner Bereich (`web/src/components/InternalArea.svelte`) mit Teilnehmerliste, Forschungscalls, rollenbasierter UI
+- [x] Supabase Publishable Key in `.env` und als GitHub Repository Variable gesetzt
+- [x] GitHub Pages Environment: `master` Branch als Deployment-Quelle erlaubt
+- [x] Base-Path-Helper (`web/src/lib/paths.ts`) fuer korrekte URLs unter `/silos-aufbrechen/`
+- [ ] **SQL-Schema auf Supabase ausfuehren** (siehe Abschnitt "Naechste Schritte")
+- [ ] **Magic Links in Supabase konfigurieren** (Redirect URLs setzen)
+- [ ] **Erstes Deployment verifizieren** (GitHub Actions Workflow wurde getriggert)
+- [ ] **E-Mail-Versand an Teilnehmer aus Anmeldung.xlsx** (in Arbeit)
+- [ ] MS-Forms-Daten importieren (nach Anmeldeschluss 24.04.)
+- [ ] Orga-Rollen setzen (Meike, Tammo, Christoph -> 'orga' in profiles)
 
-### Phase 3: Anmeldung & Interner Bereich (25. April - 7. Mai)
-- [ ] Anmeldeformular mit allen Feldern
-- [ ] E-Mail-Versand mit Magic Link nach Anmeldung
-- [ ] Interner Bereich: Teilnehmerliste, Forschungscalls
-- [ ] Admin-Panel fuer Andreas Borchardt (Forschungscalls CRUD + Tisch-Tagging)
-- [ ] Orga-Panel (Teilnehmerverwaltung, Tisch-Konfiguration, Export)
-- [ ] Banner-Umstellung: MS Forms -> direkte Anmeldung
+### Phase 3: Admin & Orga Panels -- CODE FERTIG
+- [x] Admin-Panel (`/admin`, `AdminPanel.svelte`): Forschungscalls CRUD (Titel, Beschreibung, URL, Deadline, Typ) + Tisch-Tagging per Toggle-Buttons
+- [x] Orga-Panel (`/orga`, `OrgaPanel.svelte`): Statistik-Dashboard, Teilnehmertabelle mit Rollen-Dropdown, Tisch-Bearbeitung, Studi-Zuweisung, CSV-Export (UTF-8 BOM, Semikolon-getrennt fuer Excel)
+- [x] Auth-Checks: Admin sieht nur `/admin`, Orga sieht `/admin` + `/orga`
+- [x] Navigation zwischen Intern/Admin/Orga in allen geschuetzten Bereichen
+- [ ] MS-Forms-Import-Script (Bestandsdaten aus `Anmeldungen/Anmeldungen.xlsx` uebernehmen)
 
-### Phase 4: Workshop-Tools (vor 7. Mai)
-- [ ] Etherpad-Funktion pro Tisch (Supabase Realtime)
-- [ ] Strukturierte Abschnitte: Ideensammlung, Voting, Ausformulierung, Action Items
-- [ ] Teilnehmer-am-Tisch-Verwaltung (Dropdown-Liste fuer Studis)
-- [ ] Forschungscalls-Ansicht pro Tisch (getaggt)
+### Phase 4: Workshop-Tools -- CODE FERTIG
+- [x] Etherpad-Funktion pro Tisch (`/tisch/1` bis `/tisch/5`, `TableView.svelte`) mit Supabase Realtime
+- [x] 5 strukturierte Abschnitte pro Tisch: Ideensammlung, Voting, Ausformulierung, Action Items, Protokoll
+- [x] Auto-Save (1.5s Debounce) + manuelles Speichern
+- [x] Realtime-Subscription: Aenderungen von anderen werden live angezeigt
+- [x] Teilnehmer am Tisch anzeigen (mit Studi-Badge)
+- [x] Forschungscalls pro Tisch (gefiltert ueber call_table_tags)
+- [x] Quick-Links zu anderen Tischen
+- [x] Nur Studis und Orga koennen Notizen bearbeiten, Teilnehmer nur lesen
 - [ ] PDF-Export der Protokolle
 
 ### Phase 5: Post-Event
@@ -307,32 +348,106 @@ table_notes (
 
 ---
 
-## Ordnerstruktur (Ziel)
+## Ordnerstruktur (aktuell)
 
 ```
 SilosAufbrechen/
-  README.md                    <-- Diese Datei
-  Archiv/                      <-- Einladung, CD Manual, Skizzen, Hoersaal-Fotos
+  README.md                        <-- Diese Datei
+  .gitignore
+  ToDos.txt                        <-- Erledigte Todo-Liste
+  Archiv/                          <-- Einladung, CD Manual, Skizzen (gitignored)
     cd_manual_haw_screen.pdf
     SilosAufbrechen_ZukunftBauen.pdf
-    ...
-  Anmeldungen/                 <-- MS-Forms-Export
-    Anmeldungen.xlsx
-  Fonts/                       <-- ITC Officina Webfonts (sobald verfuegbar)
-  web/                         <-- Astro-Projekt (wird erzeugt)
-    src/
-      components/              <-- Svelte-Komponenten
-      layouts/                 <-- Astro-Layouts (HAW-Header/Footer)
-      pages/                   <-- Routen (/, /anmeldung, /intern, /tisch, /admin, /orga)
-      styles/                  <-- Globale Styles, Font-Face-Deklarationen
-      lib/                     <-- Supabase-Client, Auth-Helpers, Typen
-    public/
-      fonts/                   <-- Kopie/Symlink der Officina-Fonts
-      images/                  <-- Logo, Professores-Fotos, etc.
-    astro.config.mjs
-    tailwind.config.mjs
+    forms-office.txt               <-- MS Forms Link
+  Anmeldungen/                     <-- MS-Forms-Export (gitignored)
+    Anmeldungen.xlsx               <-- 12 aktuelle Anmeldungen
+  Fonts/                           <-- (entfaellt, Officina kommt nicht)
+  .github/
+    workflows/
+      deploy.yml                   <-- GitHub Actions: Build + Deploy auf GitHub Pages
+  web/                             <-- Astro-Projekt
+    .env                           <-- Supabase Credentials (gitignored)
+    .env.example                   <-- Template fuer .env
+    astro.config.mjs               <-- site: ctib.github.io, base: /silos-aufbrechen
     package.json
+    supabase/
+      001_initial_schema.sql       <-- Komplettes DB-Schema (noch nicht auf Supabase ausgefuehrt!)
+    src/
+      components/
+        AdminPanel.svelte          <-- Admin: Forschungscalls CRUD + Tisch-Tagging
+        CountdownBanner.svelte     <-- Banner mit Phasen-Zeitleiste, Countdown, Kalender-Export
+        InternalArea.svelte        <-- Geschuetzter Bereich (Teilnehmerliste, Calls)
+        OrgaPanel.svelte           <-- Orga: Teilnehmer, Tische, Studi-Zuweisung, Export
+        NachmeldungForm.svelte     <-- Nachmeldung (nur Name+Email, nach Anmeldeschluss)
+        RegistrationForm.svelte    <-- Anmeldeformular mit Magic Link
+        TableView.svelte           <-- Etherpad pro Tisch (Realtime, 5 Abschnitte)
+      layouts/
+        BaseLayout.astro           <-- HAW-Header (Logo rechts) + Footer
+      lib/
+        supabase.ts                <-- Supabase-Client (mit SSG-Fallback)
+        paths.ts                   <-- basePath() Helper fuer GitHub Pages Subpfad
+      pages/
+        index.astro                <-- Startseite / Landingpage
+        anmeldung.astro            <-- Anmeldeformular-Seite
+        intern.astro               <-- Interner Bereich
+        admin.astro                <-- Admin-Panel (Forschungscalls)
+        nachmeldung.astro          <-- Nachmeldungs-Seite (nach Anmeldeschluss)
+        orga.astro                 <-- Orga-Panel (Teilnehmerverwaltung)
+        tisch/
+          [nr].astro               <-- Dynamische Route: /tisch/1 bis /tisch/5
+        auth/
+          callback.astro           <-- Magic Link Callback (Profil + Registration)
+      styles/
+        global.css                 <-- Tailwind v4 @theme mit HAW-Design-Tokens
+    public/
+      favicon.ico                  <-- HAW Kiel Favicon
+      images/
+        haw_kiel_logo.svg          <-- HAW Kiel Logo (86KB SVG)
 ```
+
+---
+
+## Naechste Schritte (beim Fortsetzen der Session)
+
+Die folgenden Schritte muessen als naechstes erledigt werden:
+
+### 1. SQL-Schema auf Supabase ausfuehren
+Die Datei `web/supabase/001_initial_schema.sql` muss in der Supabase-Datenbank ausgefuehrt werden.
+**Anleitung:**
+1. Supabase Dashboard oeffnen: `https://supabase.com/dashboard/project/cbybfmnbojklqbkmuwto`
+2. Im linken Menue auf **SQL Editor** klicken
+3. Den gesamten Inhalt von `web/supabase/001_initial_schema.sql` einfuegen
+4. **Run** klicken
+5. Pruefen, dass alle Tabellen unter **Table Editor** sichtbar sind und die 5 Workshop-Tische
+   sowie 25 table_notes (5 Tische x 5 Sections) geseeded wurden
+
+### 2. Magic Links in Supabase konfigurieren
+1. Supabase Dashboard -> **Authentication** -> **URL Configuration**
+2. **Site URL** setzen auf: `https://ctib.github.io/silos-aufbrechen/`
+3. **Redirect URLs** hinzufuegen:
+   - `https://ctib.github.io/silos-aufbrechen/auth/callback`
+   - `http://localhost:4321/silos-aufbrechen/auth/callback` (fuer lokale Entwicklung)
+4. Optional unter **Email Templates**: Bestaetigunsmail-Text auf Deutsch anpassen
+
+### 3. Erstes Deployment verifizieren
+Der GitHub Actions Workflow wurde bereits getriggert (`workflow_dispatch` auf master).
+- Pruefen unter: `https://github.com/ctib/silos-aufbrechen/actions`
+- Die Seite sollte dann live sein unter: `https://ctib.github.io/silos-aufbrechen/`
+- Falls Deployment fehlschlaegt: Logs pruefen. Das `master`-Branch-Environment-Problem wurde
+  bereits behoben (master als erlaubter Branch in github-pages Environment hinzugefuegt).
+
+### 4. E-Mail-Versand an Anmeldungen.xlsx-Teilnehmer
+In Phase 2 sollen alle bereits angemeldeten Personen aus `Anmeldungen/Anmeldungen.xlsx`
+per E-Mail ueber die Webseite informiert werden. Details werden noch erarbeitet.
+
+### 5. Danach: Noch fehlende Seiten und Features
+- [x] `/admin` Seite erstellt (Forschungscalls CRUD fuer Andreas Borchardt)
+- [x] `/orga` Seite erstellt (Teilnehmerverwaltung, Tisch-Config, Studi-Zuweisung, Export)
+- [x] `/tisch/1`-`/tisch/5` erstellt (Etherpad mit Supabase Realtime, 5 Abschnitte, Auto-Save)
+- [ ] Orga-Rollen in profiles-Tabelle setzen (Christoph, Meike, Tammo -> 'orga')
+- [ ] Admin-Rolle setzen (Andreas Borchardt -> 'admin')
+- [ ] Phasen-Zeitleiste: Phase-Override spaeter nur fuer Orga-Rolle freischalten (aktuell fuer alle klickbar)
+- [ ] Domain registrieren und konfigurieren (Christoph hat noch keine Erfahrung damit)
 
 ---
 
@@ -340,27 +455,47 @@ SilosAufbrechen/
 
 ### Kontext
 - Dieses Projekt ist eine Event-Webseite fuer eine Antrittsvorlesung an der HAW Kiel
-- Der Auftraggeber ist Prof. Dr. Christoph Goebel (cgoebel)
+- Der Auftraggeber ist Prof. Dr. Christoph Goebel (GitHub: `ctib`, Windows-User: `cgoebel`)
 - Alle Design-Entscheidungen muessen dem CD Manual der HAW Kiel folgen (siehe `Archiv/cd_manual_haw_screen.pdf`)
 - Die Einladung mit allen Veranstaltungsdetails liegt in `Archiv/SilosAufbrechen_ZukunftBauen.pdf`
 - Aktuelle Anmeldungen (12 Stueck) liegen in `Anmeldungen/Anmeldungen.xlsx`
 
 ### Entscheidungen (bereits getroffen)
 - **Architektur:** Leichtgewichtig (statische Seite + Supabase Backend-as-a-Service)
-- **Auth:** Magic Links per E-Mail (kein Passwort)
+- **Auth:** Magic Links per E-Mail (kein Passwort), Supabase `signInWithOtp()`
+- **API Key:** Publishable Key (neues Supabase-Format, nicht legacy anon key)
 - **Tische:** 5 Stueck, Teilnehmer waehlen selbst (Anzahl/Themen nach 24.04. ggf. variabel)
-- **Schriften:** Verdana als Fallback, ITC Officina als primaere Schrift sobald verfuegbar
+- **Schriften:** Verdana (sans) + Georgia (serif), ITC Officina entfaellt
 - **Supabase Projekt-ID:** `cbybfmnbojklqbkmuwto`
 - **Erwartete Teilnehmer:** 70-100 Personen + bis zu 15 IDW-Studis
+- **Branch:** `master` (nicht `main`!)
+- **Base Path:** `/silos-aufbrechen/` (alle internen Links muessen `basePath()` oder `import.meta.env.BASE_URL` nutzen)
+- **FB-Labels:** Meike -> "FB Wirtschaft", Christoph -> "FB Medien/Bauwesen", Tammo -> "FB Agrarwirtschaft"
+- **HAW-Institutsseite** (`haw-kiel.de/index.php?id=31260`) wurde abgelehnt, eigene Domain bevorzugt
 
 ### Andreas Borchardt
 Leiter der Forschungsabteilung, E-Mail: andreas.borchardt@haw-kiel.de.
 Schreibweise: **Borchardt** (mit dt) ist korrekt.
+Bekommt Admin-Rolle: darf Forschungscalls erstellen/bearbeiten und Workshop-Tische taggen.
 
 ### MS-Forms-Link
-https://forms.office.com/pages/responsepage.aspx?id=SlFZYNubNECdLWtc9Zdpa95yTsFJlbBDntdDxMV4KBtUNjdTUzM4NVpXSkc5Tk9OM1JEUlJNNFNPMi4u&route=shorturl
+`https://forms.office.com/pages/responsepage.aspx?id=SlFZYNubNECdLWtc9Zdpa95yTsFJlbBDntdDxMV4KBtUNjdTUzM4NVpXSkc5Tk9OM1JEUlJNNFNPMi4u&route=shorturl`
+Wird auf der Startseite bis 24.04.2026 als primaerer Anmeldelink angezeigt.
+Danach wird auf das eigene Anmeldeformular (`/anmeldung`) umgeschaltet.
 
-### Officina-Fonts
-Werden von der Stabsstelle Strategische Kommunikation der HAW Kiel bereitgestellt.
-Sobald verfuegbar als WOFF/WOFF2 im Ordner `Fonts/` abgelegt.
-Die `@font-face`-Deklarationen und Tailwind-Config muessen dann aktualisiert werden.
+### Schriften (finalisiert)
+ITC Officina wird nicht geliefert. Verdana (sans-serif) und Georgia (serif) sind final.
+Die Officina-Referenzen und auskommentierten `@font-face`-Deklarationen wurden aus
+`web/src/styles/global.css` entfernt.
+
+### Technische Besonderheiten
+- **SSG Build:** Der Supabase-Client in `web/src/lib/supabase.ts` hat Fallback-Werte fuer URL und Key,
+  damit der statische Build (ohne Env-Vars) nicht abstuerzt. Im Browser werden die echten Werte verwendet.
+- **Base Path:** Wegen GitHub Pages unter `/silos-aufbrechen/` muessen alle internen Links den Helper
+  `basePath()` aus `web/src/lib/paths.ts` nutzen (Svelte) bzw. `import.meta.env.BASE_URL` (Astro).
+  Bei Domain-Wechsel: nur `site` und `base` in `astro.config.mjs` aendern.
+- **GitHub CLI:** Installiert unter `/c/Program Files/GitHub CLI/gh`. Muss ggf. zum PATH hinzugefuegt werden:
+  `export PATH="$PATH:/c/Program Files/GitHub CLI"`
+- **Kein Python:** Auf dem System ist kein Python installiert (Windows Store Alias). Fuer Scripting Node.js v25.6.1 verwenden.
+- **Magic Link Flow:** Formular -> `signInWithOtp()` mit Metadaten -> E-Mail mit Link -> Redirect zu
+  `/auth/callback` -> Profil-Update + Registration-Upsert -> Weiterleitung zu `/intern`

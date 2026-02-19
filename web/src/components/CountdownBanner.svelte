@@ -5,13 +5,34 @@
   const FORMS_URL = 'https://forms.office.com/pages/responsepage.aspx?id=SlFZYNubNECdLWtc9Zdpa95yTsFJlbBDntdDxMV4KBtUNjdTUzM4NVpXSkc5Tk9OM1JEUlJNNFNPMi4u&route=shorturl';
   const REG_DEADLINE = new Date('2026-04-24T23:59:59');
   const EVENT_DATE = new Date('2026-05-07T14:30:00');
+  const EVENT_END = new Date('2026-05-07T20:00:00');
+
+  // Phase definitions
+  const phases = [
+    { id: 'anmeldung', label: 'Anmeldephase', until: REG_DEADLINE },
+    { id: 'vorbereitung', label: 'Vorbereitungsphase', until: EVENT_DATE },
+    { id: 'durchfuehrung', label: 'Durchführungsphase', until: EVENT_END },
+  ] as const;
 
   let now = $state(new Date());
   let interval: ReturnType<typeof setInterval>;
+  let phaseOverride = $state<string | null>(null);
+
+  // Computed current phase based on date
+  const autoPhase = $derived(
+    now < REG_DEADLINE ? 'anmeldung'
+    : now < EVENT_DATE ? 'vorbereitung'
+    : 'durchfuehrung'
+  );
+  const activePhase = $derived(phaseOverride ?? autoPhase);
+
+  function togglePhase(id: string) {
+    phaseOverride = phaseOverride === id ? null : id;
+  }
 
   // Registration countdown (days only)
   const regDiff = $derived(REG_DEADLINE.getTime() - now.getTime());
-  const regExpired = $derived(regDiff <= 0);
+  const regExpired = $derived(activePhase !== 'anmeldung');
   const regDays = $derived(Math.ceil(regDiff / (1000 * 60 * 60 * 24)));
 
   // Event countdown (full precision)
@@ -66,8 +87,39 @@
   }
 </script>
 
+<!-- Phase Timeline -->
+<div class="bg-white border-b border-haw-blau-10">
+  <div class="max-w-4xl mx-auto px-4 py-3">
+    <div class="flex items-center justify-between">
+      {#each phases as phase, i}
+        {#if i > 0}
+          <div class="flex-1 h-0.5 mx-1 sm:mx-2 {activePhase === phase.id || activePhase === phases[i - 1].id ? 'bg-haw-blau' : 'bg-haw-blau-30'}"></div>
+        {/if}
+        <button
+          onclick={() => togglePhase(phase.id)}
+          class="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-full text-xs sm:text-sm transition-all cursor-pointer whitespace-nowrap
+            {activePhase === phase.id
+              ? 'bg-haw-blau text-white font-bold shadow-sm'
+              : 'bg-haw-blau-10 text-haw-blau-50 hover:bg-haw-blau-30 hover:text-haw-blau'}"
+        >
+          <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0
+            {activePhase === phase.id ? 'bg-white text-haw-blau' : 'bg-haw-blau-30 text-white'}"
+          >{i + 1}</span>
+          <span class="hidden sm:inline">{phase.label}</span>
+          <span class="sm:hidden">{phase.label.replace('phase', '')}</span>
+        </button>
+      {/each}
+    </div>
+    {#if phaseOverride}
+      <p class="text-[10px] text-haw-orange mt-1 ml-1">Vorschau – Phase manuell umgeschaltet
+        <button onclick={() => phaseOverride = null} class="underline cursor-pointer">zurücksetzen</button>
+      </p>
+    {/if}
+  </div>
+</div>
+
 <!-- Event Countdown (always visible until event) -->
-{#if !eventExpired}
+{#if !eventExpired || activePhase === 'durchfuehrung'}
   <div class="bg-haw-blau text-white py-8 px-4">
     <div class="max-w-4xl mx-auto">
       <!-- Date + Calendar + Registration in one row -->
@@ -107,9 +159,9 @@
           {/if}
         </div>
 
-        <!-- Right: Registration Button -->
+        <!-- Right: Phase-dependent action button -->
         <div class="flex flex-col items-center lg:items-end gap-2">
-          {#if !regExpired}
+          {#if activePhase === 'anmeldung'}
             <a
               href={FORMS_URL}
               target="_blank"
@@ -119,12 +171,23 @@
               Jetzt anmelden
             </a>
             <p class="text-xs text-white/50">bis zum 24. April 2026</p>
+          {:else if activePhase === 'vorbereitung'}
+            <div class="text-right">
+              <p class="text-sm text-haw-hellblau mb-2">Anmeldung geschlossen</p>
+              <a
+                href={basePath('/nachmeldung')}
+                class="inline-block bg-haw-hellblau text-haw-blau font-bold py-3 px-8 rounded hover:bg-white transition-colors text-lg"
+              >
+                Nachmeldung anfragen
+              </a>
+              <p class="text-xs text-white/50 mt-1">per Kontaktformular</p>
+            </div>
           {:else}
             <a
-              href={basePath('/anmeldung')}
+              href={basePath('/intern')}
               class="inline-block bg-haw-hellblau text-haw-blau font-bold py-3 px-8 rounded hover:bg-white transition-colors text-lg"
             >
-              Verbindlich anmelden
+              Zum internen Bereich
             </a>
           {/if}
         </div>
@@ -133,29 +196,54 @@
     </div>
   </div>
 
-  <!-- Event Countdown (outside dark banner) -->
-  <div class="bg-haw-blau-10 py-6 px-4 text-center">
-    <div class="flex justify-center gap-3 sm:gap-5 font-mono text-2xl sm:text-3xl font-bold text-haw-blau">
-      <div class="flex flex-col items-center">
-        <span class="bg-white rounded px-2 sm:px-3 py-1 shadow-sm">{String(eventDays).padStart(2, '0')}</span>
-        <span class="text-[10px] sm:text-xs mt-1 font-sans font-normal text-haw-blau-50">Tage</span>
+  <!-- Phase-dependent sub-banner -->
+  {#if activePhase === 'durchfuehrung'}
+    <div class="bg-haw-orange/10 py-6 px-4 text-center">
+      <p class="text-2xl font-bold text-haw-blau">Willkommen zur Veranstaltung!</p>
+      <p class="mt-2 text-sm text-haw-blau-70">7. Mai 2026, 14:30 – 20:00 Uhr, HAW Kiel</p>
+    </div>
+  {:else}
+    <!-- Event Countdown -->
+    <div class="bg-haw-blau-10 py-6 px-4 text-center">
+      <div class="flex justify-center gap-3 sm:gap-5 font-mono text-2xl sm:text-3xl font-bold text-haw-blau">
+        <div class="flex flex-col items-center">
+          <span class="bg-white rounded px-2 sm:px-3 py-1 shadow-sm">{String(eventDays).padStart(2, '0')}</span>
+          <span class="text-[10px] sm:text-xs mt-1 font-sans font-normal text-haw-blau-50">Tage</span>
+        </div>
+        <span class="text-haw-blau-30 self-start pt-1">:</span>
+        <div class="flex flex-col items-center">
+          <span class="bg-white rounded px-2 sm:px-3 py-1 shadow-sm">{String(eventHours).padStart(2, '0')}</span>
+          <span class="text-[10px] sm:text-xs mt-1 font-sans font-normal text-haw-blau-50">Std</span>
+        </div>
+        <span class="text-haw-blau-30 self-start pt-1">:</span>
+        <div class="flex flex-col items-center">
+          <span class="bg-white rounded px-2 sm:px-3 py-1 shadow-sm">{String(eventMinutes).padStart(2, '0')}</span>
+          <span class="text-[10px] sm:text-xs mt-1 font-sans font-normal text-haw-blau-50">Min</span>
+        </div>
+        <span class="text-haw-blau-30 self-start pt-1">:</span>
+        <div class="flex flex-col items-center">
+          <span class="bg-white rounded px-2 sm:px-3 py-1 shadow-sm">{String(eventSeconds).padStart(2, '0')}</span>
+          <span class="text-[10px] sm:text-xs mt-1 font-sans font-normal text-haw-blau-50">Sek</span>
+        </div>
       </div>
-      <span class="text-haw-blau-30 self-start pt-1">:</span>
-      <div class="flex flex-col items-center">
-        <span class="bg-white rounded px-2 sm:px-3 py-1 shadow-sm">{String(eventHours).padStart(2, '0')}</span>
-        <span class="text-[10px] sm:text-xs mt-1 font-sans font-normal text-haw-blau-50">Std</span>
-      </div>
-      <span class="text-haw-blau-30 self-start pt-1">:</span>
-      <div class="flex flex-col items-center">
-        <span class="bg-white rounded px-2 sm:px-3 py-1 shadow-sm">{String(eventMinutes).padStart(2, '0')}</span>
-        <span class="text-[10px] sm:text-xs mt-1 font-sans font-normal text-haw-blau-50">Min</span>
-      </div>
-      <span class="text-haw-blau-30 self-start pt-1">:</span>
-      <div class="flex flex-col items-center">
-        <span class="bg-white rounded px-2 sm:px-3 py-1 shadow-sm">{String(eventSeconds).padStart(2, '0')}</span>
-        <span class="text-[10px] sm:text-xs mt-1 font-sans font-normal text-haw-blau-50">Sek</span>
+      {#if activePhase === 'anmeldung'}
+        <p class="mt-3 text-sm text-haw-blau-70">bis zum Start der Veranstaltung.</p>
+      {:else}
+        <p class="mt-3 text-sm text-haw-blau-70">Anmeldung geschlossen – Nachmeldung nur auf Anfrage möglich.</p>
+      {/if}
+    </div>
+  {/if}
+
+  <!-- Vorbereitungsphase info banner -->
+  {#if activePhase === 'vorbereitung'}
+    <div class="bg-haw-hellblau-20 py-5 px-4">
+      <div class="max-w-4xl mx-auto text-center">
+        <p class="text-sm font-bold text-haw-blau">Die Vorbereitung der Veranstaltung läuft.</p>
+        <p class="text-sm text-haw-blau-70 mt-1">
+          Ein Programm-Update folgt in Kürze. Alle angemeldeten Teilnehmer:innen werden
+          sobald als möglich über die weiteren Details informiert.
+        </p>
       </div>
     </div>
-    <p class="mt-3 text-sm text-haw-blau-70">bis zum Start der Veranstaltung.</p>
-  </div>
+  {/if}
 {/if}

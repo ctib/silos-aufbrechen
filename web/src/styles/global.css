@@ -18,52 +18,10 @@
   --color-haw-hellblau-50: rgba(133, 195, 223, 0.5);
   --color-haw-hellblau-20: rgba(133, 195, 223, 0.2);
 
-  /* Schriften: Officina (primaer) mit Verdana (Fallback) */
-  --font-sans: "ITC Officina Sans", "Verdana", sans-serif;
-  --font-serif: "ITC Officina Serif", "Georgia", serif;
+  /* Schriften: Verdana (Officina nicht verfuegbar) */
+  --font-sans: "Verdana", sans-serif;
+  --font-serif: "Georgia", serif;
 }
-
-/*
- * Officina Font-Face Deklarationen.
- * Sobald die WOFF/WOFF2-Dateien im Fonts/-Ordner liegen,
- * hier die src-Pfade anpassen und einkommentieren.
- *
- * @font-face {
- *   font-family: "ITC Officina Sans";
- *   src: url("/fonts/OfficinaSans-Book.woff2") format("woff2");
- *   font-weight: 400;
- *   font-style: normal;
- *   font-display: swap;
- * }
- * @font-face {
- *   font-family: "ITC Officina Sans";
- *   src: url("/fonts/OfficinaSans-BookItalic.woff2") format("woff2");
- *   font-weight: 400;
- *   font-style: italic;
- *   font-display: swap;
- * }
- * @font-face {
- *   font-family: "ITC Officina Sans";
- *   src: url("/fonts/OfficinaSans-Bold.woff2") format("woff2");
- *   font-weight: 700;
- *   font-style: normal;
- *   font-display: swap;
- * }
- * @font-face {
- *   font-family: "ITC Officina Serif";
- *   src: url("/fonts/OfficinaSerif-Book.woff2") format("woff2");
- *   font-weight: 400;
- *   font-style: normal;
- *   font-display: swap;
- * }
- * @font-face {
- *   font-family: "ITC Officina Serif";
- *   src: url("/fonts/OfficinaSerif-Bold.woff2") format("woff2");
- *   font-weight: 700;
- *   font-style: normal;
- *   font-display: swap;
- * }
- */
 
 /* Basis-Styles */
 body {

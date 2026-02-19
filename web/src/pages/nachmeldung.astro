@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NachmeldungForm from '../components/NachmeldungForm.svelte';
+---
+
+<BaseLayout title="Nachmeldung | Silos aufbrechen – Zukunft bauen">
+  <section class="max-w-xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <NachmeldungForm client:load />
+  </section>
+</BaseLayout>

@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TableView from '../../components/TableView.svelte';
+
+export function getStaticPaths() {
+  return [1, 2, 3, 4, 5].map(nr => ({ params: { nr: String(nr) } }));
+}
+
+const { nr } = Astro.params;
+---
+
+<BaseLayout title={`Tisch ${nr} | Silos aufbrechen – Zukunft bauen`}>
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <TableView tableNumber={Number(nr)} client:load />
+  </section>
+</BaseLayout>

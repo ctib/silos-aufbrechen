@@ -1,0 +1,110 @@
+<script lang="ts">
+  import { supabase } from '../lib/supabase';
+  import { basePath } from '../lib/paths';
+
+  let name = $state('');
+  let email = $state('');
+  let sending = $state(false);
+  let sent = $state(false);
+  let error = $state('');
+
+  async function handleSubmit(e: Event) {
+    e.preventDefault();
+    if (!name.trim() || !email.trim()) return;
+
+    sending = true;
+    error = '';
+
+    // Send magic link with metadata - this creates the user + profile
+    const { error: authError } = await supabase.auth.signInWithOtp({
+      email: email.trim(),
+      options: {
+        data: { full_name: name.trim() },
+        emailRedirectTo: window.location.origin + basePath('/auth/callback'),
+      },
+    });
+
+    if (authError) {
+      error = 'Fehler beim Senden. Bitte versuchen Sie es erneut oder kontaktieren Sie uns direkt.';
+      sending = false;
+      return;
+    }
+
+    sent = true;
+    sending = false;
+  }
+</script>
+
+{#if sent}
+  <div class="text-center">
+    <div class="w-16 h-16 bg-haw-hellblau/20 rounded-full flex items-center justify-center mx-auto mb-4">
+      <span class="text-2xl text-haw-blau">&#10003;</span>
+    </div>
+    <h1 class="font-serif text-3xl font-bold text-haw-blau mb-4">Anfrage gesendet</h1>
+    <p class="text-haw-blau-70 mb-2">
+      Wir haben Ihnen eine E-Mail an <strong>{email}</strong> geschickt.
+    </p>
+    <p class="text-haw-blau-70 mb-6">
+      Klicken Sie auf den Link in der E-Mail, um Ihre Nachmeldung abzuschließen.
+      Das Orga-Team wird sich bei Ihnen melden, um die Teilnahme zu bestätigen.
+    </p>
+    <a href={basePath('/')} class="text-sm text-haw-blau-50 hover:text-haw-blau transition-colors">
+      Zurück zur Startseite
+    </a>
+  </div>
+{:else}
+  <h1 class="font-serif text-3xl font-bold text-haw-blau mb-2">Nachmeldung</h1>
+  <p class="text-haw-blau-70 mb-6">
+    Die reguläre Anmeldephase ist abgeschlossen. Wenn Sie dennoch teilnehmen möchten,
+    können Sie hier Ihre Kontaktdaten hinterlassen. Das Orga-Team prüft, ob noch
+    Plätze verfügbar sind, und meldet sich bei Ihnen.
+  </p>
+
+  <div class="haw-gradient-line w-12 mb-6"></div>
+
+  <form onsubmit={handleSubmit} class="space-y-4">
+    <div>
+      <label for="name" class="block text-sm font-bold text-haw-blau mb-1">Name *</label>
+      <input
+        id="name"
+        type="text"
+        bind:value={name}
+        required
+        class="w-full border border-haw-blau-30 rounded px-4 py-2.5 text-sm focus:border-haw-blau focus:outline-none"
+        placeholder="Vor- und Nachname"
+      />
+    </div>
+    <div>
+      <label for="email" class="block text-sm font-bold text-haw-blau mb-1">E-Mail *</label>
+      <input
+        id="email"
+        type="email"
+        bind:value={email}
+        required
+        class="w-full border border-haw-blau-30 rounded px-4 py-2.5 text-sm focus:border-haw-blau focus:outline-none"
+        placeholder="ihre.email@beispiel.de"
+      />
+    </div>
+
+    {#if error}
+      <p class="text-sm text-red-600 bg-red-50 rounded px-4 py-2">{error}</p>
+    {/if}
+
+    <button
+      type="submit"
+      disabled={sending || !name.trim() || !email.trim()}
+      class="w-full bg-haw-blau text-white font-bold py-3 px-8 rounded hover:bg-haw-blau-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+    >
+      {sending ? 'Wird gesendet...' : 'Nachmeldung absenden'}
+    </button>
+  </form>
+
+  <div class="mt-8 p-4 bg-haw-blau-10 rounded text-sm text-haw-blau-70">
+    <p class="font-bold text-haw-blau mb-1">Direkt Kontakt aufnehmen?</p>
+    <p>
+      Sie können auch direkt eine E-Mail an
+      <a href="mailto:christoph.goebel@haw-kiel.de" class="text-haw-blau underline">christoph.goebel@haw-kiel.de</a>
+      senden.
+    </p>
+  </div>
+{/if}
