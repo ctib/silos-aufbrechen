@@ -5,13 +5,14 @@
 
   let loading = $state(true);
   let authorized = $state(false);
-  let activeTab = $state<'teilnehmer' | 'tische' | 'studis' | 'export'>('teilnehmer');
+  let activeTab = $state<'teilnehmer' | 'nachmeldungen' | 'tische' | 'studis' | 'export'>('teilnehmer');
 
   // Data
   let profiles = $state<any[]>([]);
   let registrations = $state<any[]>([]);
   let tables = $state<any[]>([]);
   let assignments = $state<any[]>([]);
+  let nachmeldungen = $state<any[]>([]);
 
   // Edit states
   let editingTable = $state<string | null>(null);
@@ -42,16 +43,18 @@
   });
 
   async function loadData() {
-    const [profilesRes, regsRes, tablesRes, assignRes] = await Promise.all([
+    const [profilesRes, regsRes, tablesRes, assignRes, nachmRes] = await Promise.all([
       supabase.from('profiles').select('*').order('full_name'),
       supabase.from('registrations').select('*, profiles(full_name, email), workshop_tables(number, title)').order('created_at'),
       supabase.from('workshop_tables').select('*').order('number'),
       supabase.from('table_assignments').select('*, profiles(full_name, email, role), workshop_tables(number, title)').order('created_at'),
+      supabase.from('nachmeldung_requests').select('*').order('created_at', { ascending: false }),
     ]);
     profiles = profilesRes.data ?? [];
     registrations = regsRes.data ?? [];
     tables = tablesRes.data ?? [];
     assignments = assignRes.data ?? [];
+    nachmeldungen = nachmRes.data ?? [];
   }
 
   // Stats
@@ -60,6 +63,7 @@
   const attendsDinner = $derived(registrations.filter(r => r.attends_dinner).length);
   const totalCompanions = $derived(registrations.reduce((sum, r) => sum + (r.companion_count || 0), 0));
   const studis = $derived(profiles.filter(p => p.role === 'studi'));
+  const pendingNachmeldungen = $derived(nachmeldungen.filter(n => n.status === 'pending'));
 
   function registrationsForTable(tableId: string) {
     return registrations.filter(r => r.table_preference === tableId);
@@ -138,6 +142,44 @@
     await supabase.from('profiles').update({ role: newRole }).eq('id', profileId);
     await loadData();
   }
+
+  // Nachmeldung management
+  async function approveNachmeldung(req: any) {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    // Send magic link to create account
+    const { error } = await supabase.auth.signInWithOtp({
+      email: req.email,
+      options: {
+        data: { full_name: req.name },
+        emailRedirectTo: window.location.origin + basePath('/auth/callback'),
+      },
+    });
+
+    if (error) {
+      alert('Fehler beim Senden des Magic Links: ' + error.message);
+      return;
+    }
+
+    // Update request status
+    await supabase.from('nachmeldung_requests').update({
+      status: 'approved',
+      reviewed_by: session?.user.id,
+      reviewed_at: new Date().toISOString(),
+    }).eq('id', req.id);
+
+    await loadData();
+  }
+
+  async function rejectNachmeldung(req: any) {
+    const { data: { session } } = await supabase.auth.getSession();
+    await supabase.from('nachmeldung_requests').update({
+      status: 'rejected',
+      reviewed_by: session?.user.id,
+      reviewed_at: new Date().toISOString(),
+    }).eq('id', req.id);
+    await loadData();
+  }
 </script>
 
 {#if loading}
@@ -166,7 +208,7 @@
   </div>
 
   <!-- Stats -->
-  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+  <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-8">
     <div class="bg-haw-blau text-white rounded-lg p-4 text-center">
       <p class="text-3xl font-bold">{totalRegistrations}</p>
       <p class="text-xs text-haw-hellblau mt-1">Anmeldungen</p>
@@ -183,6 +225,12 @@
       <p class="text-3xl font-bold text-haw-blau">{totalCompanions}</p>
       <p class="text-xs text-haw-blau-50 mt-1">Begleitpersonen</p>
     </div>
+    {#if pendingNachmeldungen.length > 0}
+      <div class="bg-haw-orange/10 border border-haw-orange/30 rounded-lg p-4 text-center cursor-pointer" onclick={() => activeTab = 'nachmeldungen'}>
+        <p class="text-3xl font-bold text-haw-orange">{pendingNachmeldungen.length}</p>
+        <p class="text-xs text-haw-orange mt-1">Offene Anfragen</p>
+      </div>
+    {/if}
   </div>
 
   <div class="haw-gradient-line w-16 mb-6"></div>
@@ -191,6 +239,7 @@
   <div class="flex gap-1 mb-6 border-b border-haw-blau-10">
     {#each [
       { id: 'teilnehmer', label: 'Teilnehmende' },
+      { id: 'nachmeldungen', label: `Nachmeldungen${pendingNachmeldungen.length ? ` (${pendingNachmeldungen.length})` : ''}` },
       { id: 'tische', label: 'Tische' },
       { id: 'studis', label: 'Studi-Zuweisung' },
       { id: 'export', label: 'Export' },
@@ -252,6 +301,49 @@
       </table>
       {#if registrations.length === 0}
         <p class="text-center text-haw-blau-50 py-8">Noch keine Anmeldungen vorhanden.</p>
+      {/if}
+    </div>
+
+  <!-- Tab: Nachmeldungen -->
+  {:else if activeTab === 'nachmeldungen'}
+    <div class="space-y-4">
+      {#each nachmeldungen as req}
+        <div class="bg-white border border-haw-blau-10 rounded-lg p-5">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="font-bold text-haw-blau">{req.name}</h3>
+                <span class="text-xs px-2 py-0.5 rounded
+                  {req.status === 'pending' ? 'bg-haw-orange/20 text-haw-orange'
+                    : req.status === 'approved' ? 'bg-green-100 text-green-700'
+                    : 'bg-red-100 text-red-700'}"
+                >{req.status === 'pending' ? 'Offen' : req.status === 'approved' ? 'Genehmigt' : 'Abgelehnt'}</span>
+              </div>
+              <p class="text-sm text-haw-blau-70 mt-0.5">{req.email}</p>
+              {#if req.comment}
+                <p class="text-sm text-haw-blau-70 mt-2 bg-haw-blau-10 rounded p-3 italic">„{req.comment}"</p>
+              {/if}
+              <p class="text-xs text-haw-blau-50 mt-2">
+                {new Date(req.created_at).toLocaleDateString('de-DE')} um {new Date(req.created_at).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
+              </p>
+            </div>
+            {#if req.status === 'pending'}
+              <div class="flex gap-2 shrink-0">
+                <button
+                  onclick={() => approveNachmeldung(req)}
+                  class="text-xs bg-green-600 text-white px-3 py-1.5 rounded cursor-pointer hover:bg-green-700"
+                >Genehmigen</button>
+                <button
+                  onclick={() => rejectNachmeldung(req)}
+                  class="text-xs bg-red-500 text-white px-3 py-1.5 rounded cursor-pointer hover:bg-red-600"
+                >Ablehnen</button>
+              </div>
+            {/if}
+          </div>
+        </div>
+      {/each}
+      {#if nachmeldungen.length === 0}
+        <p class="text-center text-haw-blau-50 py-8">Noch keine Nachmeldungen eingegangen.</p>
       {/if}
     </div>
 

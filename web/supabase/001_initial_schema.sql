@@ -277,6 +277,65 @@ create policy "Studi and orga can edit notes"
   on table_notes for update using (is_studi_or_above());
 
 -- --------------------------------------------------------
+-- Nachmeldung Requests (approval workflow)
+-- --------------------------------------------------------
+
+create table nachmeldung_requests (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  email text not null,
+  comment text,
+  status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
+  reviewed_by uuid references profiles(id),
+  reviewed_at timestamptz,
+  created_at timestamptz not null default now()
+);
+
+alter table nachmeldung_requests enable row level security;
+
+create policy "Anyone can submit nachmeldung"
+  on nachmeldung_requests for insert with check (true);
+
+create policy "Orga can view nachmeldungen"
+  on nachmeldung_requests for select using (is_orga());
+
+create policy "Orga can update nachmeldungen"
+  on nachmeldung_requests for update using (is_orga());
+
+-- --------------------------------------------------------
+-- Registration Table Preferences (n:m, multiple table wishes)
+-- --------------------------------------------------------
+
+create table registration_table_preferences (
+  registration_id uuid not null references registrations(id) on delete cascade,
+  table_id uuid not null references workshop_tables(id) on delete cascade,
+  primary key (registration_id, table_id)
+);
+
+alter table registration_table_preferences enable row level security;
+
+create policy "Users can view own table preferences"
+  on registration_table_preferences for select using (
+    registration_id in (select id from registrations where profile_id = auth.uid())
+  );
+
+create policy "Users can manage own table preferences"
+  on registration_table_preferences for insert with check (
+    registration_id in (select id from registrations where profile_id = auth.uid())
+  );
+
+create policy "Users can delete own table preferences"
+  on registration_table_preferences for delete using (
+    registration_id in (select id from registrations where profile_id = auth.uid())
+  );
+
+create policy "Orga can view all table preferences"
+  on registration_table_preferences for select using (is_orga());
+
+create policy "Orga can manage all table preferences"
+  on registration_table_preferences for all using (is_orga());
+
+-- --------------------------------------------------------
 -- Realtime (enable for table_notes for live collaboration)
 -- --------------------------------------------------------
 

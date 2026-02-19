@@ -308,29 +308,32 @@ table_notes (
 - [x] Programm-Hinweis: "Vorlaeufiges Programm, Stand: 24.04.2026"
 - [x] Base-Path-Bug gefixt: Fehlender Slash bei Logo/Favicon-Pfaden in BaseLayout
 
-### Phase 2: Datenbank & Auth -- IN ARBEIT
+### Phase 2: Datenbank & Auth -- ERLEDIGT
 - [x] SQL-Schema erstellt (`web/supabase/001_initial_schema.sql`) mit Enums, Tabellen, RLS, Triggers, Seed-Daten
-- [x] Anmeldeformular (`web/src/components/RegistrationForm.svelte`) mit Magic Link per `signInWithOtp()`
-- [x] Auth-Callback-Seite (`web/src/pages/auth/callback.astro`) fuer Profil-Update + Registration-Upsert
-- [x] Interner Bereich (`web/src/components/InternalArea.svelte`) mit Teilnehmerliste, Forschungscalls, rollenbasierter UI
+- [x] SQL-Schema auf Supabase ausgefuehrt (9 Tabellen inkl. nachmeldung_requests + registration_table_preferences)
+- [x] Magic Links konfiguriert (Site URL + Redirect URLs, Gueltigkeit bis 8. Mai 2026)
+- [x] Deployment verifiziert (GitHub Actions laeuft, Seite live mit noindex)
+- [x] Anmeldeformular (`RegistrationForm.svelte`) mit Magic Link per `signInWithOtp()`
+- [x] Auth-Callback-Seite (`auth/callback.astro`) fuer Profil-Update + Registration-Upsert
+- [x] Interner Bereich (`InternalArea.svelte`): Login-Flow mit Email-Pruefung, Anmeldung bearbeitbar (Hintergrund, Teilnahme, Workshoptische Mehrfachauswahl, Begleitung, Datenschutz, Teilnehmerliste)
+- [x] Nachmeldung (`NachmeldungForm.svelte`): Kommentarfeld, Anfrage in DB (kein direkter Magic Link), Genehmigung durch Orga
+- [x] Email-Benachrichtigung bei Nachmeldungen (pg_net + Resend API, `002_nachmeldung_notify.sql`)
 - [x] Supabase Publishable Key in `.env` und als GitHub Repository Variable gesetzt
-- [x] GitHub Pages Environment: `master` Branch als Deployment-Quelle erlaubt
 - [x] Base-Path-Helper (`web/src/lib/paths.ts`) fuer korrekte URLs unter `/silos-aufbrechen/`
-- [ ] **SQL-Schema auf Supabase ausfuehren** (siehe Abschnitt "Naechste Schritte")
-- [ ] **Magic Links in Supabase konfigurieren** (Redirect URLs setzen)
-- [ ] **Erstes Deployment verifizieren** (GitHub Actions Workflow wurde getriggert)
-- [ ] **E-Mail-Versand an Teilnehmer aus Anmeldung.xlsx** (in Arbeit)
+- [x] Test-Magic-Link an Christoph Goebel gesendet
+- [ ] Orga-Rollen setzen (Meike, Tammo, Christoph -> 'orga' in profiles, nach Login)
 - [ ] MS-Forms-Daten importieren (nach Anmeldeschluss 24.04.)
-- [ ] Orga-Rollen setzen (Meike, Tammo, Christoph -> 'orga' in profiles)
+- [ ] Resend: Eigene Domain verifizieren fuer Produktiv-Emailversand
 
-### Phase 3: Admin & Orga Panels -- CODE FERTIG
+### Phase 3: Admin & Orga Panels -- ERLEDIGT
 - [x] Admin-Panel (`/admin`, `AdminPanel.svelte`): Forschungscalls CRUD (Titel, Beschreibung, URL, Deadline, Typ) + Tisch-Tagging per Toggle-Buttons
-- [x] Orga-Panel (`/orga`, `OrgaPanel.svelte`): Statistik-Dashboard, Teilnehmertabelle mit Rollen-Dropdown, Tisch-Bearbeitung, Studi-Zuweisung, CSV-Export (UTF-8 BOM, Semikolon-getrennt fuer Excel)
+- [x] Orga-Panel (`/orga`, `OrgaPanel.svelte`): Statistik-Dashboard, Teilnehmertabelle mit Rollen-Dropdown, Tisch-Bearbeitung, Studi-Zuweisung, CSV-Export
+- [x] Orga-Panel: Nachmeldung-Anfragen Tab (Genehmigen sendet Magic Link, Ablehnen setzt Status)
 - [x] Auth-Checks: Admin sieht nur `/admin`, Orga sieht `/admin` + `/orga`
 - [x] Navigation zwischen Intern/Admin/Orga in allen geschuetzten Bereichen
 - [ ] MS-Forms-Import-Script (Bestandsdaten aus `Anmeldungen/Anmeldungen.xlsx` uebernehmen)
 
-### Phase 4: Workshop-Tools -- CODE FERTIG
+### Phase 4: Workshop-Tools -- ERLEDIGT
 - [x] Etherpad-Funktion pro Tisch (`/tisch/1` bis `/tisch/5`, `TableView.svelte`) mit Supabase Realtime
 - [x] 5 strukturierte Abschnitte pro Tisch: Ideensammlung, Voting, Ausformulierung, Action Items, Protokoll
 - [x] Auto-Save (1.5s Debounce) + manuelles Speichern
@@ -359,8 +362,9 @@ SilosAufbrechen/
     cd_manual_haw_screen.pdf
     SilosAufbrechen_ZukunftBauen.pdf
     forms-office.txt               <-- MS Forms Link
-  Anmeldungen/                     <-- MS-Forms-Export (gitignored)
-    Anmeldungen.xlsx               <-- 12 aktuelle Anmeldungen
+  Anmeldungen/                     <-- Anmeldedaten (gitignored)
+    Anmeldungen.xlsx               <-- 12 MS-Forms-Anmeldungen
+    supabase-export.csv            <-- Supabase-Registrierungen (wird regelmaessig aktualisiert)
   Fonts/                           <-- (entfaellt, Officina kommt nicht)
   .github/
     workflows/
@@ -368,10 +372,12 @@ SilosAufbrechen/
   web/                             <-- Astro-Projekt
     .env                           <-- Supabase Credentials (gitignored)
     .env.example                   <-- Template fuer .env
+    .env.example                   <-- Template fuer .env
     astro.config.mjs               <-- site: ctib.github.io, base: /silos-aufbrechen
     package.json
     supabase/
-      001_initial_schema.sql       <-- Komplettes DB-Schema (noch nicht auf Supabase ausgefuehrt!)
+      001_initial_schema.sql       <-- Komplettes DB-Schema (auf Supabase ausgefuehrt)
+      002_nachmeldung_notify.sql   <-- Email-Trigger fuer Nachmeldungen (pg_net + Resend)
     src/
       components/
         AdminPanel.svelte          <-- Admin: Forschungscalls CRUD + Tisch-Tagging
@@ -409,45 +415,24 @@ SilosAufbrechen/
 
 ## Naechste Schritte (beim Fortsetzen der Session)
 
-Die folgenden Schritte muessen als naechstes erledigt werden:
+### Erledigt (Stand 2026-02-19)
+- [x] SQL-Schema auf Supabase ausgefuehrt (9 Tabellen, 5 Tische, 25 Notes geseeded)
+- [x] Magic Links konfiguriert (Site URL, Redirect URLs, Gueltigkeit bis 8. Mai)
+- [x] Deployment verifiziert (GitHub Actions laeuft, Seite live mit noindex/robots.txt)
+- [x] Nachmeldung-Workflow: Anfrage -> DB -> Email-Benachrichtigung -> Orga genehmigt -> Magic Link
+- [x] Interner Bereich: Login-Flow mit Email-Pruefung, Anmeldung bearbeitbar
+- [x] Test-Magic-Link an christoph.goebel@haw-kiel.de gesendet
+- [x] Supabase-Export in `Anmeldungen/supabase-export.csv`
 
-### 1. SQL-Schema auf Supabase ausfuehren
-Die Datei `web/supabase/001_initial_schema.sql` muss in der Supabase-Datenbank ausgefuehrt werden.
-**Anleitung:**
-1. Supabase Dashboard oeffnen: `https://supabase.com/dashboard/project/cbybfmnbojklqbkmuwto`
-2. Im linken Menue auf **SQL Editor** klicken
-3. Den gesamten Inhalt von `web/supabase/001_initial_schema.sql` einfuegen
-4. **Run** klicken
-5. Pruefen, dass alle Tabellen unter **Table Editor** sichtbar sind und die 5 Workshop-Tische
-   sowie 25 table_notes (5 Tische x 5 Sections) geseeded wurden
-
-### 2. Magic Links in Supabase konfigurieren
-1. Supabase Dashboard -> **Authentication** -> **URL Configuration**
-2. **Site URL** setzen auf: `https://ctib.github.io/silos-aufbrechen/`
-3. **Redirect URLs** hinzufuegen:
-   - `https://ctib.github.io/silos-aufbrechen/auth/callback`
-   - `http://localhost:4321/silos-aufbrechen/auth/callback` (fuer lokale Entwicklung)
-4. Optional unter **Email Templates**: Bestaetigunsmail-Text auf Deutsch anpassen
-
-### 3. Erstes Deployment verifizieren
-Der GitHub Actions Workflow wurde bereits getriggert (`workflow_dispatch` auf master).
-- Pruefen unter: `https://github.com/ctib/silos-aufbrechen/actions`
-- Die Seite sollte dann live sein unter: `https://ctib.github.io/silos-aufbrechen/`
-- Falls Deployment fehlschlaegt: Logs pruefen. Das `master`-Branch-Environment-Problem wurde
-  bereits behoben (master als erlaubter Branch in github-pages Environment hinzugefuegt).
-
-### 4. E-Mail-Versand an Anmeldungen.xlsx-Teilnehmer
-In Phase 2 sollen alle bereits angemeldeten Personen aus `Anmeldungen/Anmeldungen.xlsx`
-per E-Mail ueber die Webseite informiert werden. Details werden noch erarbeitet.
-
-### 5. Danach: Noch fehlende Seiten und Features
-- [x] `/admin` Seite erstellt (Forschungscalls CRUD fuer Andreas Borchardt)
-- [x] `/orga` Seite erstellt (Teilnehmerverwaltung, Tisch-Config, Studi-Zuweisung, Export)
-- [x] `/tisch/1`-`/tisch/5` erstellt (Etherpad mit Supabase Realtime, 5 Abschnitte, Auto-Save)
-- [ ] Orga-Rollen in profiles-Tabelle setzen (Christoph, Meike, Tammo -> 'orga')
+### Offen
+- [ ] Orga-Rollen setzen (Christoph, Meike, Tammo -> 'orga' nach Login)
 - [ ] Admin-Rolle setzen (Andreas Borchardt -> 'admin')
-- [ ] Phasen-Zeitleiste: Phase-Override spaeter nur fuer Orga-Rolle freischalten (aktuell fuer alle klickbar)
-- [ ] Domain registrieren und konfigurieren (Christoph hat noch keine Erfahrung damit)
+- [ ] Resend: Eigene Domain verifizieren (aktuell nur onboarding@resend.dev, begrenzt auf verifizierte Empfaenger)
+- [ ] MS-Forms-Import-Script (Anmeldungen.xlsx -> Supabase)
+- [ ] Phasen-Override nur fuer Orga-Rolle freischalten
+- [ ] Domain registrieren und konfigurieren
+- [ ] PDF-Export der Tisch-Protokolle
+- [ ] Supabase Auth-Email-Templates auf Deutsch anpassen
 
 ---
 

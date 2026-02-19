@@ -13,5 +13,18 @@
 
 [X] Ergänzung bei Meike Wocken: FB Wirtschaft und bei Christoph Göbel FB Medien/Bauwesen statt Institut für Bauwesen
 
-- umlaute ä ö ü einfügen 
-- Vorbereitungsphase auch mit internem Bereich um forschungscalls einzufügen, die Teilnehmerliste zu bearbeiten und etherpads für workshoptische vorzubereiten
+[x] umlaute ä ö ü einfügen
+[x] Vorbereitungsphase auch mit internem Bereich um forschungscalls einzufügen, die Teilnehmerliste zu bearbeiten und etherpads für workshoptische vorzubereiten
+
+[x] Phase 2: Nachmeldung anfragen: Kommentarfeld hinzugefügt, Anfrage wird in DB gespeichert (nicht mehr direkt Magic Link), Orga-Panel zeigt Anfragen mit Genehmigen/Ablehnen, automatische Email-Benachrichtigung via Resend/pg_net.
+[x] Interner Bereich: Login-Flow mit Email-Prüfung (registriert → Magic Link, vor 24.04 → MS Forms, danach → Nachmeldung). Anmeldung bearbeitbar: Hintergrund, Teilnahme, Workshoptische (Mehrfachauswahl), Begleitung, Datenschutz. Teilnehmerliste der Konsentierten.
+[x] Christoph Göbel hat einen Magic Link für den internen Bereich erhalten.
+[x] Magic Link Gültigkeit auf bis zum 8. Mai 2026 gesetzt.
+[x] Supabase-Anmeldungen als CSV in Anmeldungen/supabase-export.csv exportiert.
+
+- Meike, Tammo und Christoph Orga-Rollen in Supabase setzen (nach Login)
+- Resend: onboarding@resend.dev sendet nur an verifizierte Empfänger. Eigene Domain verifizieren für Produktivbetrieb.
+- MS-Forms-Import-Script (Anmeldungen.xlsx → Supabase)
+- PDF-Export der Tisch-Protokolle
+- Phasen-Override nur für Orga-Rolle
+- Eigene Domain registrieren und konfigurieren

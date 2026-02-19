@@ -3,6 +3,9 @@
   import { supabase } from '../lib/supabase';
   import { basePath } from '../lib/paths';
 
+  const FORMS_URL = 'https://forms.office.com/pages/responsepage.aspx?id=SlFZYNubNECdLWtc9Zdpa95yTsFJlbBDntdDxMV4KBtUNjdTUzM4NVpXSkc5Tk9OM1JEUlJNNFNPMi4u&route=shorturl';
+  const REG_DEADLINE = new Date('2026-04-24T23:59:59');
+
   type UserRole = 'gast' | 'teilnehmer' | 'studi' | 'admin' | 'orga';
 
   let loading = $state(true);
@@ -13,6 +16,27 @@
   let researchCalls = $state<any[]>([]);
   let tables = $state<any[]>([]);
   let userRole = $state<UserRole>('gast');
+  let tablePreferences = $state<string[]>([]);
+
+  // Login flow states
+  let loginEmail = $state('');
+  let loginSending = $state(false);
+  let loginMessage = $state('');
+  let loginError = $state('');
+
+  // Edit mode
+  let editing = $state(false);
+  let editBackground = $state('');
+  let editLecture = $state(true);
+  let editWorkshop = $state(true);
+  let editDinner = $state(false);
+  let editTablePrefs = $state<string[]>([]);
+  let editCompanions = $state(0);
+  let editCompanionUnder16 = $state(false);
+  let editCompanionUnder12 = $state(false);
+  let editShowName = $state(false);
+  let editGdpr = $state(false);
+  let saving = $state(false);
 
   onMount(async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -43,7 +67,17 @@
       .eq('profile_id', session.user.id)
       .single();
 
-    if (regData) registration = regData;
+    if (regData) {
+      registration = regData;
+
+      // Load table preferences
+      const { data: prefs } = await supabase
+        .from('registration_table_preferences')
+        .select('table_id')
+        .eq('registration_id', regData.id);
+
+      tablePreferences = prefs?.map(p => p.table_id) ?? [];
+    }
 
     // Load public participants
     const { data: pubParticipants } = await supabase
@@ -73,6 +107,127 @@
     loading = false;
   });
 
+  async function handleLoginRequest(e: Event) {
+    e.preventDefault();
+    if (!loginEmail.trim()) return;
+
+    loginSending = true;
+    loginError = '';
+    loginMessage = '';
+
+    const email = loginEmail.trim().toLowerCase();
+
+    // Check if email exists in profiles
+    const { data: existingProfile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (existingProfile) {
+      // Email is registered – send magic link
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: window.location.origin + basePath('/auth/callback'),
+        },
+      });
+
+      if (error) {
+        loginError = 'Fehler beim Senden. Bitte versuchen Sie es später erneut.';
+      } else {
+        loginMessage = `Ein neuer Zugangslink wurde an ${email} gesendet. Bitte prüfen Sie Ihr Postfach.`;
+      }
+    } else {
+      // Email not registered
+      const now = new Date();
+      if (now < REG_DEADLINE) {
+        loginError = `Diese E-Mail-Adresse ist noch nicht registriert. Bitte melden Sie sich zunächst über das <a href="${FORMS_URL}" target="_blank" rel="noopener noreferrer" class="underline">Anmeldeformular</a> an.`;
+      } else {
+        loginError = `Diese E-Mail-Adresse ist nicht registriert. Die Anmeldephase ist abgeschlossen. Sie können eine <a href="${basePath('/nachmeldung')}" class="underline">Nachmeldung anfragen</a>.`;
+      }
+    }
+
+    loginSending = false;
+  }
+
+  function startEditing() {
+    editBackground = profile?.background ?? '';
+    editLecture = registration?.attends_lecture ?? true;
+    editWorkshop = registration?.attends_workshop ?? true;
+    editDinner = registration?.attends_dinner ?? false;
+    editTablePrefs = [...tablePreferences];
+    editCompanions = registration?.companion_count ?? 0;
+    editCompanionUnder16 = registration?.companion_under_16 ?? false;
+    editCompanionUnder12 = registration?.companion_under_12 ?? false;
+    editShowName = profile?.show_name_public ?? false;
+    editGdpr = profile?.gdpr_consent ?? false;
+    editing = true;
+  }
+
+  function toggleTablePref(tableId: string) {
+    if (editTablePrefs.includes(tableId)) {
+      editTablePrefs = editTablePrefs.filter(t => t !== tableId);
+    } else {
+      editTablePrefs = [...editTablePrefs, tableId];
+    }
+  }
+
+  async function saveRegistration() {
+    if (!registration || !profile) return;
+    saving = true;
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { saving = false; return; }
+
+    // Update profile
+    await supabase.from('profiles').update({
+      background: editBackground.trim() || null,
+      show_name_public: editShowName,
+      gdpr_consent: editGdpr,
+      gdpr_consent_date: editGdpr ? new Date().toISOString() : null,
+    }).eq('id', session.user.id);
+
+    // Update registration
+    await supabase.from('registrations').update({
+      attends_lecture: editLecture,
+      attends_workshop: editWorkshop,
+      attends_dinner: editDinner,
+      companion_count: editCompanions,
+      companion_under_16: editCompanionUnder16,
+      companion_under_12: editCompanionUnder12,
+    }).eq('id', registration.id);
+
+    // Update table preferences
+    await supabase.from('registration_table_preferences')
+      .delete()
+      .eq('registration_id', registration.id);
+
+    if (editTablePrefs.length > 0) {
+      await supabase.from('registration_table_preferences').insert(
+        editTablePrefs.map(tableId => ({
+          registration_id: registration.id,
+          table_id: tableId,
+        }))
+      );
+    }
+
+    // Reload data
+    profile = { ...profile, background: editBackground.trim() || null, show_name_public: editShowName, gdpr_consent: editGdpr };
+    registration = { ...registration, attends_lecture: editLecture, attends_workshop: editWorkshop, attends_dinner: editDinner, companion_count: editCompanions, companion_under_16: editCompanionUnder16, companion_under_12: editCompanionUnder12 };
+    tablePreferences = [...editTablePrefs];
+
+    // Reload participants list
+    const { data: pubParticipants } = await supabase
+      .from('profiles')
+      .select('full_name, background')
+      .eq('show_name_public', true);
+    if (pubParticipants) participants = pubParticipants;
+
+    editing = false;
+    saving = false;
+  }
+
   async function handleLogout() {
     await supabase.auth.signOut();
     window.location.href = basePath('/');
@@ -95,20 +250,55 @@
     <p class="text-haw-blau-70">Laden...</p>
   </div>
 {:else if !authenticated}
-  <div class="max-w-md mx-auto text-center py-12">
-    <h1 class="font-serif text-3xl font-bold text-haw-blau mb-4">Interner Bereich</h1>
-    <p class="text-haw-blau-70 mb-6">
-      Bitte melden Sie sich an, um den internen Bereich zu sehen.
-    </p>
-    <a
-      href={basePath('/anmeldung')}
-      class="inline-block bg-haw-blau text-white font-bold py-3 px-8 rounded hover:bg-haw-blau-90 transition-colors"
-    >
-      Zur Anmeldung
-    </a>
+  <!-- Login Flow -->
+  <div class="max-w-lg mx-auto py-12">
+    <h1 class="font-serif text-3xl font-bold text-haw-blau mb-4 text-center">Interner Bereich</h1>
+
+    <div class="bg-haw-blau-10 rounded-lg p-6 mb-8">
+      <p class="text-haw-blau-70 text-sm">
+        Bitte klicken Sie auf den Zugangslink in der Ihnen zugesendeten E-Mail, um in den internen Bereich zu gelangen.
+      </p>
+    </div>
+
+    <div class="bg-white border border-haw-blau-10 rounded-lg p-6">
+      <p class="font-bold text-haw-blau mb-1">Keine E-Mail erhalten?</p>
+      <p class="text-sm text-haw-blau-70 mb-4">
+        Geben Sie Ihre E-Mail-Adresse ein, um einen neuen Zugangslink anzufordern.
+      </p>
+
+      <form onsubmit={handleLoginRequest} class="space-y-3">
+        <input
+          type="email"
+          bind:value={loginEmail}
+          required
+          placeholder="ihre.email@beispiel.de"
+          class="w-full border border-haw-blau-30 rounded px-4 py-2.5 text-sm focus:border-haw-blau focus:outline-none"
+        />
+
+        <button
+          type="submit"
+          disabled={loginSending || !loginEmail.trim()}
+          class="w-full bg-haw-blau text-white font-bold py-3 px-8 rounded hover:bg-haw-blau-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+        >
+          {loginSending ? 'Wird geprüft...' : 'Zugangslink anfordern'}
+        </button>
+      </form>
+
+      {#if loginMessage}
+        <div class="mt-4 bg-haw-hellblau/20 text-haw-blau rounded p-3 text-sm">
+          {loginMessage}
+        </div>
+      {/if}
+
+      {#if loginError}
+        <div class="mt-4 bg-red-50 text-red-700 rounded p-3 text-sm">
+          {@html loginError}
+        </div>
+      {/if}
+    </div>
   </div>
 {:else}
-  <!-- Header -->
+  <!-- Authenticated: Internal Area -->
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
     <div>
       <h1 class="font-serif text-3xl font-bold text-haw-blau">Interner Bereich</h1>
@@ -150,33 +340,146 @@
       <!-- Own Registration -->
       {#if registration}
         <div class="bg-white border border-haw-blau-10 rounded-lg p-6">
-          <h2 class="font-bold text-haw-blau text-lg mb-4">Ihre Anmeldung</h2>
-          <div class="grid grid-cols-2 gap-3 text-sm">
-            <div>
-              <p class="text-haw-blau-50">Vorträge</p>
-              <p class="font-bold">{registration.attends_lecture ? 'Ja' : 'Nein'}</p>
-            </div>
-            <div>
-              <p class="text-haw-blau-50">Workshop</p>
-              <p class="font-bold">{registration.attends_workshop ? 'Ja' : 'Nein'}</p>
-            </div>
-            <div>
-              <p class="text-haw-blau-50">Abendprogramm</p>
-              <p class="font-bold">{registration.attends_dinner ? 'Ja' : 'Nein'}</p>
-            </div>
-            <div>
-              <p class="text-haw-blau-50">Workshoptisch</p>
-              <p class="font-bold">
-                {registration.workshop_tables
-                  ? `Tisch ${registration.workshop_tables.number}: ${registration.workshop_tables.title}`
-                  : 'Nicht gewählt'}
-              </p>
-            </div>
-            <div>
-              <p class="text-haw-blau-50">Begleitung</p>
-              <p class="font-bold">{registration.companion_count} Person(en)</p>
-            </div>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="font-bold text-haw-blau text-lg">Ihre Anmeldung</h2>
+            {#if !editing}
+              <button
+                onclick={startEditing}
+                class="text-sm text-haw-blau-50 hover:text-haw-blau cursor-pointer"
+              >Bearbeiten</button>
+            {/if}
           </div>
+
+          {#if editing}
+            <!-- Edit Form -->
+            <div class="space-y-5">
+              <div>
+                <label class="block text-sm font-bold text-haw-blau mb-1">Fachlicher Hintergrund</label>
+                <input
+                  type="text"
+                  bind:value={editBackground}
+                  placeholder="z.B. Bausektor, Wirtschaft, Landwirtschaft, Informatik, ..."
+                  class="w-full border border-haw-blau-30 rounded px-3 py-2 text-sm focus:border-haw-blau focus:outline-none"
+                />
+              </div>
+
+              <fieldset class="space-y-2">
+                <legend class="text-sm font-bold text-haw-blau">Teilnahme an</legend>
+                <label class="flex items-center gap-3 cursor-pointer text-sm">
+                  <input type="checkbox" bind:checked={editLecture} class="w-4 h-4 accent-haw-blau" />
+                  <span>Vorträge & Antrittsvorlesung (15:00 – 16:45)</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer text-sm">
+                  <input type="checkbox" bind:checked={editWorkshop} class="w-4 h-4 accent-haw-blau" />
+                  <span>Workshop (17:15 – 18:30)</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer text-sm">
+                  <input type="checkbox" bind:checked={editDinner} class="w-4 h-4 accent-haw-blau" />
+                  <span>Abendprogramm mit musikalischer Begleitung (ab 19:00)</span>
+                </label>
+              </fieldset>
+
+              {#if editWorkshop}
+                <fieldset>
+                  <legend class="text-sm font-bold text-haw-blau mb-2">Wunsch-Workshoptische (Mehrfachauswahl)</legend>
+                  <div class="flex flex-wrap gap-2">
+                    {#each tables as table}
+                      <button
+                        type="button"
+                        onclick={() => toggleTablePref(table.id)}
+                        class="text-xs px-3 py-1.5 rounded-full cursor-pointer transition-colors
+                          {editTablePrefs.includes(table.id)
+                            ? 'bg-haw-blau text-white'
+                            : 'bg-haw-blau-10 text-haw-blau-50 hover:bg-haw-blau-30 hover:text-haw-blau'}"
+                      >T{table.number}: {table.title}</button>
+                    {/each}
+                  </div>
+                </fieldset>
+              {/if}
+
+              <fieldset class="space-y-2">
+                <legend class="text-sm font-bold text-haw-blau">Begleitung</legend>
+                <div class="flex items-center gap-3">
+                  <label class="text-sm">Anzahl Begleitpersonen:</label>
+                  <input type="number" min="0" max="5" bind:value={editCompanions}
+                    class="w-20 border border-haw-blau-30 rounded px-2 py-1 text-sm focus:border-haw-blau focus:outline-none" />
+                </div>
+                {#if editCompanions > 0}
+                  <label class="flex items-center gap-3 cursor-pointer text-sm">
+                    <input type="checkbox" bind:checked={editCompanionUnder16} class="w-4 h-4 accent-haw-blau" />
+                    <span>Begleitung unter 16 Jahren dabei</span>
+                  </label>
+                  <label class="flex items-center gap-3 cursor-pointer text-sm">
+                    <input type="checkbox" bind:checked={editCompanionUnder12} class="w-4 h-4 accent-haw-blau" />
+                    <span>Begleitung unter 12 Jahren dabei</span>
+                  </label>
+                {/if}
+              </fieldset>
+
+              <fieldset class="space-y-2">
+                <legend class="text-sm font-bold text-haw-blau">Datenschutz</legend>
+                <label class="flex items-start gap-3 cursor-pointer text-sm">
+                  <input type="checkbox" bind:checked={editGdpr} class="w-4 h-4 mt-0.5 accent-haw-blau" />
+                  <span>Ich stimme der Verarbeitung meiner Daten zum Zweck der Veranstaltungsorganisation zu.</span>
+                </label>
+                <label class="flex items-start gap-3 cursor-pointer text-sm">
+                  <input type="checkbox" bind:checked={editShowName} class="w-4 h-4 mt-0.5 accent-haw-blau" />
+                  <span>Mein Name darf im internen Bereich für andere Teilnehmende sichtbar sein.</span>
+                </label>
+              </fieldset>
+
+              <div class="flex gap-3 pt-2">
+                <button
+                  onclick={saveRegistration}
+                  disabled={saving}
+                  class="bg-haw-blau text-white px-6 py-2 rounded text-sm font-bold cursor-pointer hover:bg-haw-blau-90 disabled:opacity-50"
+                >{saving ? 'Speichern...' : 'Speichern'}</button>
+                <button
+                  onclick={() => editing = false}
+                  class="text-sm text-haw-blau-50 px-4 py-2 cursor-pointer hover:text-haw-blau"
+                >Abbrechen</button>
+              </div>
+            </div>
+          {:else}
+            <!-- Read-only view -->
+            <div class="grid grid-cols-2 gap-3 text-sm">
+              {#if profile?.background}
+                <div class="col-span-2">
+                  <p class="text-haw-blau-50">Fachlicher Hintergrund</p>
+                  <p class="font-bold">{profile.background}</p>
+                </div>
+              {/if}
+              <div>
+                <p class="text-haw-blau-50">Vorträge</p>
+                <p class="font-bold">{registration.attends_lecture ? 'Ja' : 'Nein'}</p>
+              </div>
+              <div>
+                <p class="text-haw-blau-50">Workshop</p>
+                <p class="font-bold">{registration.attends_workshop ? 'Ja' : 'Nein'}</p>
+              </div>
+              <div>
+                <p class="text-haw-blau-50">Abendprogramm</p>
+                <p class="font-bold">{registration.attends_dinner ? 'Ja' : 'Nein'}</p>
+              </div>
+              <div>
+                <p class="text-haw-blau-50">Workshoptische</p>
+                <p class="font-bold">
+                  {#if tablePreferences.length > 0}
+                    {tablePreferences.map(tp => {
+                      const t = tables.find(t => t.id === tp);
+                      return t ? `T${t.number}` : '';
+                    }).filter(Boolean).join(', ')}
+                  {:else}
+                    Nicht gewählt
+                  {/if}
+                </p>
+              </div>
+              <div>
+                <p class="text-haw-blau-50">Begleitung</p>
+                <p class="font-bold">{registration.companion_count} Person(en)</p>
+              </div>
+            </div>
+          {/if}
         </div>
       {/if}
 
@@ -257,7 +560,7 @@
           <div class="space-y-2">
             {#each tables as table}
               <a
-                href={basePath(`/tisch/${table.id}`)}
+                href={basePath(`/tisch/${table.number}`)}
                 class="block p-3 rounded border border-haw-blau-10 hover:bg-haw-blau-10 transition-colors"
               >
                 <p class="font-bold text-sm text-haw-blau">Tisch {table.number}: {table.title}</p>

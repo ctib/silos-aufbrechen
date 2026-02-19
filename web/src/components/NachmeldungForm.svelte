@@ -4,6 +4,7 @@
 
   let name = $state('');
   let email = $state('');
+  let comment = $state('');
   let sending = $state(false);
   let sent = $state(false);
   let error = $state('');
@@ -15,16 +16,15 @@
     sending = true;
     error = '';
 
-    // Send magic link with metadata - this creates the user + profile
-    const { error: authError } = await supabase.auth.signInWithOtp({
-      email: email.trim(),
-      options: {
-        data: { full_name: name.trim() },
-        emailRedirectTo: window.location.origin + basePath('/auth/callback'),
-      },
-    });
+    const { error: dbError } = await supabase
+      .from('nachmeldung_requests')
+      .insert({
+        name: name.trim(),
+        email: email.trim(),
+        comment: comment.trim() || null,
+      });
 
-    if (authError) {
+    if (dbError) {
       error = 'Fehler beim Senden. Bitte versuchen Sie es erneut oder kontaktieren Sie uns direkt.';
       sending = false;
       return;
@@ -40,13 +40,13 @@
     <div class="w-16 h-16 bg-haw-hellblau/20 rounded-full flex items-center justify-center mx-auto mb-4">
       <span class="text-2xl text-haw-blau">&#10003;</span>
     </div>
-    <h1 class="font-serif text-3xl font-bold text-haw-blau mb-4">Anfrage gesendet</h1>
+    <h1 class="font-serif text-3xl font-bold text-haw-blau mb-4">Anfrage eingegangen</h1>
     <p class="text-haw-blau-70 mb-2">
-      Wir haben Ihnen eine E-Mail an <strong>{email}</strong> geschickt.
+      Vielen Dank für Ihr Interesse!
     </p>
     <p class="text-haw-blau-70 mb-6">
-      Klicken Sie auf den Link in der E-Mail, um Ihre Nachmeldung abzuschließen.
-      Das Orga-Team wird sich bei Ihnen melden, um die Teilnahme zu bestätigen.
+      Ihre Nachmeldung wird vom Orga-Team geprüft. Sie erhalten eine Rückmeldung
+      per E-Mail an <strong>{email}</strong>, sobald über Ihre Anfrage entschieden wurde.
     </p>
     <a href={basePath('/')} class="text-sm text-haw-blau-50 hover:text-haw-blau transition-colors">
       Zurück zur Startseite
@@ -84,6 +84,16 @@
         class="w-full border border-haw-blau-30 rounded px-4 py-2.5 text-sm focus:border-haw-blau focus:outline-none"
         placeholder="ihre.email@beispiel.de"
       />
+    </div>
+    <div>
+      <label for="comment" class="block text-sm font-bold text-haw-blau mb-1">Nachricht / Kommentar</label>
+      <textarea
+        id="comment"
+        bind:value={comment}
+        rows="4"
+        class="w-full border border-haw-blau-30 rounded px-4 py-2.5 text-sm focus:border-haw-blau focus:outline-none resize-y"
+        placeholder="Warum möchten Sie teilnehmen? Gibt es etwas, das wir wissen sollten?"
+      ></textarea>
     </div>
 
     {#if error}
