@@ -16,7 +16,7 @@ BEGIN
 
   SELECT net.http_post(
     url := 'https://api.resend.com/emails',
-    headers := '{"Authorization": "Bearer re_ZhffjaYM_JEyrp4f3GNaKgsKsUauhbn8m", "Content-Type": "application/json"}'::jsonb,
+    headers := '{"Authorization": "XXX", "Content-Type": "application/json"}'::jsonb,
     body := jsonb_build_object(
       'from', 'Silos aufbrechen <onboarding@resend.dev>',
       'to', 'christoph.goebel@haw-kiel.de',
