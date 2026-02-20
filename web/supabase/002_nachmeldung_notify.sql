@@ -6,7 +6,12 @@ RETURNS TRIGGER AS $fn$
 DECLARE
   request_id bigint;
   email_body text;
+  resend_key text;
 BEGIN
+  -- API key from Supabase Vault (never hardcode!)
+  SELECT decrypted_secret INTO resend_key
+    FROM vault.decrypted_secrets WHERE name = 'resend_api_key';
+
   email_body := '<h2>Neue Nachmeldung eingegangen</h2>'
     || '<p><strong>Name:</strong> ' || NEW.name || '</p>'
     || '<p><strong>E-Mail:</strong> ' || NEW.email || '</p>'
@@ -16,9 +21,8 @@ BEGIN
 
   SELECT net.http_post(
     url := 'https://api.resend.com/emails',
-    -- IMPORTANT: API key must be set via: ALTER DATABASE postgres SET app.resend_api_key = 'your-key';
     headers := jsonb_build_object(
-      'Authorization', 'Bearer ' || current_setting('app.resend_api_key'),
+      'Authorization', 'Bearer ' || resend_key,
       'Content-Type', 'application/json'
     ),
     body := jsonb_build_object(
