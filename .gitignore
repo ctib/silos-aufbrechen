@@ -25,6 +25,9 @@ Fonts/
 Anmeldungen/
 Archiv/
 
+# SSL certificates
+**/SSLCertificate/
+
 # Editor
 .vscode/
 .idea/

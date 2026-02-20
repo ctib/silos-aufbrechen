@@ -16,7 +16,11 @@ BEGIN
 
   SELECT net.http_post(
     url := 'https://api.resend.com/emails',
-    headers := '{"Authorization": "XXX", "Content-Type": "application/json"}'::jsonb,
+    -- IMPORTANT: API key must be set via: ALTER DATABASE postgres SET app.resend_api_key = 'your-key';
+    headers := jsonb_build_object(
+      'Authorization', 'Bearer ' || current_setting('app.resend_api_key'),
+      'Content-Type', 'application/json'
+    ),
     body := jsonb_build_object(
       'from', 'Silos aufbrechen <onboarding@resend.dev>',
       'to', 'christoph.goebel@haw-kiel.de',
