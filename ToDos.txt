@@ -22,6 +22,19 @@
 [x] Magic Link Gültigkeit auf bis zum 8. Mai 2026 gesetzt.
 [x] Supabase-Anmeldungen als CSV in Anmeldungen/supabase-export.csv exportiert.
 
+- GitHub repository auf "Private" gestellt, da GitGuardian gemeldet hat: 
+	"GitGuardian has detected the following Resend API Key exposed within your GitHub account. 
+	Details
+	Secret type: Resend API Key
+	Repository: ctib/silos-aufbrechen
+	Pushed date: February 19th 2026, 20:09:44 UTC"
+- entsprechend in der SQL-Datei den alten Resend Key entfernt und bei Resend gelöscht (Key war noch in Git-History sichtbar).
+- neuer Resend API Key wurde erstellt (NICHT im Repo speichern! Nur in .env und Supabase Vault/SQL)
+- Sind auch alle Anmeldungen und Emailadressen sicher verwahrt?
+- Tisch 6 einfügen: Freies Thema! Sie haben keinen passenden Tisch gefunden? Bringen Sie Ihr eigenes Thema mit und diskutieren Sie es mit anderen.
+- https://ctib.github.io/silos-aufbrechen/anmeldung/ ist noch verfügbar
+
+
 - Meike, Tammo und Christoph Orga-Rollen in Supabase setzen (nach Login)
 - Resend: onboarding@resend.dev sendet nur an verifizierte Empfänger. Eigene Domain verifizieren für Produktivbetrieb.
 - MS-Forms-Import-Script (Anmeldungen.xlsx → Supabase)
