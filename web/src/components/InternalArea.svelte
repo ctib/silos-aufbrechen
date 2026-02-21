@@ -117,14 +117,11 @@
 
     const email = loginEmail.trim().toLowerCase();
 
-    // Check if email exists in profiles
-    const { data: existingProfile } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('email', email)
-      .maybeSingle();
+    // Check if email exists in profiles (via RPC, bypasses RLS)
+    const { data: isRegistered } = await supabase
+      .rpc('check_email_registered', { check_email: email });
 
-    if (existingProfile) {
+    if (isRegistered) {
       // Email is registered – send magic link
       const { error } = await supabase.auth.signInWithOtp({
         email,
