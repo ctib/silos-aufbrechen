@@ -437,16 +437,27 @@ SilosAufbrechen/
 - [x] Phasen-Override nur fuer Orga-Rolle (CountdownBanner prueft Auth + Rolle)
 - [x] Nachmeldung-Email-Trigger verbessert (Fehlerbehandlung, Logging, Guard fuer fehlenden API-Key)
 - [x] Tisch 6 "Freies Thema" hinzugefuegt (Migration: `003_add_tisch6.sql`)
-- [ ] Orga-Rollen setzen (Christoph, Meike, Tammo -> 'orga' nach Login)
+- [x] Orga-Rollen gesetzt (Christoph, Meike, Tammo -> 'orga' in Supabase)
+- [x] SQL-Migrationen ausgefuehrt (003_add_tisch6, 002_nachmeldung_notify, import.sql)
+- [x] Christoph.goebel@haw-kiel.de in DB + Orga-Rolle
+- [x] Anmeldungen/Emails sicher verwahrt (.env gitignored, Anmeldungen/ gitignored, Repo privat)
 - [ ] Admin-Rolle setzen (Andreas Borchardt -> 'admin')
 - [ ] Resend: Eigene Domain verifizieren (aktuell nur onboarding@resend.dev, begrenzt auf verifizierte Empfaenger)
 - [ ] Domain registrieren und konfigurieren
-- [ ] PDF-Export der Tisch-Protokolle
+- [ ] PDF-Export der Tisch-Protokolle (nicht eilig, erst kurz vor/nach Veranstaltung)
 - [ ] Supabase Auth-Email-Templates auf Deutsch anpassen
 
 ---
 
 ## Wichtige Hinweise fuer nachfolgende Agents
+
+### WICHTIG: ToDos.txt pflegen
+- **`ToDos.txt` ist das zentrale Arbeitsdokument** des Auftraggebers. Nach JEDER erledigten Aufgabe
+  muss der entsprechende Punkt mit `[x]` abgehakt werden. Das gilt fuer Code-Aenderungen, Supabase-Aktionen,
+  Konfigurationsschritte und alle anderen Arbeitsschritte.
+- Neue Aufgaben werden als `- Beschreibung` (ohne Checkbox) am Ende angefuegt.
+- Auch die README.md (insbesondere "Naechste Schritte") muss bei Aenderungen aktualisiert werden.
+- Bei Session-Ende oder vor einem Commit: Immer ToDos.txt und README pruefen und aktualisieren.
 
 ### Kontext
 - Dieses Projekt ist eine Event-Webseite fuer eine Antrittsvorlesung an der HAW Kiel
