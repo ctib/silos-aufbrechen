@@ -39,8 +39,10 @@
 [x] Orga-Rollen in Supabase gesetzt: Christoph (goebelchristoph@icloud.com + christoph.goebel@haw-kiel.de), Meike, Tammo.
 [x] Christoph.goebel@haw-kiel.de ist in der Datenbank vorhanden und hat Orga-Rolle.
 [x] Anmeldungen und Emailadressen sicher verwahrt: .env gitignored, Anmeldungen/ gitignored, Repo privat, API-Key nur in Supabase Vault.
-[x] https://ctib.github.io/silos-aufbrechen/anmeldung/ ist verfügbar – kein Problem, da die Seite phasenabhängig automatisch auf Nachmeldung umschaltet (nach 24.04.).
+[x] /anmeldung-Seite entfernt (war Kopie der MS-Forms-Anmeldung, nicht mehr benötigt). anmeldung.astro + RegistrationForm.svelte gelöscht. Links in auth/callback.astro auf /intern umgeleitet.
+[x] Login-Bug im internen Bereich behoben: Email-Prüfung schlug fehl wegen RLS-Policies (unauthentifizierter Nutzer konnte profiles-Tabelle nicht lesen). Fix: RPC-Funktion check_email_registered mit SECURITY DEFINER (004_check_email_rpc.sql). Muss noch auf Supabase ausgeführt werden!
 
+- 004_check_email_rpc.sql auf Supabase ausführen (WICHTIG für Login im internen Bereich!)
 - Resend: onboarding@resend.dev sendet nur an verifizierte Empfänger. Eigene Domain verifizieren für Produktivbetrieb.
 - PDF-Export der Tisch-Protokolle (nicht eilig, erst kurz vor/nach der Veranstaltung)
 - Eigene Domain registrieren und konfigurieren
