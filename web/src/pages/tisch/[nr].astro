@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import TableView from '../../components/TableView.svelte';
 
 export function getStaticPaths() {
-  return [1, 2, 3, 4, 5].map(nr => ({ params: { nr: String(nr) } }));
+  return [1, 2, 3, 4, 5, 6].map(nr => ({ params: { nr: String(nr) } }));
 }
 
 const { nr } = Astro.params;

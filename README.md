@@ -33,13 +33,14 @@ Stadtgesellschaft an einem Tisch.
 | 18:30         | Vorstellung der Ergebnisse und Abschlussworte |
 | Ab 19:00      | Gemeinsamer Ausklang mit musikalischer Begleitung |
 
-### Workshop-Tische (5 Stueck, Themen ggf. nach 24.04. noch variabel)
+### Workshop-Tische (6 Stueck, Themen ggf. nach 24.04. noch variabel)
 
 1. Nahrungsmittelproduktion in der Stadt: DIY-Kit
 2. Umweltbildung: praktisches Wissen fuer Schuelerinnen und Schueler (Jugendbildung)
 3. Sensorik plus Datenauswertung: Mehrwert der smarten City (Citizen Science)
 4. Gerechten Staedtebau foerdern: nachhaltige Stadtentwicklung als Grundlage
 5. Gebaeudetechnik aufwerten: Ueberfuehrung des "Stand der Technik" in den Gebaeudebestand
+6. Freies Thema: Eigenes Thema mitbringen und mit anderen diskutieren
 
 ### IDW (Interdisziplinaere Wochen)
 
@@ -298,7 +299,7 @@ table_notes (
 - [x] CountdownBanner schaltet nach 24.04. automatisch auf "Verbindlich anmelden" -> /anmeldung um
 - [x] FB-Labels: Meike -> "FB Wirtschaft", Christoph -> "FB Medien/Bauwesen", Tammo -> "FB Agrarwirtschaft"
 - [x] Phasen-Zeitleiste ueber dem Countdown-Banner (Anmeldephase / Vorbereitungsphase / Durchfuehrungsphase)
-- [x] Phase-Override: Per Klick umschaltbar (spaeter nur fuer Orga), mit "Vorschau"-Hinweis und Reset-Button
+- [x] Phase-Override: Per Klick umschaltbar (nur fuer Orga-Rolle), mit "Vorschau"-Hinweis und Reset-Button
 - [x] Phasenabhaengiges UI: Banner-Buttons und Countdown passen sich der aktiven Phase an
 - [x] Schriften finalisiert: Verdana + Georgia (ITC Officina entfaellt)
 - [x] Header-Navigation: "Start" + "Interner Bereich" Links oben links, Logo oben rechts
@@ -331,10 +332,10 @@ table_notes (
 - [x] Orga-Panel: Nachmeldung-Anfragen Tab (Genehmigen sendet Magic Link, Ablehnen setzt Status)
 - [x] Auth-Checks: Admin sieht nur `/admin`, Orga sieht `/admin` + `/orga`
 - [x] Navigation zwischen Intern/Admin/Orga in allen geschuetzten Bereichen
-- [ ] MS-Forms-Import-Script (Bestandsdaten aus `Anmeldungen/Anmeldungen.xlsx` uebernehmen)
+- [x] MS-Forms-Import-Script (`Anmeldungen/import-msforms.js`) erstellt, generiert SQL fuer Supabase SQL-Editor
 
 ### Phase 4: Workshop-Tools -- ERLEDIGT
-- [x] Etherpad-Funktion pro Tisch (`/tisch/1` bis `/tisch/5`, `TableView.svelte`) mit Supabase Realtime
+- [x] Etherpad-Funktion pro Tisch (`/tisch/1` bis `/tisch/6`, `TableView.svelte`) mit Supabase Realtime
 - [x] 5 strukturierte Abschnitte pro Tisch: Ideensammlung, Voting, Ausformulierung, Action Items, Protokoll
 - [x] Auto-Save (1.5s Debounce) + manuelles Speichern
 - [x] Realtime-Subscription: Aenderungen von anderen werden live angezeigt
@@ -365,6 +366,8 @@ SilosAufbrechen/
   Anmeldungen/                     <-- Anmeldedaten (gitignored)
     Anmeldungen.xlsx               <-- 12 MS-Forms-Anmeldungen
     supabase-export.csv            <-- Supabase-Registrierungen (wird regelmaessig aktualisiert)
+    import-msforms.js              <-- Script: XLSX lesen und SQL generieren
+    import.sql                     <-- Generiertes SQL fuer Supabase SQL-Editor
   Fonts/                           <-- (entfaellt, Officina kommt nicht)
   .github/
     workflows/
@@ -377,7 +380,8 @@ SilosAufbrechen/
     package.json
     supabase/
       001_initial_schema.sql       <-- Komplettes DB-Schema (auf Supabase ausgefuehrt)
-      002_nachmeldung_notify.sql   <-- Email-Trigger fuer Nachmeldungen (pg_net + Resend)
+      002_nachmeldung_notify.sql   <-- Email-Trigger fuer Nachmeldungen (pg_net + Resend, mit Fehlerbehandlung)
+      003_add_tisch6.sql           <-- Migration: Tisch 6 "Freies Thema" + Note-Sections
     src/
       components/
         AdminPanel.svelte          <-- Admin: Forschungscalls CRUD + Tisch-Tagging
@@ -400,7 +404,7 @@ SilosAufbrechen/
         nachmeldung.astro          <-- Nachmeldungs-Seite (nach Anmeldeschluss)
         orga.astro                 <-- Orga-Panel (Teilnehmerverwaltung)
         tisch/
-          [nr].astro               <-- Dynamische Route: /tisch/1 bis /tisch/5
+          [nr].astro               <-- Dynamische Route: /tisch/1 bis /tisch/6
         auth/
           callback.astro           <-- Magic Link Callback (Profil + Registration)
       styles/
@@ -415,21 +419,27 @@ SilosAufbrechen/
 
 ## Naechste Schritte (beim Fortsetzen der Session)
 
-### Erledigt (Stand 2026-02-19)
-- [x] SQL-Schema auf Supabase ausgefuehrt (9 Tabellen, 5 Tische, 25 Notes geseeded)
+### Erledigt (Stand 2026-02-21)
+- [x] SQL-Schema auf Supabase ausgefuehrt (9 Tabellen, 6 Tische, 30 Notes geseeded)
 - [x] Magic Links konfiguriert (Site URL, Redirect URLs, Gueltigkeit bis 8. Mai)
 - [x] Deployment verifiziert (GitHub Actions laeuft, Seite live mit noindex/robots.txt)
 - [x] Nachmeldung-Workflow: Anfrage -> DB -> Email-Benachrichtigung -> Orga genehmigt -> Magic Link
 - [x] Interner Bereich: Login-Flow mit Email-Pruefung, Anmeldung bearbeitbar
 - [x] Test-Magic-Link an christoph.goebel@haw-kiel.de gesendet
 - [x] Supabase-Export in `Anmeldungen/supabase-export.csv`
+- [x] Tisch 6 "Freies Thema" hinzugefuegt (Webseite + DB-Migration `003_add_tisch6.sql`)
+- [x] Nachmeldung-Email-Trigger verbessert (Fehlerbehandlung, Logging, API-Key-Guard)
+- [x] MS-Forms-Import-Script erstellt (`Anmeldungen/import-msforms.js` -> `import.sql`)
+- [x] Phasen-Override nur fuer Orga-Rolle (Auth-Check in CountdownBanner.svelte)
 
 ### Offen
+- [x] MS-Forms-Import-Script erstellt (`Anmeldungen/import-msforms.js`, generiert `import.sql`)
+- [x] Phasen-Override nur fuer Orga-Rolle (CountdownBanner prueft Auth + Rolle)
+- [x] Nachmeldung-Email-Trigger verbessert (Fehlerbehandlung, Logging, Guard fuer fehlenden API-Key)
+- [x] Tisch 6 "Freies Thema" hinzugefuegt (Migration: `003_add_tisch6.sql`)
 - [ ] Orga-Rollen setzen (Christoph, Meike, Tammo -> 'orga' nach Login)
 - [ ] Admin-Rolle setzen (Andreas Borchardt -> 'admin')
 - [ ] Resend: Eigene Domain verifizieren (aktuell nur onboarding@resend.dev, begrenzt auf verifizierte Empfaenger)
-- [ ] MS-Forms-Import-Script (Anmeldungen.xlsx -> Supabase)
-- [ ] Phasen-Override nur fuer Orga-Rolle freischalten
 - [ ] Domain registrieren und konfigurieren
 - [ ] PDF-Export der Tisch-Protokolle
 - [ ] Supabase Auth-Email-Templates auf Deutsch anpassen
@@ -449,7 +459,7 @@ SilosAufbrechen/
 - **Architektur:** Leichtgewichtig (statische Seite + Supabase Backend-as-a-Service)
 - **Auth:** Magic Links per E-Mail (kein Passwort), Supabase `signInWithOtp()`
 - **API Key:** Publishable Key (neues Supabase-Format, nicht legacy anon key)
-- **Tische:** 5 Stueck, Teilnehmer waehlen selbst (Anzahl/Themen nach 24.04. ggf. variabel)
+- **Tische:** 6 Stueck (inkl. "Freies Thema"), Teilnehmer waehlen selbst (Anzahl/Themen nach 24.04. ggf. variabel)
 - **Schriften:** Verdana (sans) + Georgia (serif), ITC Officina entfaellt
 - **Supabase Projekt-ID:** `cbybfmnbojklqbkmuwto`
 - **Erwartete Teilnehmer:** 70-100 Personen + bis zu 15 IDW-Studis

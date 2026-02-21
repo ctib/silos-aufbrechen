@@ -66,7 +66,8 @@ insert into workshop_tables (number, title, description) values
   (2, 'Umweltbildung', 'Praktisches Wissen für Schülerinnen und Schüler vermittelt (Jugendbildung)'),
   (3, 'Sensorik & Datenauswertung', 'Mehrwert der smarten City – Citizen Science möglich'),
   (4, 'Gerechten Städtebau fördern', 'Nachhaltige Stadtentwicklung als Grundlage'),
-  (5, 'Gebäudetechnik aufwerten', 'Überführung des „Stand der Technik" in den Gebäudebestand');
+  (5, 'Gebäudetechnik aufwerten', 'Überführung des „Stand der Technik" in den Gebäudebestand'),
+  (6, 'Freies Thema', 'Sie haben keinen passenden Tisch gefunden? Bringen Sie Ihr eigenes Thema mit und diskutieren Sie es mit anderen.');
 
 -- --------------------------------------------------------
 -- Registrations

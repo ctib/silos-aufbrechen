@@ -22,22 +22,24 @@
 [x] Magic Link Gültigkeit auf bis zum 8. Mai 2026 gesetzt.
 [x] Supabase-Anmeldungen als CSV in Anmeldungen/supabase-export.csv exportiert.
 
-- GitHub repository auf "Private" gestellt, da GitGuardian gemeldet hat: 
-	"GitGuardian has detected the following Resend API Key exposed within your GitHub account. 
+[x] GitHub repository auf "Private" gestellt, da GitGuardian gemeldet hat:
+	"GitGuardian has detected the following Resend API Key exposed within your GitHub account.
 	Details
 	Secret type: Resend API Key
 	Repository: ctib/silos-aufbrechen
 	Pushed date: February 19th 2026, 20:09:44 UTC"
-- entsprechend in der SQL-Datei den alten Resend Key entfernt und bei Resend gelöscht (Key war noch in Git-History sichtbar).
-- neuer Resend API Key wurde erstellt (NICHT im Repo speichern! Nur in .env und Supabase Vault/SQL)
+[x] entsprechend in der SQL-Datei den alten Resend Key entfernt und bei Resend gelöscht (Key war noch in Git-History sichtbar).
+[x] neuer Resend API Key wurde erstellt (NICHT im Repo speichern! Nur in .env und Supabase Vault/SQL)
+
+[x] Tisch 6 einfügen: "Freies Thema! Sie haben keinen passenden Tisch gefunden? Bringen Sie Ihr eigenes Thema mit und diskutieren Sie es mit anderen." Eingefügt in: index.astro, [nr].astro, RegistrationForm.svelte, 001_initial_schema.sql. Migration: 003_add_tisch6.sql.
+[x] Nachmeldung-Email-Trigger verbessert: Fehlerbehandlung, Logging, Guard für fehlenden API-Key (002_nachmeldung_notify.sql). Hauptursache für fehlende Emails: Resend onboarding@resend.dev kann nur an verifizierte Empfänger senden.
+[x] MS-Forms-Import-Script erstellt (Anmeldungen/import-msforms.js). Liest Anmeldungen.xlsx und generiert SQL (Anmeldungen/import.sql) für den Supabase SQL-Editor. 12 Einträge.
+[x] Phasen-Override nur für Orga-Rolle: Phase-Toggle in CountdownBanner.svelte nur noch für eingeloggte Nutzer mit role='orga' aktiv. Für alle anderen sind die Phase-Buttons nur noch Anzeige.
+
 - Sind auch alle Anmeldungen und Emailadressen sicher verwahrt?
-- Tisch 6 einfügen: Freies Thema! Sie haben keinen passenden Tisch gefunden? Bringen Sie Ihr eigenes Thema mit und diskutieren Sie es mit anderen.
 - https://ctib.github.io/silos-aufbrechen/anmeldung/ ist noch verfügbar
-
-
+- interner Bereich: kein Link an Christoph.goebel@haw-kiel.de geschickt, Email auch nicht in Datenbank vorhanden
 - Meike, Tammo und Christoph Orga-Rollen in Supabase setzen (nach Login)
 - Resend: onboarding@resend.dev sendet nur an verifizierte Empfänger. Eigene Domain verifizieren für Produktivbetrieb.
-- MS-Forms-Import-Script (Anmeldungen.xlsx → Supabase)
 - PDF-Export der Tisch-Protokolle
-- Phasen-Override nur für Orga-Rolle
 - Eigene Domain registrieren und konfigurieren

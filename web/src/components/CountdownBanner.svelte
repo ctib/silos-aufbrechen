@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { basePath } from '../lib/paths';
+  import { supabase } from '../lib/supabase';
 
   const FORMS_URL = 'https://forms.office.com/pages/responsepage.aspx?id=SlFZYNubNECdLWtc9Zdpa95yTsFJlbBDntdDxMV4KBtUNjdTUzM4NVpXSkc5Tk9OM1JEUlJNNFNPMi4u&route=shorturl';
   const REG_DEADLINE = new Date('2026-04-24T23:59:59');
@@ -17,6 +18,7 @@
   let now = $state(new Date());
   let interval: ReturnType<typeof setInterval>;
   let phaseOverride = $state<string | null>(null);
+  let isOrga = $state(false);
 
   // Computed current phase based on date
   const autoPhase = $derived(
@@ -27,6 +29,7 @@
   const activePhase = $derived(phaseOverride ?? autoPhase);
 
   function togglePhase(id: string) {
+    if (!isOrga) return;
     phaseOverride = phaseOverride === id ? null : id;
   }
 
@@ -43,8 +46,23 @@
   const eventMinutes = $derived(Math.floor((eventDiff % (1000 * 60 * 60)) / (1000 * 60)));
   const eventSeconds = $derived(Math.floor((eventDiff % (1000 * 60)) / 1000));
 
-  onMount(() => {
+  onMount(async () => {
     interval = setInterval(() => { now = new Date(); }, 1000);
+
+    // Check if logged-in user has orga role
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+        isOrga = profile?.role === 'orga';
+      }
+    } catch {
+      // Not logged in or no profile – phase override stays disabled
+    }
   });
 
   onDestroy(() => {
@@ -97,10 +115,14 @@
         {/if}
         <button
           onclick={() => togglePhase(phase.id)}
-          class="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-full text-xs sm:text-sm transition-all cursor-pointer whitespace-nowrap
+          disabled={!isOrga}
+          class="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-full text-xs sm:text-sm transition-all whitespace-nowrap
+            {isOrga ? 'cursor-pointer' : 'cursor-default'}
             {activePhase === phase.id
               ? 'bg-haw-blau text-white font-bold shadow-sm'
-              : 'bg-haw-blau-10 text-haw-blau-50 hover:bg-haw-blau-30 hover:text-haw-blau'}"
+              : isOrga
+                ? 'bg-haw-blau-10 text-haw-blau-50 hover:bg-haw-blau-30 hover:text-haw-blau'
+                : 'bg-haw-blau-10 text-haw-blau-50'}"
         >
           <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0
             {activePhase === phase.id ? 'bg-white text-haw-blau' : 'bg-haw-blau-30 text-white'}"
