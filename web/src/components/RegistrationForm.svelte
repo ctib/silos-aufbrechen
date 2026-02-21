@@ -27,6 +27,7 @@
     { id: '3', number: 3, title: 'Sensorik & Datenauswertung' },
     { id: '4', number: 4, title: 'Gerechten Städtebau fördern' },
     { id: '5', number: 5, title: 'Gebäudetechnik aufwerten' },
+    { id: '6', number: 6, title: 'Freies Thema' },
   ]);
 
   // Load tables from Supabase on mount
