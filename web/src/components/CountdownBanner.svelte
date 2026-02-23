@@ -32,7 +32,7 @@
   // Registration countdown (days only)
   const regDiff = $derived(REG_DEADLINE.getTime() - now.getTime());
   const regExpired = $derived(activePhase !== 'anmeldung');
-  const regDays = $derived(Math.ceil(regDiff / (1000 * 60 * 60 * 24)));
+  const regDays = $derived(Math.floor(regDiff / (1000 * 60 * 60 * 24)));
 
   // Event countdown (full precision)
   const eventDiff = $derived(EVENT_DATE.getTime() - now.getTime());

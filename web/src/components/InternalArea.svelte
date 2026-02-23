@@ -146,8 +146,13 @@
       });
 
       if (error) {
-        loginError = 'Fehler beim Senden. Bitte versuchen Sie es später erneut.';
+        if (error.message?.includes('rate') || error.message?.includes('limit') || error.status === 429) {
+          loginError = 'Bitte warten Sie eine Minute, bevor Sie einen neuen Zugangslink anfordern.';
+        } else {
+          loginError = 'Fehler beim Senden: ' + (error.message || 'Bitte versuchen Sie es später erneut.');
+        }
         loginErrorType = 'generic';
+        console.error('[Magic Link]', error.message, error);
       } else {
         loginMessage = `Ein neuer Zugangslink wurde an ${email} gesendet. Bitte prüfen Sie Ihr Postfach.`;
       }
