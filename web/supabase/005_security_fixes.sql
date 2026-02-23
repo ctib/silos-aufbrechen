@@ -84,7 +84,7 @@ BEGIN
          ELSE ''
        END
     || '<p><strong>Zeitpunkt:</strong> ' || to_char(NEW.created_at, 'DD.MM.YYYY HH24:MI') || '</p>'
-    || '<hr><p>Bitte im <a href="https://ctib.github.io/silos-aufbrechen/orga">Orga-Panel</a> genehmigen oder ablehnen.</p>';
+    || '<hr><p>Bitte im <a href="https://zukunftbauen.org/orga">Orga-Panel</a> genehmigen oder ablehnen.</p>';
 
   PERFORM net.http_post(
     url := 'https://api.resend.com/emails',
@@ -93,7 +93,7 @@ BEGIN
       'Content-Type', 'application/json'
     ),
     body := jsonb_build_object(
-      'from', 'Silos aufbrechen <onboarding@resend.dev>',
+      'from', 'Zukunft bauen <noreply@zukunftbauen.org>',
       'to', 'christoph.goebel@haw-kiel.de',
       'subject', 'Neue Nachmeldung: ' || escape_html(NEW.name),
       'html', email_body
