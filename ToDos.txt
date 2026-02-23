@@ -63,8 +63,22 @@
 
 [x] 005_security_fixes.sql auf Supabase SQL-Editor ausgeführt.
 
---- OFFEN ---
-- Resend: onboarding@resend.dev sendet nur an verifizierte Empfänger. Eigene Domain verifizieren für Produktivbetrieb.
+--- OFFEN von Christoph ---
+- Countdown Differenz: 24.04 bis 07.05 = 13 Tage, Countdown zur Anmeldung = 61 Tage, Countdown zur Veranstaltung = 72 Tage, Differenz = 11 Tag. Hier alles richtig?
+- Magic Link kann nur einmal genutzt werden, nach Abmeldung aus Veranstaltungsbereich muss link erneut erzeugt werden.
+- Nach Abmeldung und erneutem Versuch zum Versenden eines Magic Links kommt die Fehlermeldung "Fehler beim Senden. Bitte versuchen Sie es später erneut." 
+- alle Namen schon an die Tische sortieren und auch für andere Teilnehmer einsehbar sein, wenn öffentliche Darstellung ausgewählt wurde. Bei Mehrfachwahl den Namen mit einem zu XX% (je nach Anzahl an gewählten Tischen) versehen.
+- Verwaltungsbereich: Umlautfehler bei Göbel, bei Tischnahmen und auch in den einzelnen Tischbereichen.
+- "Andere Tische" sollten einen kurzen, prägnanten und eindeutigen Titel statt Tisch 1 bis 6 haben.
+- wie werden Studis in die Liste aufgenommen? Einpflegen über claude oder Marker in Teilnehmerliste? ==> TN Liste Anmeldungen.xls um Rollenspalte (Studi / TN / Orga / F&E) ergänzt.
+- aktuelle Dummy Anmeldung.xls als wirkliche TN Liste zum Testen einfügen
+
+--- OFFEN von Claude ---
+[x] Eigene Domain registriert: zukunftbauen.org (Namecheap + Cloudflare DNS)
+[x] Code auf zukunftbauen.org umgestellt: astro.config, CNAME, noindex entfernt, SQL-Trigger aktualisiert
+[x] README aufgeteilt: Docs/architecture.md, Docs/design-system.md, Docs/domain-setup.md
+[x] SQL-Migration 006_domain_switch.sql erstellt (Trigger mit neuer Absenderadresse)
+- Resend: zukunftbauen.org bei Resend verifizieren, dann 006_domain_switch.sql auf Supabase ausfuehren
+- Supabase: Redirect URLs fuer zukunftbauen.org hinzufuegen (Authentication > URL Configuration)
+- GitHub Pages: Custom Domain zukunftbauen.org aktivieren (Settings > Pages)
 - PDF-Export der Tisch-Protokolle (nicht eilig, erst kurz vor/nach der Veranstaltung)
-- Eigene Domain registrieren und konfigurieren
-- README aufteilen und Docs-Ordner erstellen
