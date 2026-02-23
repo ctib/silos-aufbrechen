@@ -40,9 +40,31 @@
 [x] Christoph.goebel@haw-kiel.de ist in der Datenbank vorhanden und hat Orga-Rolle.
 [x] Anmeldungen und Emailadressen sicher verwahrt: .env gitignored, Anmeldungen/ gitignored, Repo privat, API-Key nur in Supabase Vault.
 [x] /anmeldung-Seite entfernt (war Kopie der MS-Forms-Anmeldung, nicht mehr benötigt). anmeldung.astro + RegistrationForm.svelte gelöscht. Links in auth/callback.astro auf /intern umgeleitet.
-[x] Login-Bug im internen Bereich behoben: Email-Prüfung schlug fehl wegen RLS-Policies (unauthentifizierter Nutzer konnte profiles-Tabelle nicht lesen). Fix: RPC-Funktion check_email_registered mit SECURITY DEFINER (004_check_email_rpc.sql). Muss noch auf Supabase ausgeführt werden!
+[x] Login-Bug im internen Bereich behoben: Email-Prüfung schlug fehl wegen RLS-Policies (unauthentifizierter Nutzer konnte profiles-Tabelle nicht lesen). Fix: RPC-Funktion check_email_registered mit SECURITY DEFINER (004_check_email_rpc.sql).
+[x] 004_check_email_rpc.sql auf Supabase ausgeführt.
 
-- 004_check_email_rpc.sql auf Supabase ausführen (WICHTIG für Login im internen Bereich!)
+[x] Interner Bereich: Umlaute im Source Code geprüft – alle korrekt (ä, ö, ü), charset=utf-8 gesetzt.
+[x] Interner Bereich umbenannt in "Veranstaltungsbereich" (alle Seiten, Nav-Links, Seitentitel)
+[x] Admin-Bereich umbenannt in "Forschungsmöglichkeiten" (Seitentitel, Überschrift, Nav-Links)
+[x] Nachmeldung-Approval-Flow komplett gefixt: DB-Update zuerst (bevor signInWithOtp die Session stören kann), Fehlerbehandlung, Loading-States, Session-Refresh nach OTP-Versand.
+[x] Tisch-6-Bug in TableView: Quick-Links zeigen jetzt auch Tisch 6
+[x] Security-Migration 005_security_fixes.sql erstellt:
+    - RLS-Fix: Public-Names-Policy erfordert jetzt Auth
+    - UNIQUE-Index auf profiles.email (case-insensitive)
+    - HTML-Escaping im Nachmeldung-Email-Trigger (escape_html() Helper)
+    - Performance-Indexes (nachmeldung_requests, table_assignments, registrations)
+    - Dead column registrations.table_preference entfernt
+    - check_email_registered RPC verbessert (Validierung, STABLE)
+    - handle_new_user Trigger: Fallback-Name, lowercase Email, Error-Handling
+[x] XSS-Fix: {@html loginError} in InternalArea.svelte durch sicheres Rendering ersetzt
+[x] Seitentitel callback.astro: "– Zukunft bauen" ergänzt (war inkonsistent)
+
+[x] Code-Refactoring: Shared Utilities extrahieren (config.ts, types.ts, callTypes.ts). any-Types in allen Komponenten durch echte Typen ersetzt. Fehlerbehandlung (try/catch, console.error, User-sichtbare Fehlermeldungen) in allen Supabase-Queries ergänzt (InternalArea, OrgaPanel, AdminPanel, TableView).
+
+[x] 005_security_fixes.sql auf Supabase SQL-Editor ausgeführt.
+
+--- OFFEN ---
 - Resend: onboarding@resend.dev sendet nur an verifizierte Empfänger. Eigene Domain verifizieren für Produktivbetrieb.
 - PDF-Export der Tisch-Protokolle (nicht eilig, erst kurz vor/nach der Veranstaltung)
 - Eigene Domain registrieren und konfigurieren
+- README aufteilen und Docs-Ordner erstellen

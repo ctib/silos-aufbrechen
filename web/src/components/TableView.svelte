@@ -2,14 +2,16 @@
   import { onMount, onDestroy } from 'svelte';
   import { supabase } from '../lib/supabase';
   import { basePath } from '../lib/paths';
+  import { callTypeLabel } from '../lib/callTypes';
+  import type { WorkshopTable, TableNote, TableAssignment, ResearchCall, NoteSection } from '../lib/types';
 
   interface Props {
     tableNumber: number;
   }
   let { tableNumber }: Props = $props();
 
-  const sectionOrder = ['ideensammlung', 'voting', 'ausformulierung', 'action_items', 'protokoll'] as const;
-  const sectionLabels: Record<string, string> = {
+  const sectionOrder: NoteSection[] = ['ideensammlung', 'voting', 'ausformulierung', 'action_items', 'protokoll'];
+  const sectionLabels: Record<NoteSection, string> = {
     ideensammlung: 'Ideensammlung',
     voting: 'Voting & Priorisierung',
     ausformulierung: 'Ausformulierung',
@@ -20,13 +22,14 @@
   let loading = $state(true);
   let authorized = $state(false);
   let canEdit = $state(false);
-  let table = $state<any>(null);
-  let notes = $state<any[]>([]);
-  let participants = $state<any[]>([]);
-  let calls = $state<any[]>([]);
-  let activeSection = $state<string>('ideensammlung');
+  let table = $state<WorkshopTable | null>(null);
+  let notes = $state<TableNote[]>([]);
+  let participants = $state<TableAssignment[]>([]);
+  let calls = $state<ResearchCall[]>([]);
+  let activeSection = $state<NoteSection>('ideensammlung');
   let saving = $state(false);
-  let realtimeChannel: any = null;
+  let loadError = $state('');
+  let realtimeChannel: ReturnType<typeof supabase.channel> | null = null;
 
   // Current note content for active section
   const currentNote = $derived(notes.find(n => n.section === activeSection));
@@ -89,14 +92,20 @@
   });
 
   async function loadData(tableId: string) {
-    const [notesRes, assignRes, callsRes] = await Promise.all([
-      supabase.from('table_notes').select('*').eq('table_id', tableId).order('section'),
-      supabase.from('table_assignments').select('*, profiles(full_name, email, role)').eq('table_id', tableId),
-      supabase.from('research_calls').select('*, call_table_tags!inner(table_id)').eq('call_table_tags.table_id', tableId).order('deadline'),
-    ]);
-    notes = notesRes.data ?? [];
-    participants = assignRes.data ?? [];
-    calls = callsRes.data ?? [];
+    try {
+      const [notesRes, assignRes, callsRes] = await Promise.all([
+        supabase.from('table_notes').select('*').eq('table_id', tableId).order('section'),
+        supabase.from('table_assignments').select('*, profiles(full_name, email, role)').eq('table_id', tableId),
+        supabase.from('research_calls').select('*, call_table_tags!inner(table_id)').eq('call_table_tags.table_id', tableId).order('deadline'),
+      ]);
+      notes = notesRes.data ?? [];
+      participants = assignRes.data ?? [];
+      calls = callsRes.data ?? [];
+      loadError = '';
+    } catch (err) {
+      console.error('Tischdaten laden fehlgeschlagen:', err);
+      loadError = 'Daten konnten nicht geladen werden. Bitte Seite neu laden.';
+    }
   }
 
   async function saveNote() {
@@ -117,16 +126,6 @@
     saveTimeout = setTimeout(saveNote, 1500);
   }
 
-  function callTypeLabel(type: string): string {
-    const labels: Record<string, string> = {
-      call_for_papers: 'Call for Papers',
-      funding: 'Förderung',
-      conference: 'Konferenz',
-      journal: 'Journal',
-      other: 'Sonstiges',
-    };
-    return labels[type] || type;
-  }
 </script>
 
 {#if loading}
@@ -138,7 +137,7 @@
     <h1 class="font-serif text-3xl font-bold text-haw-blau mb-4">Kein Zugang</h1>
     <p class="text-haw-blau-70 mb-6">Bitte melden Sie sich an, um den Tischbereich zu sehen.</p>
     <a href={basePath('/intern')} class="inline-block bg-haw-blau text-white font-bold py-3 px-8 rounded hover:bg-haw-blau-90 transition-colors">
-      Zum internen Bereich
+      Zum Veranstaltungsbereich
     </a>
   </div>
 {:else}
@@ -157,6 +156,10 @@
   </div>
 
   <div class="haw-gradient-line w-16 mb-6"></div>
+
+  {#if loadError}
+    <div class="bg-red-50 text-red-700 rounded-lg p-3 text-sm mb-6">{loadError}</div>
+  {/if}
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     <!-- Left: Notes (Etherpad) -->
@@ -260,7 +263,7 @@
       <div class="bg-haw-blau-10 rounded-lg p-5">
         <h3 class="font-bold text-haw-blau mb-3 text-sm">Andere Tische</h3>
         <div class="flex flex-wrap gap-2">
-          {#each [1, 2, 3, 4, 5] as nr}
+          {#each [1, 2, 3, 4, 5, 6] as nr}
             {#if nr !== tableNumber}
               <a
                 href={basePath(`/tisch/${nr}`)}

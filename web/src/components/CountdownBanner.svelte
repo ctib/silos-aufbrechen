@@ -2,11 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { basePath } from '../lib/paths';
   import { supabase } from '../lib/supabase';
-
-  const FORMS_URL = 'https://forms.office.com/pages/responsepage.aspx?id=SlFZYNubNECdLWtc9Zdpa95yTsFJlbBDntdDxMV4KBtUNjdTUzM4NVpXSkc5Tk9OM1JEUlJNNFNPMi4u&route=shorturl';
-  const REG_DEADLINE = new Date('2026-04-24T23:59:59');
-  const EVENT_DATE = new Date('2026-05-07T14:30:00');
-  const EVENT_END = new Date('2026-05-07T20:00:00');
+  import { FORMS_URL, REG_DEADLINE, EVENT_DATE, EVENT_END } from '../lib/config';
 
   // Phase definitions
   const phases = [
@@ -209,7 +205,7 @@
               href={basePath('/intern')}
               class="inline-block bg-haw-hellblau text-haw-blau font-bold py-3 px-8 rounded hover:bg-white transition-colors text-lg"
             >
-              Zum internen Bereich
+              Zum Veranstaltungsbereich
             </a>
           {/if}
         </div>

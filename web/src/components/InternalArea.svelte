@@ -2,19 +2,17 @@
   import { onMount } from 'svelte';
   import { supabase } from '../lib/supabase';
   import { basePath } from '../lib/paths';
-
-  const FORMS_URL = 'https://forms.office.com/pages/responsepage.aspx?id=SlFZYNubNECdLWtc9Zdpa95yTsFJlbBDntdDxMV4KBtUNjdTUzM4NVpXSkc5Tk9OM1JEUlJNNFNPMi4u&route=shorturl';
-  const REG_DEADLINE = new Date('2026-04-24T23:59:59');
-
-  type UserRole = 'gast' | 'teilnehmer' | 'studi' | 'admin' | 'orga';
+  import { FORMS_URL, REG_DEADLINE } from '../lib/config';
+  import { callTypeLabel } from '../lib/callTypes';
+  import type { UserRole, Profile, Registration, WorkshopTable, ResearchCall } from '../lib/types';
 
   let loading = $state(true);
   let authenticated = $state(false);
-  let profile = $state<any>(null);
-  let registration = $state<any>(null);
-  let participants = $state<any[]>([]);
-  let researchCalls = $state<any[]>([]);
-  let tables = $state<any[]>([]);
+  let profile = $state<Profile | null>(null);
+  let registration = $state<Registration | null>(null);
+  let participants = $state<Pick<Profile, 'full_name' | 'background'>[]>([]);
+  let researchCalls = $state<ResearchCall[]>([]);
+  let tables = $state<WorkshopTable[]>([]);
   let userRole = $state<UserRole>('gast');
   let tablePreferences = $state<string[]>([]);
 
@@ -23,6 +21,10 @@
   let loginSending = $state(false);
   let loginMessage = $state('');
   let loginError = $state('');
+  let loginErrorType = $state<'generic' | 'not_registered_forms' | 'not_registered_nachmeldung' | ''>('');
+
+  let loadError = $state('');
+  let saveError = $state('');
 
   // Edit mode
   let editing = $state(false);
@@ -48,61 +50,73 @@
 
     authenticated = true;
 
-    // Load profile
-    const { data: profileData } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', session.user.id)
-      .single();
+    try {
+      // Load profile
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
 
-    if (profileData) {
-      profile = profileData;
-      userRole = profileData.role;
+      if (profileError) {
+        console.error('Profil laden fehlgeschlagen:', profileError);
+        loadError = 'Profil konnte nicht geladen werden.';
+        loading = false;
+        return;
+      }
+
+      if (profileData) {
+        profile = profileData;
+        userRole = profileData.role;
+      }
+
+      // Load own registration
+      const { data: regData } = await supabase
+        .from('registrations')
+        .select('*, workshop_tables(title, number)')
+        .eq('profile_id', session.user.id)
+        .single();
+
+      if (regData) {
+        registration = regData;
+
+        // Load table preferences
+        const { data: prefs } = await supabase
+          .from('registration_table_preferences')
+          .select('table_id')
+          .eq('registration_id', regData.id);
+
+        tablePreferences = prefs?.map(p => p.table_id) ?? [];
+      }
+
+      // Load public participants
+      const { data: pubParticipants } = await supabase
+        .from('profiles')
+        .select('full_name, background')
+        .eq('show_name_public', true);
+
+      if (pubParticipants) participants = pubParticipants;
+
+      // Load workshop tables
+      const { data: tablesData } = await supabase
+        .from('workshop_tables')
+        .select('*')
+        .eq('is_active', true)
+        .order('number');
+
+      if (tablesData) tables = tablesData;
+
+      // Load research calls
+      const { data: callsData } = await supabase
+        .from('research_calls')
+        .select('*, call_table_tags(table_id)')
+        .order('deadline', { ascending: true });
+
+      if (callsData) researchCalls = callsData;
+    } catch (err) {
+      console.error('Daten laden fehlgeschlagen:', err);
+      loadError = 'Daten konnten nicht geladen werden. Bitte Seite neu laden.';
     }
-
-    // Load own registration
-    const { data: regData } = await supabase
-      .from('registrations')
-      .select('*, workshop_tables(title, number)')
-      .eq('profile_id', session.user.id)
-      .single();
-
-    if (regData) {
-      registration = regData;
-
-      // Load table preferences
-      const { data: prefs } = await supabase
-        .from('registration_table_preferences')
-        .select('table_id')
-        .eq('registration_id', regData.id);
-
-      tablePreferences = prefs?.map(p => p.table_id) ?? [];
-    }
-
-    // Load public participants
-    const { data: pubParticipants } = await supabase
-      .from('profiles')
-      .select('full_name, background')
-      .eq('show_name_public', true);
-
-    if (pubParticipants) participants = pubParticipants;
-
-    // Load workshop tables
-    const { data: tablesData } = await supabase
-      .from('workshop_tables')
-      .select('*')
-      .eq('is_active', true)
-      .order('number');
-
-    if (tablesData) tables = tablesData;
-
-    // Load research calls
-    const { data: callsData } = await supabase
-      .from('research_calls')
-      .select('*, call_table_tags(table_id)')
-      .order('deadline', { ascending: true });
-
-    if (callsData) researchCalls = callsData;
 
     loading = false;
   });
@@ -113,6 +127,7 @@
 
     loginSending = true;
     loginError = '';
+    loginErrorType = '';
     loginMessage = '';
 
     const email = loginEmail.trim().toLowerCase();
@@ -132,6 +147,7 @@
 
       if (error) {
         loginError = 'Fehler beim Senden. Bitte versuchen Sie es später erneut.';
+        loginErrorType = 'generic';
       } else {
         loginMessage = `Ein neuer Zugangslink wurde an ${email} gesendet. Bitte prüfen Sie Ihr Postfach.`;
       }
@@ -139,9 +155,11 @@
       // Email not registered
       const now = new Date();
       if (now < REG_DEADLINE) {
-        loginError = `Diese E-Mail-Adresse ist noch nicht registriert. Bitte melden Sie sich zunächst über das <a href="${FORMS_URL}" target="_blank" rel="noopener noreferrer" class="underline">Anmeldeformular</a> an.`;
+        loginError = 'Diese E-Mail-Adresse ist noch nicht registriert. Bitte melden Sie sich zunächst über das Anmeldeformular an.';
+        loginErrorType = 'not_registered_forms';
       } else {
-        loginError = `Diese E-Mail-Adresse ist nicht registriert. Die Anmeldephase ist abgeschlossen. Sie können eine <a href="${basePath('/nachmeldung')}" class="underline">Nachmeldung anfragen</a>.`;
+        loginError = 'Diese E-Mail-Adresse ist nicht registriert. Die Anmeldephase ist abgeschlossen.';
+        loginErrorType = 'not_registered_nachmeldung';
       }
     }
 
@@ -177,51 +195,63 @@
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { saving = false; return; }
 
-    // Update profile
-    await supabase.from('profiles').update({
-      background: editBackground.trim() || null,
-      show_name_public: editShowName,
-      gdpr_consent: editGdpr,
-      gdpr_consent_date: editGdpr ? new Date().toISOString() : null,
-    }).eq('id', session.user.id);
+    saveError = '';
 
-    // Update registration
-    await supabase.from('registrations').update({
-      attends_lecture: editLecture,
-      attends_workshop: editWorkshop,
-      attends_dinner: editDinner,
-      companion_count: editCompanions,
-      companion_under_16: editCompanionUnder16,
-      companion_under_12: editCompanionUnder12,
-    }).eq('id', registration.id);
+    try {
+      // Update profile
+      const { error: profileErr } = await supabase.from('profiles').update({
+        background: editBackground.trim() || null,
+        show_name_public: editShowName,
+        gdpr_consent: editGdpr,
+        gdpr_consent_date: editGdpr ? new Date().toISOString() : null,
+      }).eq('id', session.user.id);
 
-    // Update table preferences
-    await supabase.from('registration_table_preferences')
-      .delete()
-      .eq('registration_id', registration.id);
+      if (profileErr) throw profileErr;
 
-    if (editTablePrefs.length > 0) {
-      await supabase.from('registration_table_preferences').insert(
-        editTablePrefs.map(tableId => ({
-          registration_id: registration.id,
-          table_id: tableId,
-        }))
-      );
+      // Update registration
+      const { error: regErr } = await supabase.from('registrations').update({
+        attends_lecture: editLecture,
+        attends_workshop: editWorkshop,
+        attends_dinner: editDinner,
+        companion_count: editCompanions,
+        companion_under_16: editCompanionUnder16,
+        companion_under_12: editCompanionUnder12,
+      }).eq('id', registration.id);
+
+      if (regErr) throw regErr;
+
+      // Update table preferences
+      await supabase.from('registration_table_preferences')
+        .delete()
+        .eq('registration_id', registration.id);
+
+      if (editTablePrefs.length > 0) {
+        await supabase.from('registration_table_preferences').insert(
+          editTablePrefs.map(tableId => ({
+            registration_id: registration.id,
+            table_id: tableId,
+          }))
+        );
+      }
+
+      // Reload data
+      profile = { ...profile, background: editBackground.trim() || null, show_name_public: editShowName, gdpr_consent: editGdpr };
+      registration = { ...registration, attends_lecture: editLecture, attends_workshop: editWorkshop, attends_dinner: editDinner, companion_count: editCompanions, companion_under_16: editCompanionUnder16, companion_under_12: editCompanionUnder12 };
+      tablePreferences = [...editTablePrefs];
+
+      // Reload participants list
+      const { data: pubParticipants } = await supabase
+        .from('profiles')
+        .select('full_name, background')
+        .eq('show_name_public', true);
+      if (pubParticipants) participants = pubParticipants;
+
+      editing = false;
+    } catch (err) {
+      console.error('Speichern fehlgeschlagen:', err);
+      saveError = 'Änderungen konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.';
     }
 
-    // Reload data
-    profile = { ...profile, background: editBackground.trim() || null, show_name_public: editShowName, gdpr_consent: editGdpr };
-    registration = { ...registration, attends_lecture: editLecture, attends_workshop: editWorkshop, attends_dinner: editDinner, companion_count: editCompanions, companion_under_16: editCompanionUnder16, companion_under_12: editCompanionUnder12 };
-    tablePreferences = [...editTablePrefs];
-
-    // Reload participants list
-    const { data: pubParticipants } = await supabase
-      .from('profiles')
-      .select('full_name, background')
-      .eq('show_name_public', true);
-    if (pubParticipants) participants = pubParticipants;
-
-    editing = false;
     saving = false;
   }
 
@@ -230,16 +260,6 @@
     window.location.href = basePath('/');
   }
 
-  function callTypeLabel(type: string): string {
-    const labels: Record<string, string> = {
-      call_for_papers: 'Call for Papers',
-      funding: 'Förderung',
-      conference: 'Konferenz',
-      journal: 'Journal',
-      other: 'Sonstiges',
-    };
-    return labels[type] || type;
-  }
 </script>
 
 {#if loading}
@@ -249,11 +269,11 @@
 {:else if !authenticated}
   <!-- Login Flow -->
   <div class="max-w-lg mx-auto py-12">
-    <h1 class="font-serif text-3xl font-bold text-haw-blau mb-4 text-center">Interner Bereich</h1>
+    <h1 class="font-serif text-3xl font-bold text-haw-blau mb-4 text-center">Veranstaltungsbereich</h1>
 
     <div class="bg-haw-blau-10 rounded-lg p-6 mb-8">
       <p class="text-haw-blau-70 text-sm">
-        Bitte klicken Sie auf den Zugangslink in der Ihnen zugesendeten E-Mail, um in den internen Bereich zu gelangen.
+        Bitte klicken Sie auf den Zugangslink in der Ihnen zugesendeten E-Mail, um in den Veranstaltungsbereich zu gelangen.
       </p>
     </div>
 
@@ -289,7 +309,12 @@
 
       {#if loginError}
         <div class="mt-4 bg-red-50 text-red-700 rounded p-3 text-sm">
-          {@html loginError}
+          {loginError}
+          {#if loginErrorType === 'not_registered_forms'}
+            <a href={FORMS_URL} target="_blank" rel="noopener noreferrer" class="underline ml-1">Zum Anmeldeformular</a>
+          {:else if loginErrorType === 'not_registered_nachmeldung'}
+            <a href={basePath('/nachmeldung')} class="underline ml-1">Nachmeldung anfragen</a>
+          {/if}
         </div>
       {/if}
     </div>
@@ -298,7 +323,7 @@
   <!-- Authenticated: Internal Area -->
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
     <div>
-      <h1 class="font-serif text-3xl font-bold text-haw-blau">Interner Bereich</h1>
+      <h1 class="font-serif text-3xl font-bold text-haw-blau">Veranstaltungsbereich</h1>
       <p class="text-haw-blau-70">
         Willkommen, {profile?.full_name}
         {#if userRole !== 'teilnehmer'}
@@ -311,7 +336,7 @@
     <div class="flex gap-3">
       {#if userRole === 'admin' || userRole === 'orga'}
         <a href={basePath('/admin')} class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">
-          Admin
+          Forschungsmöglichkeiten
         </a>
       {/if}
       {#if userRole === 'orga'}
@@ -329,6 +354,10 @@
   </div>
 
   <div class="haw-gradient-line w-16 mb-8"></div>
+
+  {#if loadError}
+    <div class="bg-red-50 text-red-700 rounded-lg p-3 text-sm mb-6">{loadError}</div>
+  {/if}
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     <!-- Left column: Own registration + Participants -->
@@ -421,9 +450,13 @@
                 </label>
                 <label class="flex items-start gap-3 cursor-pointer text-sm">
                   <input type="checkbox" bind:checked={editShowName} class="w-4 h-4 mt-0.5 accent-haw-blau" />
-                  <span>Mein Name darf im internen Bereich für andere Teilnehmende sichtbar sein.</span>
+                  <span>Mein Name darf im Veranstaltungsbereich für andere Teilnehmende sichtbar sein.</span>
                 </label>
               </fieldset>
+
+              {#if saveError}
+                <div class="bg-red-50 text-red-700 rounded p-3 text-sm">{saveError}</div>
+              {/if}
 
               <div class="flex gap-3 pt-2">
                 <button
