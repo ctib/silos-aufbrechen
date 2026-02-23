@@ -10,6 +10,8 @@ const {
   title = 'Silos aufbrechen – Zukunft bauen | HAW Kiel',
   description = 'Interdisziplinärer Workshop für visionäre Köpfe unserer Region. 7. Mai 2026, HAW Kiel.',
 } = Astro.props;
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <!doctype html>
@@ -19,7 +21,7 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
-    <link rel="icon" href={`${import.meta.env.BASE_URL}/favicon.ico`} />
+    <link rel="icon" href={`${base}/favicon.ico`} />
     <meta name="robots" content="index, follow" />
     <title>{title}</title>
 
@@ -33,16 +35,16 @@ const {
     <header class="w-full bg-white">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
         <nav class="flex items-center gap-4 text-sm">
-          <a href={import.meta.env.BASE_URL} class="text-haw-blau font-bold hover:text-haw-hellblau transition-colors">
+          <a href={`${base}/`} class="text-haw-blau font-bold hover:text-haw-hellblau transition-colors">
             Start
           </a>
-          <a href={`${import.meta.env.BASE_URL}/intern`} class="text-haw-blau-50 hover:text-haw-blau transition-colors">
+          <a href={`${base}/intern`} class="text-haw-blau-50 hover:text-haw-blau transition-colors">
             Veranstaltungsbereich
           </a>
         </nav>
-        <a href={import.meta.env.BASE_URL} aria-label="HAW Kiel Startseite">
+        <a href={`${base}/`} aria-label="HAW Kiel Startseite">
           <img
-            src={`${import.meta.env.BASE_URL}/images/haw_kiel_logo.svg`}
+            src={`${base}/images/haw_kiel_logo.svg`}
             alt="HAW Kiel – Hochschule für Angewandte Wissenschaften Kiel"
             class="h-12 sm:h-16"
           />
