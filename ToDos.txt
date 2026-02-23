@@ -64,21 +64,34 @@
 [x] 005_security_fixes.sql auf Supabase SQL-Editor ausgeführt.
 
 --- OFFEN von Christoph ---
-- Countdown Differenz: 24.04 bis 07.05 = 13 Tage, Countdown zur Anmeldung = 61 Tage, Countdown zur Veranstaltung = 72 Tage, Differenz = 11 Tag. Hier alles richtig?
-- Magic Link kann nur einmal genutzt werden, nach Abmeldung aus Veranstaltungsbereich muss link erneut erzeugt werden.
-- Nach Abmeldung und erneutem Versuch zum Versenden eines Magic Links kommt die Fehlermeldung "Fehler beim Senden. Bitte versuchen Sie es später erneut." 
+[x] HAW Logo und Favicon nicht dargestellt. (Fix: Doppelte Slashes nach Domain-Wechsel behoben)
+[x] klick auf "Veranstaltungsbereich" führt zu https://intern (Fix: BASE_URL trailing slash gefixt)
+- Können Meike, Tammo und ich die Phasen im Orga-Bereich manuell triggern?
+  ==> Ja! Phasen-Override funktioniert fuer alle mit Orga-Rolle. Einfach auf der Startseite die Phase-Buttons in der Zeitleiste klicken. Voraussetzung: eingeloggt mit Orga-Account.
+[x] Webseite hat jetzt fast 15k Dateien und knapp 400mb.
+  ==> 180MB sind node_modules (npm-Pakete, normal, nicht im Repo). 34MB Archiv (gitignored). Das eigentliche Repo ist winzig (~2MB). Die 400MB sind nur lokal.
+[x] Check ob nirgends direkt Emailadressen / private Daten "offen" rumliegen
+  ==> Audit erledigt: Nur christoph.goebel@haw-kiel.de als oeffentliche Kontaktadresse. Keine privaten Daten im Code. .env und Anmeldungen/ gitignored.
+[x] check ob alles nach bestem wissen und gewissen dsgvo konform ist (z.b. keine Cookies oder Google-Fonts)
+  ==> DSGVO-Audit: Keine Cookies, keine Google Fonts (nur lokale Verdana/Georgia), keine Tracking-Pixel, keine Analytics, keine externen Scripts. Supabase GDPR-konform. Einziger Hinweis: MS-Forms-Link ist externer Microsoft-Dienst (Anmeldephase). Empfehlung: Datenschutzerklaerung ergaenzen.
+[x] Countdown Differenz: 24.04 bis 07.05 = 13 Tage, Countdown zur Anmeldung = 61 Tage, Countdown zur Veranstaltung = 72 Tage, Differenz = 11 Tag.
+  ==> Fix: Beide Countdowns nutzen jetzt Math.floor (vorher ceil vs floor -> 2 Tage Diskrepanz). Differenz ist jetzt konsistent ~13 Tage.
+[x] Magic Link: Nach Abmeldung kam "Fehler beim Senden".
+  ==> Fix: Fehlermeldung zeigt jetzt die Ursache an (z.B. "Bitte warten Sie eine Minute" bei Rate-Limit). Supabase erlaubt nur 1 Magic Link pro 60 Sekunden pro Email.
 - alle Namen schon an die Tische sortieren und auch für andere Teilnehmer einsehbar sein, wenn öffentliche Darstellung ausgewählt wurde. Bei Mehrfachwahl den Namen mit einem zu XX% (je nach Anzahl an gewählten Tischen) versehen.
 - Verwaltungsbereich: Umlautfehler bei Göbel, bei Tischnahmen und auch in den einzelnen Tischbereichen.
-- "Andere Tische" sollten einen kurzen, prägnanten und eindeutigen Titel statt Tisch 1 bis 6 haben.
+[x] "Andere Tische" sollten einen kurzen, prägnanten und eindeutigen Titel statt Tisch 1 bis 6 haben.
+  ==> Fix: Quick-Links zeigen jetzt Kurztitel (Nahrung, Bildung, Sensorik, Staedtebau, Gebaeude, Frei).
 - wie werden Studis in die Liste aufgenommen? Einpflegen über claude oder Marker in Teilnehmerliste? ==> TN Liste Anmeldungen.xls um Rollenspalte (Studi / TN / Orga / F&E) ergänzt.
 - aktuelle Dummy Anmeldung.xls als wirkliche TN Liste zum Testen einfügen
+- Datenschutzerklaerung / Impressum ergaenzen (DSGVO-Empfehlung)
 
 --- OFFEN von Claude ---
 [x] Eigene Domain registriert: zukunftbauen.org (Namecheap + Cloudflare DNS)
 [x] Code auf zukunftbauen.org umgestellt: astro.config, CNAME, noindex entfernt, SQL-Trigger aktualisiert
 [x] README aufgeteilt: Docs/architecture.md, Docs/design-system.md, Docs/domain-setup.md
 [x] SQL-Migration 006_domain_switch.sql erstellt (Trigger mit neuer Absenderadresse)
+[x] GitHub Pages: Custom Domain zukunftbauen.org aktiviert + HTTPS erzwungen
 - Resend: zukunftbauen.org bei Resend verifizieren, dann 006_domain_switch.sql auf Supabase ausfuehren
 - Supabase: Redirect URLs fuer zukunftbauen.org hinzufuegen (Authentication > URL Configuration)
-- GitHub Pages: Custom Domain zukunftbauen.org aktivieren (Settings > Pages)
 - PDF-Export der Tisch-Protokolle (nicht eilig, erst kurz vor/nach der Veranstaltung)

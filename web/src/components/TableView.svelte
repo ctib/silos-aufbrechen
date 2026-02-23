@@ -263,12 +263,20 @@
       <div class="bg-haw-blau-10 rounded-lg p-5">
         <h3 class="font-bold text-haw-blau mb-3 text-sm">Andere Tische</h3>
         <div class="flex flex-wrap gap-2">
-          {#each [1, 2, 3, 4, 5, 6] as nr}
-            {#if nr !== tableNumber}
+          {#each [
+            { nr: 1, short: 'Nahrung' },
+            { nr: 2, short: 'Bildung' },
+            { nr: 3, short: 'Sensorik' },
+            { nr: 4, short: 'Städtebau' },
+            { nr: 5, short: 'Gebäude' },
+            { nr: 6, short: 'Frei' },
+          ] as t}
+            {#if t.nr !== tableNumber}
               <a
-                href={basePath(`/tisch/${nr}`)}
+                href={basePath(`/tisch/${t.nr}`)}
                 class="text-xs bg-white text-haw-blau px-3 py-1.5 rounded hover:bg-haw-blau hover:text-white transition-colors"
-              >Tisch {nr}</a>
+                title="Tisch {t.nr}"
+              >{t.short}</a>
             {/if}
           {/each}
         </div>
