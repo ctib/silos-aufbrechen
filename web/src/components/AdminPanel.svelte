@@ -2,14 +2,19 @@
   import { onMount } from 'svelte';
   import { supabase } from '../lib/supabase';
   import { basePath } from '../lib/paths';
+  import { CALL_TYPES, callTypeLabel } from '../lib/callTypes';
+  import type { ResearchCall, WorkshopTable } from '../lib/types';
 
   let loading = $state(true);
   let authorized = $state(false);
   let userRole = $state('');
 
   // Data
-  let calls = $state<any[]>([]);
-  let tables = $state<any[]>([]);
+  let calls = $state<ResearchCall[]>([]);
+  let tables = $state<WorkshopTable[]>([]);
+
+  let loadError = $state('');
+  let saveError = $state('');
 
   // Form state
   let showForm = $state(false);
@@ -22,17 +27,7 @@
   let formTableTags = $state<string[]>([]);
   let saving = $state(false);
 
-  const callTypes = [
-    { value: 'call_for_papers', label: 'Call for Papers' },
-    { value: 'funding', label: 'Förderung' },
-    { value: 'conference', label: 'Konferenz' },
-    { value: 'journal', label: 'Journal' },
-    { value: 'other', label: 'Sonstiges' },
-  ];
-
-  function callTypeLabel(type: string): string {
-    return callTypes.find(t => t.value === type)?.label ?? type;
-  }
+  const callTypes = CALL_TYPES;
 
   onMount(async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -53,12 +48,18 @@
   });
 
   async function loadData() {
-    const [callsRes, tablesRes] = await Promise.all([
-      supabase.from('research_calls').select('*, call_table_tags(table_id)').order('created_at', { ascending: false }),
-      supabase.from('workshop_tables').select('*').order('number'),
-    ]);
-    calls = callsRes.data ?? [];
-    tables = tablesRes.data ?? [];
+    try {
+      const [callsRes, tablesRes] = await Promise.all([
+        supabase.from('research_calls').select('*, call_table_tags(table_id)').order('created_at', { ascending: false }),
+        supabase.from('workshop_tables').select('*').order('number'),
+      ]);
+      calls = callsRes.data ?? [];
+      tables = tablesRes.data ?? [];
+      loadError = '';
+    } catch (err) {
+      console.error('Forschungscalls laden fehlgeschlagen:', err);
+      loadError = 'Daten konnten nicht geladen werden. Bitte Seite neu laden.';
+    }
   }
 
   function resetForm() {
@@ -72,14 +73,14 @@
     showForm = false;
   }
 
-  function startEdit(call: any) {
+  function startEdit(call: ResearchCall) {
     editingId = call.id;
     formTitle = call.title;
     formDescription = call.description || '';
     formUrl = call.url || '';
     formDeadline = call.deadline || '';
     formType = call.call_type;
-    formTableTags = (call.call_table_tags || []).map((t: any) => t.table_id);
+    formTableTags = (call.call_table_tags || []).map((t: { table_id: string }) => t.table_id);
     showForm = true;
   }
 
@@ -90,38 +91,48 @@
 
   async function saveCall() {
     saving = true;
-    const { data: { session } } = await supabase.auth.getSession();
-    const payload = {
-      title: formTitle,
-      description: formDescription || null,
-      url: formUrl || null,
-      deadline: formDeadline || null,
-      call_type: formType,
-      created_by: session?.user.id,
-    };
+    saveError = '';
 
-    let callId = editingId;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const payload = {
+        title: formTitle,
+        description: formDescription || null,
+        url: formUrl || null,
+        deadline: formDeadline || null,
+        call_type: formType,
+        created_by: session?.user.id,
+      };
 
-    if (editingId) {
-      await supabase.from('research_calls').update(payload).eq('id', editingId);
-    } else {
-      const { data } = await supabase.from('research_calls').insert(payload).select('id').single();
-      callId = data?.id;
-    }
+      let callId = editingId;
 
-    // Update table tags
-    if (callId) {
-      await supabase.from('call_table_tags').delete().eq('call_id', callId);
-      if (formTableTags.length > 0) {
-        await supabase.from('call_table_tags').insert(
-          formTableTags.map(tableId => ({ call_id: callId, table_id: tableId }))
-        );
+      if (editingId) {
+        const { error } = await supabase.from('research_calls').update(payload).eq('id', editingId);
+        if (error) throw error;
+      } else {
+        const { data, error } = await supabase.from('research_calls').insert(payload).select('id').single();
+        if (error) throw error;
+        callId = data?.id;
       }
+
+      // Update table tags
+      if (callId) {
+        await supabase.from('call_table_tags').delete().eq('call_id', callId);
+        if (formTableTags.length > 0) {
+          await supabase.from('call_table_tags').insert(
+            formTableTags.map(tableId => ({ call_id: callId, table_id: tableId }))
+          );
+        }
+      }
+
+      resetForm();
+      await loadData();
+    } catch (err) {
+      console.error('Speichern fehlgeschlagen:', err);
+      saveError = 'Eintrag konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.';
     }
 
     saving = false;
-    resetForm();
-    await loadData();
   }
 
   async function deleteCall(id: string) {
@@ -148,25 +159,29 @@
     <h1 class="font-serif text-3xl font-bold text-haw-blau mb-4">Kein Zugang</h1>
     <p class="text-haw-blau-70 mb-6">Dieser Bereich ist nur für Admins und das Orga-Team zugänglich.</p>
     <a href={basePath('/intern')} class="inline-block bg-haw-blau text-white font-bold py-3 px-8 rounded hover:bg-haw-blau-90 transition-colors">
-      Zum internen Bereich
+      Zum Veranstaltungsbereich
     </a>
   </div>
 {:else}
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
     <div>
-      <h1 class="font-serif text-3xl font-bold text-haw-blau">Admin-Bereich</h1>
+      <h1 class="font-serif text-3xl font-bold text-haw-blau">Forschungsmöglichkeiten</h1>
       <p class="text-haw-blau-70">Forschungscalls & Konferenzen verwalten</p>
     </div>
     <div class="flex gap-3">
       {#if userRole === 'orga'}
         <a href={basePath('/orga')} class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">Orga</a>
       {/if}
-      <a href={basePath('/intern')} class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">Intern</a>
+      <a href={basePath('/intern')} class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">Veranstaltung</a>
     </div>
   </div>
 
   <div class="haw-gradient-line w-16 mb-6"></div>
+
+  {#if loadError}
+    <div class="bg-red-50 text-red-700 rounded-lg p-3 text-sm mb-6">{loadError}</div>
+  {/if}
 
   <!-- Action bar -->
   <div class="flex items-center justify-between mb-6">
@@ -221,6 +236,9 @@
           </div>
         </div>
       </div>
+      {#if saveError}
+        <div class="bg-red-50 text-red-700 rounded p-3 text-sm mt-4">{saveError}</div>
+      {/if}
       <div class="flex gap-3 mt-6">
         <button
           onclick={saveCall}

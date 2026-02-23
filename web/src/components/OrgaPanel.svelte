@@ -2,17 +2,20 @@
   import { onMount } from 'svelte';
   import { supabase } from '../lib/supabase';
   import { basePath } from '../lib/paths';
+  import type { Profile, Registration, WorkshopTable, TableAssignment, NachmeldungRequest } from '../lib/types';
 
   let loading = $state(true);
   let authorized = $state(false);
   let activeTab = $state<'teilnehmer' | 'nachmeldungen' | 'tische' | 'studis' | 'export'>('teilnehmer');
 
   // Data
-  let profiles = $state<any[]>([]);
-  let registrations = $state<any[]>([]);
-  let tables = $state<any[]>([]);
-  let assignments = $state<any[]>([]);
-  let nachmeldungen = $state<any[]>([]);
+  let profiles = $state<Profile[]>([]);
+  let registrations = $state<Registration[]>([]);
+  let tables = $state<WorkshopTable[]>([]);
+  let assignments = $state<TableAssignment[]>([]);
+  let nachmeldungen = $state<NachmeldungRequest[]>([]);
+
+  let loadError = $state('');
 
   // Edit states
   let editingTable = $state<string | null>(null);
@@ -43,18 +46,24 @@
   });
 
   async function loadData() {
-    const [profilesRes, regsRes, tablesRes, assignRes, nachmRes] = await Promise.all([
-      supabase.from('profiles').select('*').order('full_name'),
-      supabase.from('registrations').select('*, profiles(full_name, email), workshop_tables(number, title)').order('created_at'),
-      supabase.from('workshop_tables').select('*').order('number'),
-      supabase.from('table_assignments').select('*, profiles(full_name, email, role), workshop_tables(number, title)').order('created_at'),
-      supabase.from('nachmeldung_requests').select('*').order('created_at', { ascending: false }),
-    ]);
-    profiles = profilesRes.data ?? [];
-    registrations = regsRes.data ?? [];
-    tables = tablesRes.data ?? [];
-    assignments = assignRes.data ?? [];
-    nachmeldungen = nachmRes.data ?? [];
+    try {
+      const [profilesRes, regsRes, tablesRes, assignRes, nachmRes] = await Promise.all([
+        supabase.from('profiles').select('*').order('full_name'),
+        supabase.from('registrations').select('*, profiles(full_name, email), workshop_tables(number, title)').order('created_at'),
+        supabase.from('workshop_tables').select('*').order('number'),
+        supabase.from('table_assignments').select('*, profiles(full_name, email, role), workshop_tables(number, title)').order('created_at'),
+        supabase.from('nachmeldung_requests').select('*').order('created_at', { ascending: false }),
+      ]);
+      profiles = profilesRes.data ?? [];
+      registrations = regsRes.data ?? [];
+      tables = tablesRes.data ?? [];
+      assignments = assignRes.data ?? [];
+      nachmeldungen = nachmRes.data ?? [];
+      loadError = '';
+    } catch (err) {
+      console.error('Orga-Daten laden fehlgeschlagen:', err);
+      loadError = 'Daten konnten nicht geladen werden. Bitte Seite neu laden.';
+    }
   }
 
   // Stats
@@ -74,7 +83,7 @@
   }
 
   // Table editing
-  function startEditTable(table: any) {
+  function startEditTable(table: WorkshopTable) {
     editingTable = table.id;
     editTitle = table.title;
     editDescription = table.description || '';
@@ -144,40 +153,84 @@
   }
 
   // Nachmeldung management
-  async function approveNachmeldung(req: any) {
-    const { data: { session } } = await supabase.auth.getSession();
+  let processingId = $state<string | null>(null);
+  let nachmeldungMessage = $state('');
+  let nachmeldungError = $state('');
 
-    // Send magic link to create account
-    const { error } = await supabase.auth.signInWithOtp({
+  async function approveNachmeldung(req: NachmeldungRequest) {
+    processingId = req.id;
+    nachmeldungMessage = '';
+    nachmeldungError = '';
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      nachmeldungError = 'Sitzung abgelaufen. Bitte Seite neu laden.';
+      processingId = null;
+      return;
+    }
+
+    // 1. Update DB status FIRST (while session is still valid)
+    const { error: dbError } = await supabase.from('nachmeldung_requests').update({
+      status: 'approved',
+      reviewed_by: session.user.id,
+      reviewed_at: new Date().toISOString(),
+    }).eq('id', req.id);
+
+    if (dbError) {
+      nachmeldungError = `Fehler beim Aktualisieren: ${dbError.message}`;
+      processingId = null;
+      return;
+    }
+
+    // 2. Send magic link to create account / grant access
+    const { error: otpError } = await supabase.auth.signInWithOtp({
       email: req.email,
       options: {
         data: { full_name: req.name },
+        shouldCreateUser: true,
         emailRedirectTo: window.location.origin + basePath('/auth/callback'),
       },
     });
 
-    if (error) {
-      alert('Fehler beim Senden des Magic Links: ' + error.message);
-      return;
+    if (otpError) {
+      nachmeldungMessage = `Genehmigt, aber der Zugangslink konnte nicht gesendet werden: ${otpError.message}. Bitte manuell einen Link senden.`;
+    } else {
+      nachmeldungMessage = `${req.name} wurde genehmigt. Zugangslink an ${req.email} gesendet.`;
     }
 
-    // Update request status
-    await supabase.from('nachmeldung_requests').update({
-      status: 'approved',
-      reviewed_by: session?.user.id,
-      reviewed_at: new Date().toISOString(),
-    }).eq('id', req.id);
+    // 3. Re-authenticate in case signInWithOtp disrupted the session
+    await supabase.auth.refreshSession();
 
+    processingId = null;
     await loadData();
   }
 
-  async function rejectNachmeldung(req: any) {
+  async function rejectNachmeldung(req: NachmeldungRequest) {
+    processingId = req.id;
+    nachmeldungMessage = '';
+    nachmeldungError = '';
+
     const { data: { session } } = await supabase.auth.getSession();
-    await supabase.from('nachmeldung_requests').update({
+    if (!session) {
+      nachmeldungError = 'Sitzung abgelaufen. Bitte Seite neu laden.';
+      processingId = null;
+      return;
+    }
+
+    const { error: dbError } = await supabase.from('nachmeldung_requests').update({
       status: 'rejected',
-      reviewed_by: session?.user.id,
+      reviewed_by: session.user.id,
       reviewed_at: new Date().toISOString(),
     }).eq('id', req.id);
+
+    if (dbError) {
+      nachmeldungError = `Fehler beim Ablehnen: ${dbError.message}`;
+      processingId = null;
+      return;
+    }
+
+    nachmeldungMessage = `Anfrage von ${req.name} wurde abgelehnt.`;
+    processingId = null;
     await loadData();
   }
 </script>
@@ -191,7 +244,7 @@
     <h1 class="font-serif text-3xl font-bold text-haw-blau mb-4">Kein Zugang</h1>
     <p class="text-haw-blau-70 mb-6">Dieser Bereich ist nur für das Orga-Team zugänglich.</p>
     <a href={basePath('/intern')} class="inline-block bg-haw-blau text-white font-bold py-3 px-8 rounded hover:bg-haw-blau-90 transition-colors">
-      Zum internen Bereich
+      Zum Veranstaltungsbereich
     </a>
   </div>
 {:else}
@@ -202,10 +255,14 @@
       <p class="text-haw-blau-70">Verwaltung der Veranstaltung</p>
     </div>
     <div class="flex gap-3">
-      <a href={basePath('/admin')} class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">Admin</a>
-      <a href={basePath('/intern')} class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">Intern</a>
+      <a href={basePath('/admin')} class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">Forschungsmöglichkeiten</a>
+      <a href={basePath('/intern')} class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">Veranstaltung</a>
     </div>
   </div>
+
+  {#if loadError}
+    <div class="bg-red-50 text-red-700 rounded-lg p-3 text-sm mb-6">{loadError}</div>
+  {/if}
 
   <!-- Stats -->
   <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-8">
@@ -245,7 +302,7 @@
       { id: 'export', label: 'Export' },
     ] as tab}
       <button
-        onclick={() => activeTab = tab.id as any}
+        onclick={() => activeTab = tab.id as typeof activeTab}
         class="px-4 py-2 text-sm font-bold transition-colors cursor-pointer -mb-px
           {activeTab === tab.id
             ? 'text-haw-blau border-b-2 border-haw-blau'
@@ -306,9 +363,15 @@
 
   <!-- Tab: Nachmeldungen -->
   {:else if activeTab === 'nachmeldungen'}
+    {#if nachmeldungMessage}
+      <div class="bg-green-50 text-green-700 rounded-lg p-3 text-sm mb-4">{nachmeldungMessage}</div>
+    {/if}
+    {#if nachmeldungError}
+      <div class="bg-red-50 text-red-700 rounded-lg p-3 text-sm mb-4">{nachmeldungError}</div>
+    {/if}
     <div class="space-y-4">
       {#each nachmeldungen as req}
-        <div class="bg-white border border-haw-blau-10 rounded-lg p-5">
+        <div class="bg-white border border-haw-blau-10 rounded-lg p-5 {processingId === req.id ? 'opacity-60' : ''}">
           <div class="flex items-start justify-between gap-4">
             <div class="flex-1">
               <div class="flex items-center gap-2 flex-wrap">
@@ -331,12 +394,14 @@
               <div class="flex gap-2 shrink-0">
                 <button
                   onclick={() => approveNachmeldung(req)}
-                  class="text-xs bg-green-600 text-white px-3 py-1.5 rounded cursor-pointer hover:bg-green-700"
-                >Genehmigen</button>
+                  disabled={processingId !== null}
+                  class="text-xs bg-green-600 text-white px-3 py-1.5 rounded cursor-pointer hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >{processingId === req.id ? 'Wird genehmigt...' : 'Genehmigen'}</button>
                 <button
                   onclick={() => rejectNachmeldung(req)}
-                  class="text-xs bg-red-500 text-white px-3 py-1.5 rounded cursor-pointer hover:bg-red-600"
-                >Ablehnen</button>
+                  disabled={processingId !== null}
+                  class="text-xs bg-red-500 text-white px-3 py-1.5 rounded cursor-pointer hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                >{processingId === req.id ? 'Wird abgelehnt...' : 'Ablehnen'}</button>
               </div>
             {/if}
           </div>

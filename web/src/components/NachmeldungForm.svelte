@@ -1,6 +1,7 @@
 <script lang="ts">
   import { supabase } from '../lib/supabase';
   import { basePath } from '../lib/paths';
+  import { CONTACT_EMAIL } from '../lib/config';
 
   let name = $state('');
   let email = $state('');
@@ -113,7 +114,7 @@
     <p class="font-bold text-haw-blau mb-1">Direkt Kontakt aufnehmen?</p>
     <p>
       Sie können auch direkt eine E-Mail an
-      <a href="mailto:christoph.goebel@haw-kiel.de" class="text-haw-blau underline">christoph.goebel@haw-kiel.de</a>
+      <a href={`mailto:${CONTACT_EMAIL}`} class="text-haw-blau underline">{CONTACT_EMAIL}</a>
       senden.
     </p>
   </div>
