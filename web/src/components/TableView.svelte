@@ -26,6 +26,7 @@
   let notes = $state<TableNote[]>([]);
   let participants = $state<TableAssignment[]>([]);
   let calls = $state<ResearchCall[]>([]);
+  let interests = $state<{ full_name: string; role: string; total_tables: number }[]>([]);
   let activeSection = $state<NoteSection>('ideensammlung');
   let saving = $state(false);
   let loadError = $state('');
@@ -93,14 +94,16 @@
 
   async function loadData(tableId: string) {
     try {
-      const [notesRes, assignRes, callsRes] = await Promise.all([
+      const [notesRes, assignRes, callsRes, interestsRes] = await Promise.all([
         supabase.from('table_notes').select('*').eq('table_id', tableId).order('section'),
         supabase.from('table_assignments').select('*, profiles(full_name, email, role)').eq('table_id', tableId),
         supabase.from('research_calls').select('*, call_table_tags!inner(table_id)').eq('call_table_tags.table_id', tableId).order('deadline'),
+        supabase.rpc('get_table_interests', { p_table_number: tableNumber }),
       ]);
       notes = notesRes.data ?? [];
       participants = assignRes.data ?? [];
       calls = callsRes.data ?? [];
+      interests = interestsRes.data ?? [];
       loadError = '';
     } catch (err) {
       console.error('Tischdaten laden fehlgeschlagen:', err);
@@ -204,9 +207,33 @@
       </div>
     </div>
 
-    <!-- Right: Participants + Calls -->
+    <!-- Right: Interests + Participants + Calls -->
     <div class="space-y-6">
-      <!-- Participants at this table -->
+      <!-- Interests (from registration preferences) -->
+      <div class="bg-white border border-haw-blau-10 rounded-lg p-5">
+        <h3 class="font-bold text-haw-blau mb-3">Interessierte ({interests.length})</h3>
+        {#if interests.length === 0}
+          <p class="text-xs text-haw-blau-50">Noch keine Interessenten mit öffentlichem Profil.</p>
+        {:else}
+          <div class="space-y-2">
+            {#each interests as person}
+              <div class="flex items-center gap-2 text-sm">
+                <span class="w-2 h-2 rounded-full shrink-0
+                  {person.role === 'studi' ? 'bg-haw-orange' : 'bg-haw-hellblau'}"></span>
+                <span class="font-bold">{person.full_name}</span>
+                {#if person.total_tables > 1}
+                  <span class="text-[10px] text-haw-blau-50">zu {Math.round(100 / person.total_tables)}%</span>
+                {/if}
+                {#if person.role === 'studi'}
+                  <span class="text-[10px] bg-haw-orange/20 text-haw-orange px-1.5 py-0.5 rounded">Studi</span>
+                {/if}
+              </div>
+            {/each}
+          </div>
+        {/if}
+      </div>
+
+      <!-- Participants at this table (assigned) -->
       <div class="bg-white border border-haw-blau-10 rounded-lg p-5">
         <h3 class="font-bold text-haw-blau mb-3">Am Tisch ({participants.length})</h3>
         {#if participants.length === 0}
