@@ -26,36 +26,53 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         if (session) {
           const meta = session.user.user_metadata;
 
-          // Update profile with registration data
-          const { error: profileError } = await supabase
+          // Check if profile already exists with data
+          const { data: existingProfile } = await supabase
             .from('profiles')
-            .update({
-              full_name: meta.full_name || '',
-              background: meta.background || '',
-              show_name_public: meta.show_name_public || false,
-              gdpr_consent: meta.gdpr_consent || false,
-              gdpr_consent_date: meta.gdpr_consent ? new Date().toISOString() : null,
-            })
-            .eq('id', session.user.id);
+            .select('full_name, gdpr_consent')
+            .eq('id', session.user.id)
+            .single();
 
-          if (profileError) console.error('Profile update error:', profileError);
+          // Only update profile if metadata has new data (first registration)
+          // Don't overwrite existing data with empty metadata (re-login)
+          if (meta.full_name || !existingProfile?.full_name) {
+            const { error: profileError } = await supabase
+              .from('profiles')
+              .update({
+                full_name: meta.full_name || existingProfile?.full_name || '',
+                background: meta.background || undefined,
+                show_name_public: meta.show_name_public ?? undefined,
+                gdpr_consent: meta.gdpr_consent ?? existingProfile?.gdpr_consent ?? false,
+                gdpr_consent_date: meta.gdpr_consent ? new Date().toISOString() : undefined,
+              })
+              .eq('id', session.user.id);
 
-          // Create registration
-          const { error: regError } = await supabase
+            if (profileError) console.error('Profile update error:', profileError);
+          }
+
+          // Ensure registration exists (upsert won't overwrite existing data with defaults)
+          const { data: existingReg } = await supabase
             .from('registrations')
-            .upsert({
-              profile_id: session.user.id,
-              attends_lecture: meta.attends_lecture ?? true,
-              attends_workshop: meta.attends_workshop ?? true,
-              attends_dinner: meta.attends_dinner ?? false,
-              table_preference: meta.table_preference || null,
-              companion_count: meta.companion_count ?? 0,
-              companion_under_16: meta.companion_under_16 ?? false,
-              companion_under_12: meta.companion_under_12 ?? false,
-              source: 'website',
-            }, { onConflict: 'profile_id' });
+            .select('id')
+            .eq('profile_id', session.user.id)
+            .single();
 
-          if (regError) console.error('Registration error:', regError);
+          if (!existingReg) {
+            const { error: regError } = await supabase
+              .from('registrations')
+              .insert({
+                profile_id: session.user.id,
+                attends_lecture: meta.attends_lecture ?? true,
+                attends_workshop: meta.attends_workshop ?? true,
+                attends_dinner: meta.attends_dinner ?? false,
+                companion_count: meta.companion_count ?? 0,
+                companion_under_16: meta.companion_under_16 ?? false,
+                companion_under_12: meta.companion_under_12 ?? false,
+                source: 'website',
+              });
+
+            if (regError) console.error('Registration error:', regError);
+          }
 
           // Redirect to internal area
           window.location.href = basePath('/intern');
