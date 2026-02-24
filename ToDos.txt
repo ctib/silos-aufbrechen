@@ -78,20 +78,25 @@
   ==> Fix: Beide Countdowns nutzen jetzt Math.floor (vorher ceil vs floor -> 2 Tage Diskrepanz). Differenz ist jetzt konsistent ~13 Tage.
 [x] Magic Link: Nach Abmeldung kam "Fehler beim Senden".
   ==> Fix: Fehlermeldung zeigt jetzt die Ursache an (z.B. "Bitte warten Sie eine Minute" bei Rate-Limit). Supabase erlaubt nur 1 Magic Link pro 60 Sekunden pro Email.
-- alle Namen schon an die Tische sortieren und auch für andere Teilnehmer einsehbar sein, wenn öffentliche Darstellung ausgewählt wurde. Bei Mehrfachwahl den Namen mit einem zu XX% (je nach Anzahl an gewählten Tischen) versehen.
+[x] alle Namen schon an die Tische sortieren und auch für andere Teilnehmer einsehbar sein, wenn öffentliche Darstellung ausgewählt wurde. Bei Mehrfachwahl den Namen mit einem zu XX% (je nach Anzahl an gewählten Tischen) versehen.
+  ==> RPC get_table_interests (010_table_interests_rpc.sql), TableView zeigt Interessierte mit Prozent-Anzeige.
 [x] Verwaltungsbereich: Umlautfehler bei Göbel, bei Tischnahmen und auch in den einzelnen Tischbereichen.
   ==> Fix: 007_fix_umlaute.sql auf Supabase ausgefuehrt. Alle Tischnamen und Profilname korrigiert.
 [x] "Andere Tische" sollten einen kurzen, prägnanten und eindeutigen Titel statt Tisch 1 bis 6 haben.
   ==> Fix: Quick-Links zeigen jetzt Kurztitel (Nahrung, Bildung, Sensorik, Staedtebau, Gebaeude, Frei).
 - Magic link nur einmal gueltig (Supabase-Sicherheitsfeature, nicht aenderbar). Session bleibt aber ~1 Woche bestehen. Fehlermeldung "Bitte warten" verschwindet nach Seite-neu-laden.
 [x] noch viele Umlautefehler im Veranstaltungsbereich (siehe 007_fix_umlaute.sql)
-- Hinzufügen von Meike und Tammo laut Dummy Anmeldung.xls als Orga TN
+[x] Hinzufügen von Meike und Tammo laut Dummy Anmeldung.xls als Orga TN
+  ==> 008_add_orga_tn.sql + 009_set_roles.sql auf Supabase ausgefuehrt.
 - Manueller Phasenwechsel im Orga-Bereich für "Orga" Personen (Christoph, Meike, Tammo)
 - Beim manuellen Phasenwechsel: Abfrage ob 1. neue Anmeldung.xls hochgeladen werden soll und 2. Email mit Magic Link pro Rolle an alle TN Versendet werden soll
-- Admin-Rolle in F&E umbenennen
-- wie werden Studis in die Liste aufgenommen? Einpflegen über claude oder Marker in Teilnehmerliste? ==> TN Liste Anmeldungen.xls um Rollenspalte (Studi / TN / Orga / F&E) ergänzt.
-- aktuelle Dummy Anmeldung.xls als wirkliche TN Liste zum Testen einfügen
-- Datenschutzerklaerung / Impressum ergaenzen (DSGVO-Empfehlung)
+[x] Admin-Rolle in F&E umbenennen
+  ==> AdminPanel, OrgaPanel, InternalArea: "Admin" wird als "F&E" angezeigt.
+[x] wie werden Studis in die Liste aufgenommen? ==> Import-Script um Rollenspalte erweitert (Studi/TN/Orga/F&E → studi/teilnehmer/orga/admin).
+[x] aktuelle Dummy Anmeldung.xls als wirkliche TN Liste zum Testen einfügen
+  ==> 009_set_roles.sql setzt Rollen fuer alle 14 importierten Nutzer.
+[x] Datenschutzerklaerung / Impressum ergaenzen (DSGVO-Empfehlung)
+  ==> /datenschutz + /impressum Seiten erstellt, Footer-Links ergaenzt.
 
 --- OFFEN von Claude ---
 [x] Eigene Domain registriert: zukunftbauen.org (Namecheap + Cloudflare DNS)

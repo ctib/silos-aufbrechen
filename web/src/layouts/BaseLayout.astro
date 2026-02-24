@@ -100,8 +100,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             </a>
           </div>
         </div>
-        <div class="border-t border-white/20 mt-8 pt-4 text-xs text-white/60">
+        <div class="border-t border-white/20 mt-8 pt-4 text-xs text-white/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <p>&copy; 2026 HAW Kiel – Hochschule für Angewandte Wissenschaften Kiel</p>
+          <div class="flex gap-4">
+            <a href={`${base}/datenschutz`} class="hover:text-white transition-colors">Datenschutz</a>
+            <a href={`${base}/impressum`} class="hover:text-white transition-colors">Impressum</a>
+          </div>
         </div>
       </div>
     </footer>
