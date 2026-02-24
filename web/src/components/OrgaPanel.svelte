@@ -342,7 +342,7 @@
                 >
                   <option value="teilnehmer">Teilnehmer</option>
                   <option value="studi">Studi</option>
-                  <option value="admin">Admin</option>
+                  <option value="admin">F&amp;E</option>
                   <option value="orga">Orga</option>
                 </select>
               </td>

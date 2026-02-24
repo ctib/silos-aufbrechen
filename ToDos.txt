@@ -85,7 +85,9 @@
   ==> Fix: Quick-Links zeigen jetzt Kurztitel (Nahrung, Bildung, Sensorik, Staedtebau, Gebaeude, Frei).
 - Magic link nur einmal gueltig (Supabase-Sicherheitsfeature, nicht aenderbar). Session bleibt aber ~1 Woche bestehen. Fehlermeldung "Bitte warten" verschwindet nach Seite-neu-laden.
 [x] noch viele Umlautefehler im Veranstaltungsbereich (siehe 007_fix_umlaute.sql)
-- Manueller Phasenwechsel im Orga-Bereich
+- Hinzufügen von Meike und Tammo laut Dummy Anmeldung.xls als Orga TN
+- Manueller Phasenwechsel im Orga-Bereich für "Orga" Personen (Christoph, Meike, Tammo)
+- Beim manuellen Phasenwechsel: Abfrage ob 1. neue Anmeldung.xls hochgeladen werden soll und 2. Email mit Magic Link pro Rolle an alle TN Versendet werden soll
 - Admin-Rolle in F&E umbenennen
 - wie werden Studis in die Liste aufgenommen? Einpflegen über claude oder Marker in Teilnehmerliste? ==> TN Liste Anmeldungen.xls um Rollenspalte (Studi / TN / Orga / F&E) ergänzt.
 - aktuelle Dummy Anmeldung.xls als wirkliche TN Liste zum Testen einfügen
