@@ -154,7 +154,7 @@
         loginErrorType = 'generic';
         console.error('[Magic Link]', error.message, error);
       } else {
-        loginMessage = `Ein neuer Zugangslink wurde an ${email} gesendet. Bitte prüfen Sie Ihr Postfach.`;
+        loginMessage = `Ein neuer Zugangslink wurde an ${email} gesendet. Bitte prüfen Sie Ihr Postfach und ggf. auch Ihren Spam-Ordner (Absender: noreply@zukunftbauen.org).`;
       }
     } else {
       // Email not registered
