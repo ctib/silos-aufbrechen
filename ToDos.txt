@@ -79,9 +79,14 @@
 [x] Magic Link: Nach Abmeldung kam "Fehler beim Senden".
   ==> Fix: Fehlermeldung zeigt jetzt die Ursache an (z.B. "Bitte warten Sie eine Minute" bei Rate-Limit). Supabase erlaubt nur 1 Magic Link pro 60 Sekunden pro Email.
 - alle Namen schon an die Tische sortieren und auch für andere Teilnehmer einsehbar sein, wenn öffentliche Darstellung ausgewählt wurde. Bei Mehrfachwahl den Namen mit einem zu XX% (je nach Anzahl an gewählten Tischen) versehen.
-- Verwaltungsbereich: Umlautfehler bei Göbel, bei Tischnahmen und auch in den einzelnen Tischbereichen.
+[x] Verwaltungsbereich: Umlautfehler bei Göbel, bei Tischnahmen und auch in den einzelnen Tischbereichen.
+  ==> Fix: 007_fix_umlaute.sql auf Supabase ausgefuehrt. Alle Tischnamen und Profilname korrigiert.
 [x] "Andere Tische" sollten einen kurzen, prägnanten und eindeutigen Titel statt Tisch 1 bis 6 haben.
   ==> Fix: Quick-Links zeigen jetzt Kurztitel (Nahrung, Bildung, Sensorik, Staedtebau, Gebaeude, Frei).
+- Magic link nur einmal gueltig (Supabase-Sicherheitsfeature, nicht aenderbar). Session bleibt aber ~1 Woche bestehen. Fehlermeldung "Bitte warten" verschwindet nach Seite-neu-laden.
+[x] noch viele Umlautefehler im Veranstaltungsbereich (siehe 007_fix_umlaute.sql)
+- Manueller Phasenwechsel im Orga-Bereich
+- Admin-Rolle in F&E umbenennen
 - wie werden Studis in die Liste aufgenommen? Einpflegen über claude oder Marker in Teilnehmerliste? ==> TN Liste Anmeldungen.xls um Rollenspalte (Studi / TN / Orga / F&E) ergänzt.
 - aktuelle Dummy Anmeldung.xls als wirkliche TN Liste zum Testen einfügen
 - Datenschutzerklaerung / Impressum ergaenzen (DSGVO-Empfehlung)
@@ -92,6 +97,13 @@
 [x] README aufgeteilt: Docs/architecture.md, Docs/design-system.md, Docs/domain-setup.md
 [x] SQL-Migration 006_domain_switch.sql erstellt (Trigger mit neuer Absenderadresse)
 [x] GitHub Pages: Custom Domain zukunftbauen.org aktiviert + HTTPS erzwungen
-- Resend: zukunftbauen.org bei Resend verifizieren, dann 006_domain_switch.sql auf Supabase ausfuehren
-- Supabase: Redirect URLs fuer zukunftbauen.org hinzufuegen (Authentication > URL Configuration)
+[x] Resend: zukunftbauen.org verifiziert (Region: Ireland), 006_domain_switch.sql auf Supabase ausgefuehrt
+[x] Supabase: Redirect URLs fuer zukunftbauen.org hinzugefuegt
+[x] Custom SMTP in Supabase konfiguriert (Resend, noreply@zukunftbauen.org)
+[x] Magic Link Email-Template auf Deutsch angepasst
+[x] DMARC-Record in Cloudflare DNS gesetzt
+[x] Spam-Hinweis im Login-Flow ergaenzt
+[x] Callback-Bug gefixt: DSGVO-Consent wird bei Re-Login nicht mehr ueberschrieben
+[x] 007_fix_umlaute.sql: Tischnamen + Profilname in Supabase korrigiert
+- Magic Link Emails an HAW-Adressen: HAW IT bitten, zukunftbauen.org zu whitelisten
 - PDF-Export der Tisch-Protokolle (nicht eilig, erst kurz vor/nach der Veranstaltung)
