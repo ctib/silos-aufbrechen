@@ -157,7 +157,7 @@
 {:else if !authorized}
   <div class="max-w-md mx-auto text-center py-12">
     <h1 class="font-serif text-3xl font-bold text-haw-blau mb-4">Kein Zugang</h1>
-    <p class="text-haw-blau-70 mb-6">Dieser Bereich ist nur für Admins und das Orga-Team zugänglich.</p>
+    <p class="text-haw-blau-70 mb-6">Dieser Bereich ist nur für F&amp;E und das Orga-Team zugänglich.</p>
     <a href={basePath('/intern')} class="inline-block bg-haw-blau text-white font-bold py-3 px-8 rounded hover:bg-haw-blau-90 transition-colors">
       Zum Veranstaltungsbereich
     </a>

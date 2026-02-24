@@ -333,7 +333,7 @@
         Willkommen, {profile?.full_name}
         {#if userRole !== 'teilnehmer'}
           <span class="text-xs bg-haw-hellblau text-haw-blau px-2 py-0.5 rounded-full ml-2 font-bold uppercase">
-            {userRole}
+            {userRole === 'admin' ? 'F&E' : userRole}
           </span>
         {/if}
       </p>
