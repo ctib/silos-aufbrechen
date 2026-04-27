@@ -112,5 +112,8 @@
 [x] Spam-Hinweis im Login-Flow ergaenzt
 [x] Callback-Bug gefixt: DSGVO-Consent wird bei Re-Login nicht mehr ueberschrieben
 [x] 007_fix_umlaute.sql: Tischnamen + Profilname in Supabase korrigiert
+[x] Forschungscalls als Akkordeon: Nur Titel + Typ-Badge sichtbar, Details per Klick aufklappbar (Beschreibung, Deadline, Link, Tisch-Tags). Spart Platz im Veranstaltungsbereich.
+[x] Workshoptische im Veranstaltungsbereich nach oben in die rechte Spalte verschoben.
+[x] Forschungscalls-Block zentral unter Teilnehmendenliste angeordnet (volle Breite) fuer bessere Lesbarkeit.
 - Magic Link Emails an HAW-Adressen: HAW IT bitten, zukunftbauen.org zu whitelisten
 - PDF-Export der Tisch-Protokolle (nicht eilig, erst kurz vor/nach der Veranstaltung)
