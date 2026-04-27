@@ -59,7 +59,7 @@ Stadtgesellschaft an einem Tisch.
 | Route | Zugang | Inhalt |
 |-------|--------|--------|
 | `/` | Oeffentlich | Startseite, Programm, Workshop-Themen, Countdown |
-| `/intern` | Teilnehmer | Veranstaltungsbereich: Anmeldung, Teilnehmerliste |
+| `/intern` | Teilnehmer | Veranstaltungsbereich: Anmeldung, Teilnehmerliste, Workshoptische, Forschungscalls (Akkordeon) |
 | `/tisch/:nr` | Teilnehmer | Etherpad pro Tisch (Realtime, 5 Abschnitte) |
 | `/admin` | Admin | Forschungsmoeglichkeiten: Calls CRUD + Tisch-Tags |
 | `/orga` | Orga | Teilnehmerverwaltung, Export, Nachmeldungen |

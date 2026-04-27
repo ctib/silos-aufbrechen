@@ -50,7 +50,7 @@ SilosAufbrechen/
       components/
         AdminPanel.svelte          <-- Forschungscalls CRUD + Tisch-Tagging
         CountdownBanner.svelte     <-- Phasen-Zeitleiste, Countdown, Kalender
-        InternalArea.svelte        <-- Veranstaltungsbereich (Login, Anmeldung)
+        InternalArea.svelte        <-- Veranstaltungsbereich (Login, Anmeldung, Workshoptische, Forschungscalls-Akkordeon)
         OrgaPanel.svelte           <-- Teilnehmer, Tische, Export
         NachmeldungForm.svelte     <-- Nachmeldung nach Anmeldeschluss
         TableView.svelte           <-- Etherpad pro Tisch (Realtime)
