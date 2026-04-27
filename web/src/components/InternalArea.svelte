@@ -542,11 +542,10 @@
       </div>
     </div>
 
-    <!-- Right column: Workshop Tables + Research Calls -->
+    <!-- Right column: Workshop Tables -->
     <div>
-      <!-- Workshop Tables links (for Studis) -->
       {#if userRole !== 'gast'}
-        <div class="bg-white border border-haw-blau-10 rounded-lg p-6 mb-6">
+        <div class="bg-white border border-haw-blau-10 rounded-lg p-6">
           <h2 class="font-bold text-haw-blau text-lg mb-4">Workshoptische</h2>
           <div class="space-y-2">
             {#each tables as table}
@@ -560,7 +559,10 @@
           </div>
         </div>
       {/if}
+    </div>
 
+    <!-- Full-width row: Research Calls -->
+    <div class="lg:col-span-3">
       <div class="bg-white border border-haw-blau-10 rounded-lg p-6">
         <h2 class="font-bold text-haw-blau text-lg mb-4">Forschungscalls & Konferenzen</h2>
         {#if researchCalls.length === 0}
