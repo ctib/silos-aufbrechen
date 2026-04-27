@@ -589,7 +589,7 @@
       </div>
 
       <!-- Workshop Tables links (for Studis) -->
-      {#if userRole === 'studi' || userRole === 'orga'}
+      {#if userRole !== 'gast'}
         <div class="bg-white border border-haw-blau-10 rounded-lg p-6 mt-6">
           <h2 class="font-bold text-haw-blau text-lg mb-4">Workshoptische</h2>
           <div class="space-y-2">
