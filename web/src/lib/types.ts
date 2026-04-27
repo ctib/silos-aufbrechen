@@ -3,7 +3,7 @@
 
 export type UserRole = 'gast' | 'teilnehmer' | 'studi' | 'admin' | 'orga';
 export type CallType = 'call_for_papers' | 'funding' | 'conference' | 'journal' | 'other';
-export type NoteSection = 'ideensammlung' | 'voting' | 'ausformulierung' | 'action_items' | 'protokoll';
+export type NoteSection = 'ideensammlung' | 'voting' | 'ausformulierung' | 'action_items' | 'protokoll' | 'offene_notizen';
 
 export interface Profile {
   id: string;

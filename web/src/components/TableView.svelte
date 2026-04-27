@@ -10,24 +10,26 @@
   }
   let { tableNumber }: Props = $props();
 
-  const sectionOrder: NoteSection[] = ['ideensammlung', 'voting', 'ausformulierung', 'action_items', 'protokoll'];
-  const sectionLabels: Record<NoteSection, string> = {
+  const sectionOrder: NoteSection[] = ['offene_notizen', 'ideensammlung', 'protokoll'];
+  const sectionLabels: Partial<Record<NoteSection, string>> = {
+    offene_notizen: 'Offene Notizen',
     ideensammlung: 'Ideensammlung',
-    voting: 'Voting & Priorisierung',
-    ausformulierung: 'Ausformulierung',
-    action_items: 'Action Items',
     protokoll: 'Protokoll',
   };
 
   let loading = $state(true);
   let authorized = $state(false);
-  let canEdit = $state(false);
+  let userRole = $state('');
   let table = $state<WorkshopTable | null>(null);
   let notes = $state<TableNote[]>([]);
   let participants = $state<TableAssignment[]>([]);
   let calls = $state<ResearchCall[]>([]);
   let interests = $state<{ full_name: string; role: string; total_tables: number }[]>([]);
-  let activeSection = $state<NoteSection>('ideensammlung');
+  let activeSection = $state<NoteSection>('offene_notizen');
+  // canEdit depends on section: offene_notizen is writable by everyone, others only by studi/orga
+  const canEdit = $derived(
+    userRole === 'studi' || userRole === 'orga' || activeSection === 'offene_notizen'
+  );
   let saving = $state(false);
   let loadError = $state('');
   let realtimeChannel: ReturnType<typeof supabase.channel> | null = null;
@@ -56,7 +58,7 @@
     const role = profile?.role;
     if (!role || role === 'gast') { loading = false; return; }
     authorized = true;
-    canEdit = role === 'studi' || role === 'orga';
+    userRole = role;
 
     // Load table by number
     const { data: tableData } = await supabase
