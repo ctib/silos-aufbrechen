@@ -23,6 +23,7 @@
   let loginError = $state('');
   let loginErrorType = $state<'generic' | 'not_registered_forms' | 'not_registered_nachmeldung' | ''>('');
 
+  let expandedCall = $state<string | null>(null);
   let loadError = $state('');
   let saveError = $state('');
 
@@ -541,56 +542,11 @@
       </div>
     </div>
 
-    <!-- Right column: Research Calls -->
+    <!-- Right column: Workshop Tables + Research Calls -->
     <div>
-      <div class="bg-white border border-haw-blau-10 rounded-lg p-6">
-        <h2 class="font-bold text-haw-blau text-lg mb-4">Forschungscalls & Konferenzen</h2>
-        {#if researchCalls.length === 0}
-          <p class="text-sm text-haw-blau-50">Noch keine Einträge vorhanden.</p>
-        {:else}
-          <div class="space-y-4">
-            {#each researchCalls as call}
-              <div class="border-b border-haw-blau-10 pb-3 last:border-0">
-                <div class="flex items-start justify-between gap-2">
-                  <h3 class="font-bold text-sm text-haw-blau">{call.title}</h3>
-                  <span class="text-[10px] bg-haw-blau-10 text-haw-blau px-2 py-0.5 rounded shrink-0">
-                    {callTypeLabel(call.call_type)}
-                  </span>
-                </div>
-                {#if call.description}
-                  <p class="text-xs text-haw-blau-70 mt-1">{call.description}</p>
-                {/if}
-                <div class="flex items-center gap-3 mt-2 text-xs text-haw-blau-50">
-                  {#if call.deadline}
-                    <span>Deadline: {new Date(call.deadline).toLocaleDateString('de-DE')}</span>
-                  {/if}
-                  {#if call.url}
-                    <a href={call.url} target="_blank" rel="noopener noreferrer" class="text-haw-hellblau hover:underline">
-                      Link
-                    </a>
-                  {/if}
-                </div>
-                {#if call.call_table_tags?.length > 0}
-                  <div class="flex gap-1 mt-2">
-                    {#each call.call_table_tags as tag}
-                      {@const table = tables.find(t => t.id === tag.table_id)}
-                      {#if table}
-                        <span class="text-[10px] bg-haw-hellblau-20 text-haw-blau px-1.5 py-0.5 rounded">
-                          Tisch {table.number}
-                        </span>
-                      {/if}
-                    {/each}
-                  </div>
-                {/if}
-              </div>
-            {/each}
-          </div>
-        {/if}
-      </div>
-
       <!-- Workshop Tables links (for Studis) -->
       {#if userRole !== 'gast'}
-        <div class="bg-white border border-haw-blau-10 rounded-lg p-6 mt-6">
+        <div class="bg-white border border-haw-blau-10 rounded-lg p-6 mb-6">
           <h2 class="font-bold text-haw-blau text-lg mb-4">Workshoptische</h2>
           <div class="space-y-2">
             {#each tables as table}
@@ -604,6 +560,62 @@
           </div>
         </div>
       {/if}
+
+      <div class="bg-white border border-haw-blau-10 rounded-lg p-6">
+        <h2 class="font-bold text-haw-blau text-lg mb-4">Forschungscalls & Konferenzen</h2>
+        {#if researchCalls.length === 0}
+          <p class="text-sm text-haw-blau-50">Noch keine Einträge vorhanden.</p>
+        {:else}
+          <div class="space-y-1">
+            {#each researchCalls as call}
+              <div class="border-b border-haw-blau-10 last:border-0">
+                <button
+                  type="button"
+                  onclick={() => expandedCall = expandedCall === call.id ? null : call.id}
+                  class="w-full flex items-center justify-between gap-2 py-2.5 cursor-pointer text-left"
+                >
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="text-haw-blau-50 text-xs shrink-0 transition-transform {expandedCall === call.id ? 'rotate-90' : ''}">&#9654;</span>
+                    <h3 class="font-bold text-sm text-haw-blau truncate">{call.title}</h3>
+                  </div>
+                  <span class="text-[10px] bg-haw-blau-10 text-haw-blau px-2 py-0.5 rounded shrink-0">
+                    {callTypeLabel(call.call_type)}
+                  </span>
+                </button>
+                {#if expandedCall === call.id}
+                  <div class="pb-3 pl-5">
+                    {#if call.description}
+                      <p class="text-xs text-haw-blau-70 mt-1">{call.description}</p>
+                    {/if}
+                    <div class="flex items-center gap-3 mt-2 text-xs text-haw-blau-50">
+                      {#if call.deadline}
+                        <span>Deadline: {new Date(call.deadline).toLocaleDateString('de-DE')}</span>
+                      {/if}
+                      {#if call.url}
+                        <a href={call.url} target="_blank" rel="noopener noreferrer" class="text-haw-hellblau hover:underline">
+                          Link
+                        </a>
+                      {/if}
+                    </div>
+                    {#if call.call_table_tags?.length > 0}
+                      <div class="flex gap-1 mt-2">
+                        {#each call.call_table_tags as tag}
+                          {@const table = tables.find(t => t.id === tag.table_id)}
+                          {#if table}
+                            <span class="text-[10px] bg-haw-hellblau-20 text-haw-blau px-1.5 py-0.5 rounded">
+                              Tisch {table.number}
+                            </span>
+                          {/if}
+                        {/each}
+                      </div>
+                    {/if}
+                  </div>
+                {/if}
+              </div>
+            {/each}
+          </div>
+        {/if}
+      </div>
     </div>
   </div>
 {/if}
