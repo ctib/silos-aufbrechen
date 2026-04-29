@@ -34,6 +34,9 @@ export interface Registration {
   attends_lecture: boolean;
   attends_workshop: boolean;
   attends_dinner: boolean;
+  dinner_dietrichsdorf: boolean;
+  dinner_hbf: boolean;
+  dinner_ausklang: boolean;
   companion_count: number;
   companion_under_16: boolean;
   companion_under_12: boolean;
