@@ -39,6 +39,9 @@
   let editLecture = $state(true);
   let editWorkshop = $state(true);
   let editDinner = $state(false);
+  let editDinnerDietrichsdorf = $state(true);
+  let editDinnerHbf = $state(true);
+  let editDinnerAusklang = $state(true);
   let editTablePrefs = $state<string[]>([]);
   let editCompanions = $state(0);
   let editCompanionUnder16 = $state(false);
@@ -193,6 +196,9 @@
     editLecture = registration?.attends_lecture ?? true;
     editWorkshop = registration?.attends_workshop ?? true;
     editDinner = registration?.attends_dinner ?? false;
+    editDinnerDietrichsdorf = registration?.dinner_dietrichsdorf ?? true;
+    editDinnerHbf = registration?.dinner_hbf ?? true;
+    editDinnerAusklang = registration?.dinner_ausklang ?? true;
     editTablePrefs = [...tablePreferences];
     editCompanions = registration?.companion_count ?? 0;
     editCompanionUnder16 = registration?.companion_under_16 ?? false;
@@ -235,6 +241,9 @@
         attends_lecture: editLecture,
         attends_workshop: editWorkshop,
         attends_dinner: editDinner,
+        dinner_dietrichsdorf: editDinner ? editDinnerDietrichsdorf : false,
+        dinner_hbf: editDinner ? editDinnerHbf : false,
+        dinner_ausklang: editDinner ? editDinnerAusklang : false,
         companion_count: editCompanions,
         companion_under_16: editCompanionUnder16,
         companion_under_12: editCompanionUnder12,
@@ -258,7 +267,7 @@
 
       // Reload data
       profile = { ...profile, background: editBackground.trim() || null, show_name_public: editShowName, gdpr_consent: editGdpr };
-      registration = { ...registration, attends_lecture: editLecture, attends_workshop: editWorkshop, attends_dinner: editDinner, companion_count: editCompanions, companion_under_16: editCompanionUnder16, companion_under_12: editCompanionUnder12 };
+      registration = { ...registration, attends_lecture: editLecture, attends_workshop: editWorkshop, attends_dinner: editDinner, dinner_dietrichsdorf: editDinner ? editDinnerDietrichsdorf : false, dinner_hbf: editDinner ? editDinnerHbf : false, dinner_ausklang: editDinner ? editDinnerAusklang : false, companion_count: editCompanions, companion_under_16: editCompanionUnder16, companion_under_12: editCompanionUnder12 };
       tablePreferences = [...editTablePrefs];
 
       // Reload participants list
@@ -433,17 +442,36 @@
                   <input type="checkbox" bind:checked={editWorkshop} class="w-4 h-4 accent-haw-blau" />
                   <span>Workshop (16:45 – 17:30)</span>
                 </label>
-                <label class="flex items-start gap-3 cursor-pointer text-sm">
-                  <input type="checkbox" bind:checked={editDinner} class="w-4 h-4 mt-0.5 accent-haw-blau" />
-                  <div>
-                    <span>Abendprogramm: Fahrt mit der MS Stadt Kiel</span>
-                    <ul class="text-xs text-haw-blau-70 mt-1 space-y-0.5 list-disc list-inside">
-                      <li>Ab Anleger Reventloubrücke (18:30)</li>
-                      <li>Ab Anleger Hauptbahnhof (19:45)</li>
-                      <li>Ausklang an der Reventloubrücke (ab 20:15)</li>
-                    </ul>
-                  </div>
+                <label class="flex items-center gap-3 cursor-pointer text-sm">
+                  <input type="checkbox" checked={editDinner}
+                    onchange={(e: Event) => {
+                      const checked = (e.target as HTMLInputElement).checked;
+                      editDinner = checked;
+                      if (checked) {
+                        editDinnerDietrichsdorf = true;
+                        editDinnerHbf = true;
+                        editDinnerAusklang = true;
+                      }
+                    }}
+                    class="w-4 h-4 accent-haw-blau" />
+                  <span>Abendprogramm: Fahrt mit der MS Stadt Kiel</span>
                 </label>
+                {#if editDinner}
+                  <div class="ml-7 space-y-1.5">
+                    <label class="flex items-center gap-3 cursor-pointer text-sm text-haw-blau-70">
+                      <input type="checkbox" bind:checked={editDinnerDietrichsdorf} class="w-3.5 h-3.5 accent-haw-blau" />
+                      <span>Ab Anleger Dietrichsdorf (18:30)</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer text-sm text-haw-blau-70">
+                      <input type="checkbox" bind:checked={editDinnerHbf} class="w-3.5 h-3.5 accent-haw-blau" />
+                      <span>Ab Anleger Hauptbahnhof (19:45)</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer text-sm text-haw-blau-70">
+                      <input type="checkbox" bind:checked={editDinnerAusklang} class="w-3.5 h-3.5 accent-haw-blau" />
+                      <span>Ausklang an der Reventloubrücke (ab 20:15)</span>
+                    </label>
+                  </div>
+                {/if}
               </fieldset>
 
               {#if editWorkshop}
@@ -531,6 +559,13 @@
               <div>
                 <p class="text-haw-blau-50">Abendprogramm</p>
                 <p class="font-bold">{registration.attends_dinner ? 'Ja' : 'Nein'}</p>
+                {#if registration.attends_dinner}
+                  <div class="text-xs text-haw-blau-50 mt-0.5 space-y-0.5">
+                    {#if registration.dinner_dietrichsdorf}<p>Dietrichsdorf (18:30)</p>{/if}
+                    {#if registration.dinner_hbf}<p>Hbf (19:45)</p>{/if}
+                    {#if registration.dinner_ausklang}<p>Ausklang (ab 20:15)</p>{/if}
+                  </div>
+                {/if}
               </div>
               <div>
                 <p class="text-haw-blau-50">Workshoptische</p>
