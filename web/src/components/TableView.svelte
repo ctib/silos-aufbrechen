@@ -256,38 +256,6 @@
         {/if}
       </div>
 
-      <!-- Research calls for this table -->
-      <div class="bg-white border border-haw-blau-10 rounded-lg p-5">
-        <h3 class="font-bold text-haw-blau mb-3">Forschungscalls</h3>
-        {#if calls.length === 0}
-          <p class="text-xs text-haw-blau-50">Keine Calls für diesen Tisch getaggt.</p>
-        {:else}
-          <div class="space-y-3">
-            {#each calls as call}
-              <div class="border-b border-haw-blau-10 pb-2 last:border-0 last:pb-0">
-                <div class="flex items-start justify-between gap-2">
-                  <h4 class="font-bold text-xs text-haw-blau">{call.title}</h4>
-                  <span class="text-[9px] bg-haw-blau-10 text-haw-blau px-1.5 py-0.5 rounded shrink-0">
-                    {callTypeLabel(call.call_type)}
-                  </span>
-                </div>
-                {#if call.description}
-                  <p class="text-[11px] text-haw-blau-70 mt-0.5">{call.description}</p>
-                {/if}
-                <div class="flex gap-3 mt-1 text-[10px] text-haw-blau-50">
-                  {#if call.deadline}
-                    <span>Deadline: {new Date(call.deadline).toLocaleDateString('de-DE')}</span>
-                  {/if}
-                  {#if call.url}
-                    <a href={call.url} target="_blank" rel="noopener noreferrer" class="text-haw-hellblau hover:underline">Link</a>
-                  {/if}
-                </div>
-              </div>
-            {/each}
-          </div>
-        {/if}
-      </div>
-
       <!-- Quick links to other tables -->
       <div class="bg-haw-blau-10 rounded-lg p-5">
         <h3 class="font-bold text-haw-blau mb-3 text-sm">Andere Tische</h3>
@@ -312,4 +280,38 @@
       </div>
     </div>
   </div>
+
+  <!-- Research calls for this table (full width, below notes) -->
+  {#if calls.length > 0}
+    <div class="mt-8">
+      <div class="bg-white border border-haw-blau-10 rounded-lg p-6">
+        <h2 class="font-bold text-haw-blau text-lg mb-4">Forschungscalls für diesen Tisch</h2>
+        <div class="space-y-4">
+          {#each calls as call}
+            <div class="border-b border-haw-blau-10 pb-4 last:border-0 last:pb-0">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="font-bold text-sm text-haw-blau">{call.title}</h3>
+                <span class="text-[10px] bg-haw-blau-10 text-haw-blau px-2 py-0.5 rounded shrink-0">
+                  {callTypeLabel(call.call_type)}
+                </span>
+              </div>
+              {#if call.description}
+                <p class="text-sm text-haw-blau-70 mt-1">{call.description}</p>
+              {/if}
+              <div class="flex items-center gap-3 mt-2 text-xs text-haw-blau-50">
+                {#if call.deadline}
+                  <span>Deadline: {new Date(call.deadline).toLocaleDateString('de-DE')}</span>
+                {/if}
+                {#if call.url}
+                  <a href={call.url} target="_blank" rel="noopener noreferrer" class="text-haw-hellblau hover:underline">
+                    Link
+                  </a>
+                {/if}
+              </div>
+            </div>
+          {/each}
+        </div>
+      </div>
+    </div>
+  {/if}
 {/if}
