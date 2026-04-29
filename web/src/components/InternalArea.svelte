@@ -27,9 +27,15 @@
   let loadError = $state('');
   let saveError = $state('');
 
+  const backgroundOptions = ['Wirtschaft', 'Informatik', 'Landwirtschaft', 'Bausektor'];
+
   // Edit mode
   let editing = $state(false);
-  let editBackground = $state('');
+  let editBackgroundSelect = $state('');
+  let editBackgroundCustom = $state('');
+  const editBackground = $derived(
+    editBackgroundSelect === 'anderer' ? editBackgroundCustom : editBackgroundSelect
+  );
   let editLecture = $state(true);
   let editWorkshop = $state(true);
   let editDinner = $state(false);
@@ -173,7 +179,17 @@
   }
 
   function startEditing() {
-    editBackground = profile?.background ?? '';
+    const bg = profile?.background ?? '';
+    if (backgroundOptions.includes(bg)) {
+      editBackgroundSelect = bg;
+      editBackgroundCustom = '';
+    } else if (bg) {
+      editBackgroundSelect = 'anderer';
+      editBackgroundCustom = bg;
+    } else {
+      editBackgroundSelect = '';
+      editBackgroundCustom = '';
+    }
     editLecture = registration?.attends_lecture ?? true;
     editWorkshop = registration?.attends_workshop ?? true;
     editDinner = registration?.attends_dinner ?? false;
@@ -387,27 +403,46 @@
             <div class="space-y-5">
               <div>
                 <label class="block text-sm font-bold text-haw-blau mb-1">Fachlicher Hintergrund</label>
-                <input
-                  type="text"
-                  bind:value={editBackground}
-                  placeholder="z.B. Bausektor, Wirtschaft, Landwirtschaft, Informatik, ..."
+                <select
+                  bind:value={editBackgroundSelect}
                   class="w-full border border-haw-blau-30 rounded px-3 py-2 text-sm focus:border-haw-blau focus:outline-none"
-                />
+                >
+                  <option value="">Bitte wählen...</option>
+                  {#each backgroundOptions as option}
+                    <option value={option}>{option}</option>
+                  {/each}
+                  <option value="anderer">Anderer</option>
+                </select>
+                {#if editBackgroundSelect === 'anderer'}
+                  <input
+                    type="text"
+                    bind:value={editBackgroundCustom}
+                    placeholder="Bitte angeben..."
+                    class="w-full border border-haw-blau-30 rounded px-3 py-2 text-sm focus:border-haw-blau focus:outline-none mt-2"
+                  />
+                {/if}
               </div>
 
               <fieldset class="space-y-2">
                 <legend class="text-sm font-bold text-haw-blau">Teilnahme an</legend>
                 <label class="flex items-center gap-3 cursor-pointer text-sm">
                   <input type="checkbox" bind:checked={editLecture} class="w-4 h-4 accent-haw-blau" />
-                  <span>Vorträge & Antrittsvorlesung (15:00 – 16:45)</span>
+                  <span>Vorträge & Antrittsvorlesung (15:00 – 16:30)</span>
                 </label>
                 <label class="flex items-center gap-3 cursor-pointer text-sm">
                   <input type="checkbox" bind:checked={editWorkshop} class="w-4 h-4 accent-haw-blau" />
-                  <span>Workshop (17:15 – 18:30)</span>
+                  <span>Workshop (16:45 – 17:30)</span>
                 </label>
-                <label class="flex items-center gap-3 cursor-pointer text-sm">
-                  <input type="checkbox" bind:checked={editDinner} class="w-4 h-4 accent-haw-blau" />
-                  <span>Abendprogramm mit musikalischer Begleitung (ab 19:00)</span>
+                <label class="flex items-start gap-3 cursor-pointer text-sm">
+                  <input type="checkbox" bind:checked={editDinner} class="w-4 h-4 mt-0.5 accent-haw-blau" />
+                  <div>
+                    <span>Abendprogramm: Fahrt mit der MS Stadt Kiel</span>
+                    <ul class="text-xs text-haw-blau-70 mt-1 space-y-0.5 list-disc list-inside">
+                      <li>Ab Anleger Reventloubrücke (18:30)</li>
+                      <li>Ab Anleger Hauptbahnhof (19:45)</li>
+                      <li>Ausklang an der Reventloubrücke (ab 20:15)</li>
+                    </ul>
+                  </div>
                 </label>
               </fieldset>
 
