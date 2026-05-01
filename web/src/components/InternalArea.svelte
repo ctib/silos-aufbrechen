@@ -599,7 +599,7 @@
       <!-- Participants list -->
       <div class="bg-white border border-haw-blau-10 rounded-lg p-6">
         <h2 class="font-bold text-haw-blau text-lg mb-4">
-          {['studi', 'admin', 'orga'].includes(userRole) ? 'Sichtbare' : 'Öffentliche'} Teilnehmende ({participants.length})
+          Sichtbare Teilnehmende ({participants.length})
         </h2>
         {#if participants.length === 0}
           <p class="text-sm text-haw-blau-50">Noch keine öffentlichen Teilnehmenden.</p>
