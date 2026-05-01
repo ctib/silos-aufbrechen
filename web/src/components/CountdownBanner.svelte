@@ -72,10 +72,10 @@
       'PRODID:-//HAW Kiel//Silos aufbrechen//DE',
       'BEGIN:VEVENT',
       'DTSTART:20260507T143000',
-      'DTEND:20260507T200000',
+      'DTEND:20260507T180000',
       'SUMMARY:Silos aufbrechen – Zukunft bauen',
       'DESCRIPTION:Interdisziplinärer Workshop für visionäre Köpfe unserer Region.\\nAntrittsvorlesung Prof. Dr.-Ing. Christoph Göbel mit Impulsen von Prof. Dr. Meike Wocken und Prof. Dr. Tammo Peters.\\n\\nProgramm: 14:30 Empfang\\, 15:00 Begrüßung\\, 15:15-16:45 Vorträge\\, 17:15 Workshop\\, ab 19:00 Ausklang.\\n\\nAnmeldung: ' + FORMS_URL,
-      'LOCATION:HAW Kiel\\, Kiel',
+      'LOCATION:HAW Kiel\\, Sokratesplatz 1\\, 24149 Kiel\\, Großes Hörsaalgebäude C2\\, Hörsaal 11',
       'URL:' + FORMS_URL,
       'END:VEVENT',
       'END:VCALENDAR',
@@ -95,9 +95,9 @@
   function googleCalendarUrl(): string {
     return 'https://calendar.google.com/calendar/render?action=TEMPLATE'
       + '&text=' + encodeURIComponent('Silos aufbrechen – Zukunft bauen')
-      + '&dates=20260507T143000/20260507T200000'
+      + '&dates=20260507T143000/20260507T180000'
       + '&details=' + encodeURIComponent('Interdisziplinärer Workshop für visionäre Köpfe unserer Region.\nAntrittsvorlesung Prof. Dr.-Ing. Christoph Göbel.\n\nAnmeldung: ' + FORMS_URL)
-      + '&location=' + encodeURIComponent('HAW Kiel, Kiel');
+      + '&location=' + encodeURIComponent('HAW Kiel, Sokratesplatz 1, 24149 Kiel, Großes Hörsaalgebäude C2, Hörsaal 11');
   }
 </script>
 
@@ -147,7 +147,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center gap-4">
           <div>
             <p class="text-2xl sm:text-3xl font-bold">7. Mai 2026</p>
-            <p class="text-haw-hellblau">14:30 – 20:00 Uhr, HAW Kiel</p>
+            <p class="text-haw-hellblau">14:30 – 18:00 Uhr, HAW Kiel, Hörsaal C2.11</p>
           </div>
           <div class="flex gap-2">
             <button
@@ -218,7 +218,7 @@
   {#if activePhase === 'durchfuehrung'}
     <div class="bg-haw-orange/10 py-6 px-4 text-center">
       <p class="text-2xl font-bold text-haw-blau">Willkommen zur Veranstaltung!</p>
-      <p class="mt-2 text-sm text-haw-blau-70">7. Mai 2026, 14:30 – 20:00 Uhr, HAW Kiel</p>
+      <p class="mt-2 text-sm text-haw-blau-70">7. Mai 2026, 14:30 – 18:00 Uhr, HAW Kiel, Hörsaal C2.11</p>
     </div>
   {:else}
     <!-- Event Countdown -->

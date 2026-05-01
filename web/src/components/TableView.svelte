@@ -30,9 +30,19 @@
   const canEdit = $derived(
     userRole === 'studi' || userRole === 'orga' || activeSection === 'offene_notizen'
   );
+  let allProfiles = $state<{ id: string; full_name: string; role: string }[]>([]);
+  let selectedProfileId = $state('');
+  let assigning = $state(false);
   let saving = $state(false);
   let loadError = $state('');
   let realtimeChannel: ReturnType<typeof supabase.channel> | null = null;
+
+  const canManageAssignments = $derived(
+    userRole === 'studi' || userRole === 'admin' || userRole === 'orga'
+  );
+  const availableProfiles = $derived(
+    allProfiles.filter(p => !participants.some(a => a.profile_id === p.id))
+  );
 
   // Current note content for active section
   const currentNote = $derived(notes.find(n => n.section === activeSection));
@@ -71,6 +81,15 @@
     table = tableData;
 
     await loadData(tableData.id);
+
+    // Load all profiles for assignment dropdown (studi/admin/orga only)
+    if (canManageAssignments) {
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('id, full_name, role')
+        .order('full_name');
+      allProfiles = profileData ?? [];
+    }
 
     // Realtime subscription for notes
     realtimeChannel = supabase
@@ -129,6 +148,26 @@
   function handleInput() {
     clearTimeout(saveTimeout);
     saveTimeout = setTimeout(saveNote, 1500);
+  }
+
+  async function assignProfile() {
+    if (!selectedProfileId || !table) return;
+    assigning = true;
+    const { data: { session } } = await supabase.auth.getSession();
+    await supabase.from('table_assignments').upsert({
+      table_id: table.id,
+      profile_id: selectedProfileId,
+      assigned_by: session?.user.id,
+    }, { onConflict: 'table_id,profile_id' });
+    selectedProfileId = '';
+    await loadData(table.id);
+    assigning = false;
+  }
+
+  async function removeAssignment(id: string) {
+    if (!table) return;
+    await supabase.from('table_assignments').delete().eq('id', id);
+    await loadData(table.id);
   }
 
 </script>
@@ -246,12 +285,38 @@
               <div class="flex items-center gap-2 text-sm">
                 <span class="w-2 h-2 rounded-full shrink-0
                   {p.profiles?.role === 'studi' ? 'bg-haw-orange' : 'bg-haw-hellblau'}"></span>
-                <span class="font-bold">{p.profiles?.full_name}</span>
+                <span class="font-bold flex-1">{p.profiles?.full_name}</span>
                 {#if p.profiles?.role === 'studi'}
                   <span class="text-[10px] bg-haw-orange/20 text-haw-orange px-1.5 py-0.5 rounded">Studi</span>
                 {/if}
+                {#if canManageAssignments}
+                  <button
+                    onclick={() => removeAssignment(p.id)}
+                    class="text-red-400 hover:text-red-600 text-xs font-bold cursor-pointer"
+                    title="Zuweisung entfernen"
+                  >✕</button>
+                {/if}
               </div>
             {/each}
+          </div>
+        {/if}
+
+        {#if canManageAssignments}
+          <div class="mt-3 flex gap-2">
+            <select
+              bind:value={selectedProfileId}
+              class="flex-1 text-xs border border-haw-blau-10 rounded px-2 py-1.5"
+            >
+              <option value="">Person wählen…</option>
+              {#each availableProfiles as profile}
+                <option value={profile.id}>{profile.full_name} ({profile.role})</option>
+              {/each}
+            </select>
+            <button
+              onclick={assignProfile}
+              disabled={!selectedProfileId || assigning}
+              class="text-xs bg-haw-blau text-white px-3 py-1.5 rounded hover:bg-haw-blau-90 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >{assigning ? '…' : 'Zuweisen'}</button>
           </div>
         {/if}
       </div>

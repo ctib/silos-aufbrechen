@@ -99,13 +99,20 @@
         tablePreferences = prefs?.map(p => p.table_id) ?? [];
       }
 
-      // Load public participants
-      const { data: pubParticipants } = await supabase
-        .from('profiles')
-        .select('full_name, background')
-        .eq('show_name_public', true);
-
-      if (pubParticipants) participants = pubParticipants;
+      // Load participants: studi/admin/orga see all, others only public
+      if (['studi', 'admin', 'orga'].includes(role)) {
+        const { data: allParticipants } = await supabase
+          .from('profiles')
+          .select('full_name, background')
+          .order('full_name');
+        if (allParticipants) participants = allParticipants;
+      } else {
+        const { data: pubParticipants } = await supabase
+          .from('profiles')
+          .select('full_name, background')
+          .eq('show_name_public', true);
+        if (pubParticipants) participants = pubParticipants;
+      }
 
       // Load workshop tables
       const { data: tablesData } = await supabase
@@ -359,7 +366,7 @@
         Willkommen, {profile?.full_name}
         {#if userRole !== 'teilnehmer'}
           <span class="text-xs bg-haw-hellblau text-haw-blau px-2 py-0.5 rounded-full ml-2 font-bold uppercase">
-            {userRole === 'admin' ? 'F&E' : userRole}
+            {userRole}
           </span>
         {/if}
       </p>
@@ -592,7 +599,7 @@
       <!-- Participants list -->
       <div class="bg-white border border-haw-blau-10 rounded-lg p-6">
         <h2 class="font-bold text-haw-blau text-lg mb-4">
-          Teilnehmende ({participants.length})
+          {['studi', 'admin', 'orga'].includes(userRole) ? 'Alle' : 'Öffentliche'} Teilnehmende ({participants.length})
         </h2>
         {#if participants.length === 0}
           <p class="text-sm text-haw-blau-50">Noch keine öffentlichen Teilnehmenden.</p>
