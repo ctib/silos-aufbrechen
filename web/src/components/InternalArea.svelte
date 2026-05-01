@@ -10,7 +10,7 @@
   let authenticated = $state(false);
   let profile = $state<Profile | null>(null);
   let registration = $state<Registration | null>(null);
-  let participants = $state<Pick<Profile, 'full_name' | 'background'>[]>([]);
+  let participants = $state<Array<{full_name: string | null; background: string | null; show_name_public?: boolean; registrations?: Array<{attends_lecture: boolean; attends_workshop: boolean; attends_dinner: boolean}>}>>([]);
   let researchCalls = $state<ResearchCall[]>([]);
   let tables = $state<WorkshopTable[]>([]);
   let userRole = $state<UserRole>('gast');
@@ -26,6 +26,34 @@
   let expandedCall = $state<string | null>(null);
   let loadError = $state('');
   let saveError = $state('');
+  let activeFilter = $state('alle');
+
+  const canFilter = $derived(['studi', 'admin', 'orga'].includes(userRole));
+
+  const filterLabels: Record<string, string> = {
+    alle: 'Alle Teilnehmende',
+    sichtbare: 'Sichtbare Teilnehmende',
+    vortraege: 'Vorträge',
+    workshop: 'Workshop',
+    abendprogramm: 'Abendprogramm',
+  };
+
+  const filteredParticipants = $derived.by(() => {
+    if (!canFilter) return participants;
+    switch (activeFilter) {
+      case 'sichtbare': return participants.filter(p => p.show_name_public);
+      case 'vortraege': return participants.filter(p => p.registrations?.[0]?.attends_lecture);
+      case 'workshop': return participants.filter(p => p.registrations?.[0]?.attends_workshop);
+      case 'abendprogramm': return participants.filter(p => p.registrations?.[0]?.attends_dinner);
+      default: return participants;
+    }
+  });
+
+  const participantHeading = $derived(
+    canFilter
+      ? `${filterLabels[activeFilter]} (${filteredParticipants.length})`
+      : `Sichtbare Teilnehmende (${filteredParticipants.length})`
+  );
 
   const backgroundOptions = ['Wirtschaft', 'Informatik', 'Landwirtschaft', 'Bausektor'];
 
@@ -99,11 +127,11 @@
         tablePreferences = prefs?.map(p => p.table_id) ?? [];
       }
 
-      // Load participants: studi/admin/orga see all, others only public
+      // Load participants: studi/admin/orga see all (with registration data for filters), others only public
       if (['studi', 'admin', 'orga'].includes(userRole)) {
         const { data: allParticipants } = await supabase
           .from('profiles')
-          .select('full_name, background')
+          .select('full_name, background, show_name_public, registrations(attends_lecture, attends_workshop, attends_dinner)')
           .order('full_name');
         if (allParticipants) participants = allParticipants;
       } else {
@@ -277,12 +305,20 @@
       registration = { ...registration, attends_lecture: editLecture, attends_workshop: editWorkshop, attends_dinner: editDinner, dinner_dietrichsdorf: editDinner ? editDinnerDietrichsdorf : false, dinner_hbf: editDinner ? editDinnerHbf : false, dinner_ausklang: editDinner ? editDinnerAusklang : false, companion_count: editCompanions, companion_under_16: editCompanionUnder16, companion_under_12: editCompanionUnder12 };
       tablePreferences = [...editTablePrefs];
 
-      // Reload participants list
-      const { data: pubParticipants } = await supabase
-        .from('profiles')
-        .select('full_name, background')
-        .eq('show_name_public', true);
-      if (pubParticipants) participants = pubParticipants;
+      // Reload participants list (same role-based logic as initial load)
+      if (['studi', 'admin', 'orga'].includes(userRole)) {
+        const { data: reloadedParticipants } = await supabase
+          .from('profiles')
+          .select('full_name, background, show_name_public, registrations(attends_lecture, attends_workshop, attends_dinner)')
+          .order('full_name');
+        if (reloadedParticipants) participants = reloadedParticipants;
+      } else {
+        const { data: pubParticipants } = await supabase
+          .from('profiles')
+          .select('full_name, background')
+          .eq('show_name_public', true);
+        if (pubParticipants) participants = pubParticipants;
+      }
 
       editing = false;
     } catch (err) {
@@ -377,7 +413,7 @@
           Forschungsmöglichkeiten
         </a>
       {/if}
-      {#if userRole === 'orga'}
+      {#if userRole === 'admin' || userRole === 'orga'}
         <a href={basePath('/orga')} class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">
           Orga
         </a>
@@ -599,13 +635,29 @@
       <!-- Participants list -->
       <div class="bg-white border border-haw-blau-10 rounded-lg p-6">
         <h2 class="font-bold text-haw-blau text-lg mb-4">
-          Sichtbare Teilnehmende ({participants.length})
+          {participantHeading}
         </h2>
-        {#if participants.length === 0}
-          <p class="text-sm text-haw-blau-50">Noch keine öffentlichen Teilnehmenden.</p>
+
+        {#if canFilter}
+          <div class="flex flex-wrap gap-2 mb-4">
+            {#each Object.entries(filterLabels) as [key, label]}
+              <button
+                type="button"
+                onclick={() => activeFilter = key}
+                class="text-xs px-3 py-1.5 rounded-full cursor-pointer transition-colors
+                  {activeFilter === key
+                    ? 'bg-haw-blau text-white'
+                    : 'bg-haw-blau-10 text-haw-blau-50 hover:bg-haw-blau-30 hover:text-haw-blau'}"
+              >{label}</button>
+            {/each}
+          </div>
+        {/if}
+
+        {#if filteredParticipants.length === 0}
+          <p class="text-sm text-haw-blau-50">Keine Teilnehmenden in dieser Ansicht.</p>
         {:else}
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-            {#each participants as p}
+            {#each filteredParticipants as p}
               <div class="flex items-center gap-2 py-1">
                 <span class="w-2 h-2 rounded-full bg-haw-hellblau shrink-0"></span>
                 <span class="font-bold">{p.full_name}</span>
