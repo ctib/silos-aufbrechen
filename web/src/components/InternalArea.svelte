@@ -100,7 +100,7 @@
       }
 
       // Load participants: studi/admin/orga see all, others only public
-      if (['studi', 'admin', 'orga'].includes(role)) {
+      if (['studi', 'admin', 'orga'].includes(userRole)) {
         const { data: allParticipants } = await supabase
           .from('profiles')
           .select('full_name, background')
