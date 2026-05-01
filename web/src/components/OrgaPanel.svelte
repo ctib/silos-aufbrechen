@@ -38,7 +38,7 @@
       .eq('id', session.user.id)
       .single();
 
-    if (profile?.role !== 'orga') { loading = false; return; }
+    if (profile?.role !== 'orga' && profile?.role !== 'admin') { loading = false; return; }
     authorized = true;
 
     await loadData();
