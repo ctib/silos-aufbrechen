@@ -129,11 +129,17 @@
 
       // Load participants: studi/admin/orga see all (with registration data for filters), others only public
       if (['studi', 'admin', 'orga'].includes(userRole)) {
-        const { data: allParticipants } = await supabase
-          .from('profiles')
-          .select('full_name, background, show_name_public, registrations(attends_lecture, attends_workshop, attends_dinner)')
-          .order('full_name');
-        if (allParticipants) participants = allParticipants;
+        const [profilesRes, regsRes] = await Promise.all([
+          supabase.from('profiles').select('id, full_name, background, show_name_public').order('full_name'),
+          supabase.from('registrations').select('profile_id, attends_lecture, attends_workshop, attends_dinner'),
+        ]);
+        if (profilesRes.data) {
+          const regMap = new Map(regsRes.data?.map(r => [r.profile_id, r]) ?? []);
+          participants = profilesRes.data.map(p => ({
+            ...p,
+            registrations: regMap.has(p.id) ? [regMap.get(p.id)!] : [],
+          }));
+        }
       } else {
         const { data: pubParticipants } = await supabase
           .from('profiles')
@@ -307,11 +313,17 @@
 
       // Reload participants list (same role-based logic as initial load)
       if (['studi', 'admin', 'orga'].includes(userRole)) {
-        const { data: reloadedParticipants } = await supabase
-          .from('profiles')
-          .select('full_name, background, show_name_public, registrations(attends_lecture, attends_workshop, attends_dinner)')
-          .order('full_name');
-        if (reloadedParticipants) participants = reloadedParticipants;
+        const [profilesRes, regsRes] = await Promise.all([
+          supabase.from('profiles').select('id, full_name, background, show_name_public').order('full_name'),
+          supabase.from('registrations').select('profile_id, attends_lecture, attends_workshop, attends_dinner'),
+        ]);
+        if (profilesRes.data) {
+          const regMap = new Map(regsRes.data?.map(r => [r.profile_id, r]) ?? []);
+          participants = profilesRes.data.map(p => ({
+            ...p,
+            registrations: regMap.has(p.id) ? [regMap.get(p.id)!] : [],
+          }));
+        }
       } else {
         const { data: pubParticipants } = await supabase
           .from('profiles')
