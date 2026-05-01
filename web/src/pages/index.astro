@@ -63,7 +63,7 @@ import CountdownBanner from '../components/CountdownBanner.svelte';
             „Citizen Science und Open Data: wie Bürgerprojekte Umweltdaten sichtbar
             machen" – am Beispiel von bodenfeuchte.org
           </p>
-          <p class="mt-2 text-xs text-haw-blau-50">15:15 – 15:30 Uhr</p>
+          <p class="mt-2 text-xs text-haw-blau-50">15:00 – 15:15 Uhr</p>
         </div>
         <!-- Christoph Göbel -->
         <div class="bg-white rounded-lg shadow-sm p-6 border-t-4 border-haw-blau">
@@ -78,7 +78,7 @@ import CountdownBanner from '../components/CountdownBanner.svelte';
           <p class="mt-4 text-sm leading-relaxed">
             „Nachhaltige Energieversorgung – Es ist doch alles da! Oder?"
           </p>
-          <p class="mt-2 text-xs text-haw-blau-50">15:30 – 16:30 Uhr</p>
+          <p class="mt-2 text-xs text-haw-blau-50">15:15 – 16:15 Uhr</p>
         </div>
         <!-- Tammo Peters -->
         <div class="bg-white rounded-lg shadow-sm p-6 border-t-4 border-haw-hellblau">
@@ -94,7 +94,7 @@ import CountdownBanner from '../components/CountdownBanner.svelte';
             „Es grünt so grün – die Rolle von Grasland zur Lösung von Umweltproblemen
             – auch in der Stadt?"
           </p>
-          <p class="mt-2 text-xs text-haw-blau-50">16:30 – 16:45 Uhr</p>
+          <p class="mt-2 text-xs text-haw-blau-50">16:15 – 16:30 Uhr</p>
         </div>
       </div>
     </div>
@@ -102,25 +102,32 @@ import CountdownBanner from '../components/CountdownBanner.svelte';
 
   <!-- Programm -->
   <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="flex items-baseline justify-between mb-8">
-      <h2 class="font-serif text-3xl font-bold text-haw-blau">Programm</h2>
-      <p class="text-xs text-haw-blau-50">Vorläufiges Programm, Stand: 24.04.2026</p>
-    </div>
+    <h2 class="font-serif text-3xl font-bold text-haw-blau mb-8">Programm</h2>
     <div class="space-y-0">
       {[
-        { time: '14:30', title: 'Empfang', highlight: false },
-        { time: '15:00', title: 'Willkommensgruß, Vorstellung und Einführung', highlight: false },
-        { time: '15:15', title: 'Impulsvortrag Prof. Dr. Meike Wocken', highlight: false },
-        { time: '15:30', title: 'Antrittsvorlesung Prof. Dr.-Ing. Christoph Göbel', highlight: true },
-        { time: '16:30', title: 'Impulsvortrag Prof. Dr. Tammo Peters', highlight: false },
-        { time: '16:45', title: 'Kaffeepause', highlight: false },
-        { time: '17:15', title: 'Workshop – moderierte Arbeitstische', highlight: true },
-        { time: '18:30', title: 'Vorstellung der Ergebnisse und Abschlussworte', highlight: false },
-        { time: 'Ab 19:00', title: 'Gemeinsamer Ausklang mit musikalischer Begleitung', highlight: false },
+        { time: '14:30', title: 'Empfang', highlight: false, location: 'Hörsaal 11, Sokratesplatz 1', locationUrl: 'https://www.openstreetmap.org/?mlat=54.3345&mlon=10.1790#map=17/54.3345/10.1790' },
+        { time: '14:50', title: 'Willkommensgruß, Vorstellung und Einführung', highlight: false },
+        { time: '15:00', title: 'Impulsvortrag Prof. Dr. Meike Wocken', highlight: false },
+        { time: '15:15', title: 'Antrittsvorlesung Prof. Dr.-Ing. Christoph Göbel', highlight: true },
+        { time: '16:15', title: 'Impulsvortrag Prof. Dr. Tammo Peters', highlight: false },
+        { time: '16:30', title: 'Kaffeepause & Übergang zum Workshop', highlight: false },
+        { time: '16:45', title: 'Workshop – moderierte Arbeitstische', highlight: true },
+        { time: '17:30', title: 'Vorstellung der Ergebnisse und Abschlussworte', highlight: false },
+        { time: '18:30', title: 'Fahrt mit der MS Stadt Kiel', highlight: false, location: 'ab Anleger Dietrichsdorf', locationUrl: 'https://www.openstreetmap.org/?mlat=54.3297&mlon=10.1786#map=17/54.3297/10.1786' },
+        { time: '19:45', title: 'Zwischenstopp am Hauptbahnhof (Zu- und Abstieg möglich)', highlight: false, locationUrl: 'https://www.openstreetmap.org/?mlat=54.3135&mlon=10.1310#map=17/54.3135/10.1310' },
+        { time: 'Ab 20:15', title: 'Ausklang auf der MS Stadt Kiel', highlight: false, location: 'am Anleger Reventloubrücke', locationUrl: 'https://www.openstreetmap.org/?mlat=54.3328&mlon=10.1525#map=17/54.3328/10.1525' },
       ].map((item) => (
         <div class={`flex border-b border-haw-blau-10 py-4 ${item.highlight ? 'bg-haw-blau-10 -mx-4 px-4 rounded' : ''}`}>
           <span class="w-24 shrink-0 font-bold text-haw-blau">{item.time}</span>
-          <span class={item.highlight ? 'font-bold' : ''}>{item.title}</span>
+          <span class={item.highlight ? 'font-bold' : ''}>
+            {item.title}
+            {item.location && (
+              <span class="text-haw-blau-50 font-normal"> – {item.locationUrl ? <a href={item.locationUrl} target="_blank" rel="noopener noreferrer" class="hover:text-haw-blau underline decoration-dotted">{item.location}</a> : item.location}</span>
+            )}
+            {!item.location && item.locationUrl && (
+              <a href={item.locationUrl} target="_blank" rel="noopener noreferrer" class="text-haw-blau-50 hover:text-haw-blau ml-1 text-xs underline decoration-dotted" title="Auf Karte anzeigen">(Karte)</a>
+            )}
+          </span>
         </div>
       ))}
     </div>
