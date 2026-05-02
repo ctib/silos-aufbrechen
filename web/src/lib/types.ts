@@ -25,6 +25,7 @@ export interface WorkshopTable {
   description: string | null;
   capacity: number;
   is_active: boolean;
+  moderator_name: string | null;
   created_at: string;
 }
 

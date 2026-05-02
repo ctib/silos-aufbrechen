@@ -28,7 +28,7 @@
   let activeSection = $state<NoteSection>('offene_notizen');
   // canEdit depends on section: offene_notizen is writable by everyone, others only by studi/orga
   const canEdit = $derived(
-    userRole === 'studi' || userRole === 'orga' || activeSection === 'offene_notizen'
+    userRole === 'studi' || userRole === 'orga' || userRole === 'admin' || activeSection === 'offene_notizen'
   );
   let allProfiles = $state<{ id: string; full_name: string; role: string }[]>([]);
   let selectedProfileId = $state('');
@@ -254,7 +254,7 @@
       <div class="bg-white border border-haw-blau-10 rounded-lg p-5">
         <h3 class="font-bold text-haw-blau mb-3">Interessierte ({interests.length})</h3>
         {#if interests.length === 0}
-          <p class="text-xs text-haw-blau-50">Noch keine Interessenten mit öffentlichem Profil.</p>
+          <p class="text-xs text-haw-blau-50">Noch keine Interessenten.</p>
         {:else}
           <div class="space-y-2">
             {#each interests as person}
@@ -274,7 +274,7 @@
         {/if}
       </div>
 
-      <!-- Participants at this table (assigned) -->
+      <!-- Participants at this table (assigned, with management) -->
       <div class="bg-white border border-haw-blau-10 rounded-lg p-5">
         <h3 class="font-bold text-haw-blau mb-3">Am Tisch ({participants.length})</h3>
         {#if participants.length === 0}
@@ -345,6 +345,31 @@
       </div>
     </div>
   </div>
+
+  <!-- Tischteam (Moderator + Studis, full width below notes) -->
+  {#if table.moderator_name || participants.some(p => p.profiles?.role === 'studi')}
+    <div class="mt-8">
+      <div class="bg-white border border-haw-blau-10 rounded-lg p-6">
+        <h2 class="font-bold text-haw-blau text-lg mb-4">Tischteam</h2>
+        <div class="flex flex-wrap gap-4">
+          {#if table.moderator_name}
+            <div class="flex items-center gap-2 text-sm">
+              <span class="w-2 h-2 rounded-full shrink-0 bg-haw-blau"></span>
+              <span class="font-bold">{table.moderator_name}</span>
+              <span class="text-[10px] bg-haw-blau/15 text-haw-blau px-1.5 py-0.5 rounded">Moderation</span>
+            </div>
+          {/if}
+          {#each participants.filter(p => p.profiles?.role === 'studi') as p}
+            <div class="flex items-center gap-2 text-sm">
+              <span class="w-2 h-2 rounded-full shrink-0 bg-haw-orange"></span>
+              <span class="font-bold">{p.profiles?.full_name}</span>
+              <span class="text-[10px] bg-haw-orange/20 text-haw-orange px-1.5 py-0.5 rounded">Studi</span>
+            </div>
+          {/each}
+        </div>
+      </div>
+    </div>
+  {/if}
 
   <!-- Research calls for this table (full width, below notes) -->
   {#if calls.length > 0}
