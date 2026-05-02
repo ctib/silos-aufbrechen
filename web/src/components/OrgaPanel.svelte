@@ -192,13 +192,16 @@
       },
     });
 
+    // 3. Create registration for the new user (idempotent — does nothing if already exists)
+    await supabase.rpc('create_registration_for_email', { p_email: req.email });
+
     if (otpError) {
       nachmeldungMessage = `Genehmigt, aber der Zugangslink konnte nicht gesendet werden: ${otpError.message}. Bitte manuell einen Link senden.`;
     } else {
-      nachmeldungMessage = `${req.name} wurde genehmigt. Zugangslink an ${req.email} gesendet.`;
+      nachmeldungMessage = `${req.name} wurde genehmigt und als Teilnehmer*in registriert. Zugangslink an ${req.email} gesendet.`;
     }
 
-    // 3. Re-authenticate in case signInWithOtp disrupted the session
+    // 4. Re-authenticate in case signInWithOtp disrupted the session
     await supabase.auth.refreshSession();
 
     processingId = null;
