@@ -252,16 +252,4 @@
     </div>
   {/if}
 
-  <!-- Vorbereitungsphase info banner -->
-  {#if activePhase === 'vorbereitung'}
-    <div class="bg-haw-hellblau-20 py-5 px-4">
-      <div class="max-w-4xl mx-auto text-center">
-        <p class="text-sm font-bold text-haw-blau">Die Vorbereitung der Veranstaltung läuft.</p>
-        <p class="text-sm text-haw-blau-70 mt-1">
-          Ein Programm-Update folgt in Kürze. Alle angemeldeten Teilnehmer:innen werden
-          sobald als möglich über die weiteren Details informiert.
-        </p>
-      </div>
-    </div>
-  {/if}
 {/if}
