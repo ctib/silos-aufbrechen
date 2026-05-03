@@ -43,8 +43,11 @@
   const availableProfiles = $derived(
     allProfiles.filter(p => !participants.some(a => a.profile_id === p.id))
   );
+  const studiInterests = $derived(
+    interests.filter(i => i.role === 'studi')
+  );
   const filteredInterests = $derived(
-    interests.filter(i => !participants.some(p => p.profiles?.full_name === i.full_name))
+    interests.filter(i => i.role !== 'studi')
   );
 
   // Current note content for active section
@@ -350,7 +353,7 @@
   </div>
 
   <!-- Tischteam (Moderator + Studis, full width below notes) -->
-  {#if table.moderator_name || participants.some(p => p.profiles?.role === 'studi')}
+  {#if table.moderator_name || studiInterests.length > 0}
     <div class="mt-8">
       <div class="bg-white border border-haw-blau-10 rounded-lg p-6">
         <h2 class="font-bold text-haw-blau text-lg mb-4">Tischteam</h2>
@@ -362,10 +365,10 @@
               <span class="text-[10px] bg-haw-blau/15 text-haw-blau px-1.5 py-0.5 rounded">Moderation</span>
             </div>
           {/if}
-          {#each participants.filter(p => p.profiles?.role === 'studi') as p}
+          {#each studiInterests as person}
             <div class="flex items-center gap-2 text-sm">
               <span class="w-2 h-2 rounded-full shrink-0 bg-haw-orange"></span>
-              <span class="font-bold">{p.profiles?.full_name}</span>
+              <span class="font-bold">{person.full_name}</span>
               <span class="text-[10px] bg-haw-orange/20 text-haw-orange px-1.5 py-0.5 rounded">Studi</span>
             </div>
           {/each}
