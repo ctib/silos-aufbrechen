@@ -17,6 +17,19 @@ pnpm-debug.log*
 .env
 .env.production
 
+# DMARC reports (lokal aufbewahrt, nicht committen)
+DMARC/
+
+# Migrationen und Scripts mit personenbezogenen Daten (lokal behalten)
+supabase/008_add_orga_tn.sql
+supabase/009_set_roles.sql
+supabase/012_fix_umlaute_robust.sql
+supabase/016_import_teilnehmerliste.sql
+supabase/017_cleanup_and_admin.sql
+supabase/019_purge_broken_users.sql
+supabase/022_tischteam.sql
+scripts/import-participants.mjs
+
 # macOS-specific files
 .DS_Store
 
