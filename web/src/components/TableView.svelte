@@ -43,6 +43,9 @@
   const availableProfiles = $derived(
     allProfiles.filter(p => !participants.some(a => a.profile_id === p.id))
   );
+  const filteredInterests = $derived(
+    interests.filter(i => !participants.some(p => p.profiles?.full_name === i.full_name))
+  );
 
   // Current note content for active section
   const currentNote = $derived(notes.find(n => n.section === activeSection));
@@ -252,12 +255,12 @@
     <div class="space-y-6">
       <!-- Interests (from registration preferences) -->
       <div class="bg-white border border-haw-blau-10 rounded-lg p-5">
-        <h3 class="font-bold text-haw-blau mb-3">Interessierte ({interests.length})</h3>
-        {#if interests.length === 0}
+        <h3 class="font-bold text-haw-blau mb-3">Interessierte ({filteredInterests.length})</h3>
+        {#if filteredInterests.length === 0}
           <p class="text-xs text-haw-blau-50">Noch keine Interessenten.</p>
         {:else}
           <div class="space-y-2">
-            {#each interests as person}
+            {#each filteredInterests as person}
               <div class="flex items-center gap-2 text-sm">
                 <span class="w-2 h-2 rounded-full shrink-0
                   {person.role === 'studi' ? 'bg-haw-orange' : 'bg-haw-hellblau'}"></span>
