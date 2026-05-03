@@ -99,12 +99,8 @@ git push origin master
 
 ## Offene Punkte
 
-- [ ] Resend: zukunftbauen.org bei Resend verifizieren, dann `006_domain_switch.sql` ausfuehren
-- [ ] Supabase: Redirect URLs fuer zukunftbauen.org hinzufuegen
-- [ ] GitHub Pages: Custom Domain `zukunftbauen.org` aktivieren
-- [ ] Admin-Rolle setzen (Andreas Borchardt -> 'admin')
-- [ ] Supabase Auth-Email-Templates auf Deutsch
 - [ ] PDF-Export der Tisch-Protokolle (erst kurz vor/nach Veranstaltung)
+- [ ] Magic Link Emails an HAW-Adressen: HAW IT bitten, zukunftbauen.org zu whitelisten
 
 ---
 
@@ -114,5 +110,5 @@ git push origin master
 - **ToDos.txt pflegen:** Nach jeder erledigten Aufgabe mit `[x]` abhaken
 - **Supabase Projekt-ID:** `cbybfmnbojklqbkmuwto`
 - **CD Manual:** `Archiv/cd_manual_haw_screen.pdf`
-- **Kontakt:** Prof. Dr.-Ing. Christoph Goebel, christoph.goebel@haw-kiel.de
-- **Admin:** Andreas Borchardt (mit dt!), andreas.borchardt@haw-kiel.de
+- **Personenbezogene Daten:** Migrationen/Scripts mit TN-Daten liegen nur lokal (gitignored). Nie committen!
+- **DMARC Reports:** Lokal in `web/DMARC/` ablegen (gitignored), gelegentlich pruefen

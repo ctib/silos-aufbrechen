@@ -115,5 +115,17 @@
 [x] Forschungscalls als Akkordeon: Nur Titel + Typ-Badge sichtbar, Details per Klick aufklappbar (Beschreibung, Deadline, Link, Tisch-Tags). Spart Platz im Veranstaltungsbereich.
 [x] Workshoptische im Veranstaltungsbereich nach oben in die rechte Spalte verschoben.
 [x] Forschungscalls-Block zentral unter Teilnehmendenliste angeordnet (volle Breite) fuer bessere Lesbarkeit.
+[x] Nachmeldung-Approval legt automatisch Registration an: RPC create_registration_for_email
+    (SECURITY DEFINER), OrgaPanel ruft nach signInWithOtp sofort die RPC auf. Person erscheint
+    direkt in der TN-Liste, ohne den Magic Link klicken zu muessen.
+    Migration: 023_nachmeldung_auto_registration.sql
+[x] DMARC Reports geprueft (Google + Microsoft/Outlook): SPF pass, DKIM pass, keine Auffaelligkeiten.
+    Reports lokal in web/DMARC/ abgelegt (gitignored).
+[x] Personenbezogene Daten aus Repo entfernt: 8 Dateien mit TN-Namen/Emails aus Git-Tracking und
+    kompletter History entfernt (filter-branch + force-push). Dateien liegen nur noch lokal.
+    Betrifft: 008, 009, 012, 016, 017, 019, 022 (SQL) + import-participants.mjs
+[x] Studis im Tischteam statt Interessierten-Liste: Studis werden anhand ihrer Rolle direkt
+    ins Tischteam verschoben und nicht mehr doppelt in der Interessierten-Liste angezeigt.
+
 - Magic Link Emails an HAW-Adressen: HAW IT bitten, zukunftbauen.org zu whitelisten
 - PDF-Export der Tisch-Protokolle (nicht eilig, erst kurz vor/nach der Veranstaltung)
