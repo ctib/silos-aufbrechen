@@ -123,7 +123,7 @@
     try {
       const [notesRes, assignRes, callsRes, interestsRes] = await Promise.all([
         supabase.from('table_notes').select('*').eq('table_id', tableId).order('section'),
-        supabase.from('table_assignments').select('*, profiles(full_name, email, role)').eq('table_id', tableId),
+        supabase.from('table_assignments').select('*, profiles!table_assignments_profile_id_fkey(full_name, email, role)').eq('table_id', tableId),
         supabase.from('research_calls').select('*, call_table_tags!inner(table_id)').eq('call_table_tags.table_id', tableId).order('deadline'),
         supabase.rpc('get_table_interests', { p_table_number: tableNumber }),
       ]);

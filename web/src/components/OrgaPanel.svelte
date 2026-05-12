@@ -51,7 +51,7 @@
         supabase.from('profiles').select('*').order('full_name'),
         supabase.from('registrations').select('*, profiles(full_name, email), workshop_tables(number, title)').order('created_at'),
         supabase.from('workshop_tables').select('*').order('number'),
-        supabase.from('table_assignments').select('*, profiles(full_name, email, role), workshop_tables(number, title)').order('created_at'),
+        supabase.from('table_assignments').select('*, profiles!table_assignments_profile_id_fkey(full_name, email, role), workshop_tables(number, title)').order('created_at'),
         supabase.from('nachmeldung_requests').select('*').order('created_at', { ascending: false }),
       ]);
       profiles = profilesRes.data ?? [];
