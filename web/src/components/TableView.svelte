@@ -156,16 +156,24 @@
     saveTimeout = setTimeout(saveNote, 1500);
   }
 
+  let assignError = $state('');
+
   async function assignProfile() {
     if (!selectedProfileId || !table) return;
     assigning = true;
+    assignError = '';
     const { data: { session } } = await supabase.auth.getSession();
-    await supabase.from('table_assignments').upsert({
+    const { error } = await supabase.from('table_assignments').upsert({
       table_id: table.id,
       profile_id: selectedProfileId,
       assigned_by: session?.user.id,
     }, { onConflict: 'table_id,profile_id' });
-    selectedProfileId = '';
+    if (error) {
+      console.error('Zuweisung fehlgeschlagen:', error);
+      assignError = `Zuweisung fehlgeschlagen: ${error.message}`;
+    } else {
+      selectedProfileId = '';
+    }
     await loadData(table.id);
     assigning = false;
   }
@@ -324,6 +332,9 @@
               class="text-xs bg-haw-blau text-white px-3 py-1.5 rounded hover:bg-haw-blau-90 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >{assigning ? '…' : 'Zuweisen'}</button>
           </div>
+          {#if assignError}
+            <p class="mt-2 text-xs text-red-600">{assignError}</p>
+          {/if}
         {/if}
       </div>
 

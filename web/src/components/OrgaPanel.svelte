@@ -102,16 +102,24 @@
   }
 
   // Studi assignment
+  let assignError = $state('');
+
   async function assignStudi() {
     if (!selectedStudi || !selectedTable) return;
+    assignError = '';
     const { data: { session } } = await supabase.auth.getSession();
-    await supabase.from('table_assignments').upsert({
+    const { error } = await supabase.from('table_assignments').upsert({
       table_id: selectedTable,
       profile_id: selectedStudi,
       assigned_by: session?.user.id,
     }, { onConflict: 'table_id,profile_id' });
-    selectedStudi = '';
-    selectedTable = '';
+    if (error) {
+      console.error('Studi-Zuweisung fehlgeschlagen:', error);
+      assignError = `Zuweisung fehlgeschlagen: ${error.message}`;
+    } else {
+      selectedStudi = '';
+      selectedTable = '';
+    }
     await loadData();
   }
 
@@ -477,6 +485,9 @@
             disabled={!selectedStudi || !selectedTable}
             class="bg-haw-blau text-white px-4 py-2 rounded text-sm font-bold cursor-pointer hover:bg-haw-blau-90 disabled:opacity-50 disabled:cursor-not-allowed"
           >Zuweisen</button>
+          {#if assignError}
+            <p class="text-xs text-red-600 mt-2">{assignError}</p>
+          {/if}
         </div>
       </div>
 
