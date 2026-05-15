@@ -25,6 +25,7 @@
     <p class="text-lg sm:text-xl leading-relaxed italic text-haw-blau-70">
       {$t('kiel.quote')}
     </p>
+    <p class="mt-3 text-sm text-haw-blau-50 text-right">– {$t('kiel.attribution')}</p>
   </div>
   <div class="haw-gradient-line mt-8 w-24"></div>
   <p class="mt-8 text-lg leading-relaxed">

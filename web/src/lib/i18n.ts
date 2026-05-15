@@ -12,7 +12,7 @@ const translations: Record<string, Record<Locale, string>> = {
   'nav.intern': { de: 'Intern', en: 'Internal' },
 
   // Hero
-  'hero.title': { de: 'Silos aufbrechen –\nZukunft bauen', en: 'Breaking Silos –\nBuilding the Future' },
+  'hero.title': { de: 'Zukunft bauen', en: 'Building the Future' },
   'hero.subtitle': { de: 'Interdisziplinär denken. Gemeinsam handeln. Von und für Kiel.', en: 'Think across disciplines. Act together. By and for Kiel.' },
 
   // Kiel-Motiv
@@ -20,6 +20,7 @@ const translations: Record<string, Record<Locale, string>> = {
     de: 'Bei einem Schiff verbindet der Kiel Bug und Heck – das Rückgrat, das alles zusammenhält. Ist Kiel damit das Rückgrat der Republik?',
     en: 'On a ship, the keel connects bow and stern – the backbone that holds everything together. Does that make Kiel the backbone of the republic?',
   },
+  'kiel.attribution': { de: 'Dorothea Lübbe', en: 'Dorothea Lübbe' },
   'kiel.text': {
     de: 'Wie der Kiel die Teile eines Schiffes verbindet, verbinden wir die Disziplinen. Wissenschaft, Wirtschaft und Stadtgesellschaft zusammenbringen – nicht als Schlagwort, sondern als Werkzeug für echte Lösungen.',
     en: 'Just as the keel connects parts of a ship, we connect disciplines. Bringing together science, industry, and civil society – not as a buzzword, but as a tool for real solutions.',
@@ -28,12 +29,12 @@ const translations: Record<string, Record<Locale, string>> = {
   // Rückblick
   'review.title': { de: 'Rückblick', en: 'Looking Back' },
   'review.text1': {
-    de: 'Am 7. Mai 2026 haben wir Silos aufgebrochen – an der HAW Kiel, mit Wissenschaft, Wirtschaft und Stadtgesellschaft an einem Tisch.',
-    en: 'On May 7, 2026, we broke down silos – at HAW Kiel, with science, industry, and civil society at one table.',
+    de: 'Am 7. Mai haben wir Silos aufgebrochen – an der HAW Kiel, mit Wissenschaft, Wirtschaft und Stadtgesellschaft an einem Tisch.',
+    en: 'On May 7, we broke down silos – at HAW Kiel, with science, industry, and civil society at one table.',
   },
   'review.text2': {
-    de: 'Datenpunkt für Datenpunkt. Stein für Stein. Halm für Halm.',
-    en: 'Data point by data point. Stone by stone. Blade by blade.',
+    de: 'Jetzt ist es an uns, die Zukunft zu bauen! Datenpunkt für Datenpunkt. Stein für Stein. Halm für Halm.',
+    en: 'Now it is up to us to build the future! Data point by data point. Stone by stone. Blade by blade.',
   },
   'review.link': { de: 'Zur Veranstaltungsübersicht', en: 'View All Events' },
 
