@@ -127,5 +127,14 @@
 [x] Studis im Tischteam statt Interessierten-Liste: Studis werden anhand ihrer Rolle direkt
     ins Tischteam verschoben und nicht mehr doppelt in der Interessierten-Liste angezeigt.
 
-- Magic Link Emails an HAW-Adressen: HAW IT bitten, zukunftbauen.org zu whitelisten
-- PDF-Export der Tisch-Protokolle (nicht eilig, erst kurz vor/nach der Veranstaltung)
+[x] Fix: Tischzuweisung schlug still fehl wegen fehlender UPDATE-Policy auf table_assignments.
+    upsert braucht INSERT + UPDATE. Migration 024 ergaenzt die Policy, Code zeigt Fehler an.
+[x] Fix: Rekursive RLS-Policy "Users can view assignments at their table" entfernt (025).
+    Policy fragte table_assignments in sich selbst ab → infinite recursion.
+[x] Fix: Ambiguer FK-Join bei table_assignments aufgeloest. Zwei FKs zu profiles (profile_id
+    und assigned_by) → Supabase gab null zurueck. Expliziter FK-Hint in TableView + OrgaPanel.
+[x] Script approve-nachmeldung.mjs erstellt: Manueller Nachmeldung-Flow mit Admin API.
+    Erstellt User + Profil + Registration und gibt Magic Link aus.
+[x] Veranstaltung am 7. Mai 2026 durchgefuehrt.
+
+- PDF-Export der Tisch-Protokolle

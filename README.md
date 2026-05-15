@@ -97,10 +97,13 @@ git push origin master
 
 ---
 
+## Status
+
+Veranstaltung am 7. Mai 2026 erfolgreich durchgefuehrt.
+
 ## Offene Punkte
 
-- [ ] PDF-Export der Tisch-Protokolle (erst kurz vor/nach Veranstaltung)
-- [ ] Magic Link Emails an HAW-Adressen: HAW IT bitten, zukunftbauen.org zu whitelisten
+- [ ] PDF-Export der Tisch-Protokolle
 
 ---
 
