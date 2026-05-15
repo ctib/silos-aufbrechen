@@ -38,6 +38,11 @@ const translations: Record<string, Record<Locale, string>> = {
   },
   'review.link': { de: 'Zur Veranstaltungsübersicht', en: 'View All Events' },
 
+  // Temporäre CTAs
+  'cta.heading': { de: 'Fragebogen zur vergangenen Veranstaltung ausfüllen und Forschungsmöglichkeiten entdecken', en: 'Fill out the survey on the past event and discover research opportunities' },
+  'cta.survey': { de: 'Fragebogen ausfüllen', en: 'Fill Out Survey' },
+  'cta.researchark': { de: 'ResearchArk entdecken', en: 'Discover ResearchArk' },
+
   // Team
   'team.title': { de: 'Team', en: 'Team' },
   'team.wocken.focus': {

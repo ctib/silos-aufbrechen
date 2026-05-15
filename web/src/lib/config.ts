@@ -12,12 +12,12 @@ export const CONTACT_EMAIL = 'christoph.goebel@haw-kiel.de';
 // Temporäre CTA-Links auf der Landingpage (verschwinden nach Ablaufdatum)
 export const TEMP_CTAS = [
   {
-    label: 'Fragebogen ausfüllen',
+    i18nKey: 'cta.survey',
     url: 'https://forms.office.com/pages/responsepage.aspx?id=SlFZYNubNECdLWtc9Zdpa95yTsFJlbBDntdDxMV4KBtUNjdTUzM4NVpXSkc5Tk9OM1JEUlJNNFNPMi4u&route=shorturl',
     expires: new Date('2026-08-31T23:59:59'),
   },
   {
-    label: 'ResearchArk entdecken',
+    i18nKey: 'cta.researchark',
     url: 'https://researchark.zukunftbauen.org',
     expires: new Date('2026-08-31T23:59:59'),
   },

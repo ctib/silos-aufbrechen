@@ -56,6 +56,7 @@
 {#if activeCTAs.length > 0}
   <section class="bg-haw-orange/10 py-10">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-center text-haw-blau-70 mb-6">{$t('cta.heading')}</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         {#each activeCTAs as cta}
           <a
@@ -64,7 +65,7 @@
             rel="noopener noreferrer"
             class="inline-block bg-haw-orange text-white font-bold py-3 px-8 rounded hover:bg-haw-blau transition-colors text-center"
           >
-            {cta.label}
+            {$t(cta.i18nKey)}
           </a>
         {/each}
       </div>
