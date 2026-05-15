@@ -1,45 +1,18 @@
-# Silos aufbrechen - Zukunft bauen
+# Zukunft bauen
 
-Event-Webseite fuer die gemeinsame Antrittsvorlesung und den interdisziplinaeren Workshop
-am **7. Mai 2026, 14:30-20:00 Uhr** an der HAW Kiel.
+Interdisziplinaere Plattform fuer Wissenschaft, Wirtschaft und Stadtgesellschaft -- von und fuer Kiel.
+
+Hervorgegangen aus der Veranstaltung "Silos aufbrechen -- Zukunft bauen" am 7. Mai 2026 an der HAW Kiel.
 
 **Live:** [zukunftbauen.org](https://zukunftbauen.org)
 
 ---
 
-## Die Veranstaltung
+## Team
 
-Drei neuberufene Professores der HAW Kiel laden zu einem interdisziplinaeren Workshop ein:
-
-- **Prof. Dr.-Ing. Christoph Goebel** (FB Medien/Bauwesen) -- Antrittsvorlesung
-- **Prof. Dr. Meike Wocken** (FB Wirtschaft) -- Impulsvortrag
-- **Prof. Dr. Tammo Peters** (FB Agrarwirtschaft) -- Impulsvortrag
-
-Thema: **Smart Green Cities & Buildings** -- Wissenschaft, regionale Wirtschaft und Kieler
-Stadtgesellschaft an einem Tisch.
-
-### Programm
-
-| Zeit          | Programmpunkt |
-|---------------|---------------|
-| 14:30         | Empfang |
-| 15:00         | Willkommensgruss, Vorstellung und Einfuehrung |
-| 15:15         | Impulsvortrag "Citizen Science und Open Data" -- Prof. Dr. Meike Wocken |
-| 15:30         | Antrittsvorlesung "Nachhaltige Energieversorgung -- Es ist doch alles da! Oder?" -- Prof. Dr.-Ing. Christoph Goebel |
-| 16:30         | Impulsvortrag "Es gruent so gruen -- die Rolle von Grasland" -- Prof. Dr. Tammo Peters |
-| 16:45         | Kaffeepause |
-| 17:15         | Workshop (moderierte Arbeitstische) |
-| 18:30         | Vorstellung der Ergebnisse und Abschlussworte |
-| Ab 19:00      | Gemeinsamer Ausklang mit musikalischer Begleitung |
-
-### Workshop-Tische
-
-1. Nahrungsmittelproduktion in der Stadt: DIY-Kit
-2. Umweltbildung: praktisches Wissen fuer Schuelerinnen und Schueler
-3. Sensorik plus Datenauswertung: Mehrwert der smarten City
-4. Gerechten Staedtebau foerdern: nachhaltige Stadtentwicklung
-5. Gebaeudetechnik aufwerten: Stand der Technik im Gebaeudebestand
-6. Freies Thema: Eigenes Thema mitbringen
+- **Prof. Dr.-Ing. Christoph Goebel** (FB Medien/Bauwesen)
+- **Prof. Dr. Meike Wocken** (FB Wirtschaft)
+- **Prof. Dr. Tammo Peters** (FB Agrarwirtschaft)
 
 ---
 
@@ -58,12 +31,21 @@ Stadtgesellschaft an einem Tisch.
 
 | Route | Zugang | Inhalt |
 |-------|--------|--------|
-| `/` | Oeffentlich | Startseite, Programm, Workshop-Themen, Countdown |
-| `/intern` | Teilnehmer | Veranstaltungsbereich: Anmeldung, Teilnehmerliste, Workshoptische, Forschungscalls (Akkordeon) |
-| `/tisch/:nr` | Teilnehmer | Etherpad pro Tisch (Realtime, 5 Abschnitte) |
-| `/admin` | Admin | Forschungsmoeglichkeiten: Calls CRUD + Tisch-Tags |
+| `/` | Oeffentlich | Landingpage: Hero, Kiel-Motiv, Rueckblick, Team, Ausblick (DE/EN) |
+| `/veranstaltungen` | Oeffentlich | Veranstaltungsuebersicht (DE/EN) |
+| `/veranstaltungen/silos-aufbrechen-2026` | Oeffentlich | Archiv: Programm, Vortraege, Workshop-Tische |
+| `/intern` | Teilnehmer | Interner Bereich: Anmeldung, Teilnehmerliste, Themengebiete, Forschungscalls |
+| `/tisch/:nr` | Teilnehmer | Chat-Etherpad pro Themengebiet (Realtime) |
+| `/admin` | Admin | Forschungsmoeglichkeiten: Calls CRUD + Themengebiet-Tags |
 | `/orga` | Orga | Teilnehmerverwaltung, Export, Nachmeldungen |
 | `/nachmeldung` | Oeffentlich | Nachmeldung nach Anmeldeschluss |
+
+## Features
+
+- **Zweisprachigkeit (DE/EN):** Landingpage, Navigation, Veranstaltungsuebersicht. Sprachumschalter im Header, Praeferenz in localStorage.
+- **Event-Archiv:** Vergangene Veranstaltungen als statische Archivseiten, erweiterbar.
+- **Chat-Etherpad:** Pro Themengebiet ein Chat-artiges Pad mit Eintraegen (Name + Zeitstempel). Realtime via Supabase.
+- **Temporaere CTAs:** Konfigurierbar in `config.ts` mit Ablaufdatum -- verschwinden automatisch.
 
 ---
 
@@ -74,7 +56,6 @@ Stadtgesellschaft an einem Tisch.
 | [Docs/architecture.md](Docs/architecture.md) | Technische Architektur, DB-Schema, Ordnerstruktur, Rollenmodell |
 | [Docs/design-system.md](Docs/design-system.md) | HAW-Farben, Schriften, Gestaltungsprinzipien |
 | [Docs/domain-setup.md](Docs/domain-setup.md) | Domain-Setup: Cloudflare, GitHub Pages, Supabase, Resend |
-| [ToDos.txt](ToDos.txt) | Erledigte und offene Aufgaben |
 
 ---
 
@@ -97,21 +78,16 @@ git push origin master
 
 ---
 
-## Status
-
-Veranstaltung am 7. Mai 2026 erfolgreich durchgefuehrt.
-
 ## Offene Punkte
 
-- [ ] PDF-Export der Tisch-Protokolle
+- [ ] PDF-Export der Themengebiet-Protokolle
+- [ ] Migration 026 (topic_entries) im Supabase-Dashboard ausfuehren
 
 ---
 
 ## Wichtige Hinweise
 
 - **Branch:** `master` (nicht main!)
-- **ToDos.txt pflegen:** Nach jeder erledigten Aufgabe mit `[x]` abhaken
 - **Supabase Projekt-ID:** `cbybfmnbojklqbkmuwto`
 - **CD Manual:** `Archiv/cd_manual_haw_screen.pdf`
 - **Personenbezogene Daten:** Migrationen/Scripts mit TN-Daten liegen nur lokal (gitignored). Nie committen!
-- **DMARC Reports:** Lokal in `web/DMARC/` ablegen (gitignored), gelegentlich pruefen
