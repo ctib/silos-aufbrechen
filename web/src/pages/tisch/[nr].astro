@@ -9,7 +9,7 @@ export function getStaticPaths() {
 const { nr } = Astro.params;
 ---
 
-<BaseLayout title={`Tisch ${nr} | Silos aufbrechen – Zukunft bauen`}>
+<BaseLayout title={`Themengebiet ${nr} | Silos aufbrechen – Zukunft bauen`}>
   <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <TableView tableNumber={Number(nr)} client:load />
   </section>

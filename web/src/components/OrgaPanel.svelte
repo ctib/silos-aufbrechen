@@ -130,7 +130,7 @@
 
   // CSV Export
   function exportCSV() {
-    const headers = ['Name', 'E-Mail', 'Rolle', 'Vorträge', 'Workshop', 'Abend', 'Tischwunsch', 'Begleitung', 'Quelle', 'Anmeldedatum'];
+    const headers = ['Name', 'E-Mail', 'Rolle', 'Vorträge', 'Workshop', 'Abend', 'Themenwunsch', 'Begleitung', 'Quelle', 'Anmeldedatum'];
     const rows = registrations.map(r => [
       r.profiles?.full_name ?? '',
       r.profiles?.email ?? '',
@@ -138,7 +138,7 @@
       r.attends_lecture ? 'Ja' : 'Nein',
       r.attends_workshop ? 'Ja' : 'Nein',
       r.attends_dinner ? 'Ja' : 'Nein',
-      r.workshop_tables ? `Tisch ${r.workshop_tables.number}: ${r.workshop_tables.title}` : '',
+      r.workshop_tables ? r.workshop_tables.title : '',
       String(r.companion_count || 0),
       r.source || 'website',
       new Date(r.created_at).toLocaleDateString('de-DE'),
@@ -255,7 +255,7 @@
     <h1 class="font-serif text-3xl font-bold text-haw-blau mb-4">Kein Zugang</h1>
     <p class="text-haw-blau-70 mb-6">Dieser Bereich ist nur für das Orga-Team zugänglich.</p>
     <a href={basePath('/intern')} class="inline-block bg-haw-blau text-white font-bold py-3 px-8 rounded hover:bg-haw-blau-90 transition-colors">
-      Zum Veranstaltungsbereich
+      Zum internen Bereich
     </a>
   </div>
 {:else}
@@ -267,7 +267,7 @@
     </div>
     <div class="flex gap-3">
       <a href={basePath('/admin')} class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">Forschungsmöglichkeiten</a>
-      <a href={basePath('/intern')} class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">Veranstaltung</a>
+      <a href={basePath('/intern')} class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">Intern</a>
     </div>
   </div>
 
@@ -308,7 +308,7 @@
     {#each [
       { id: 'teilnehmer', label: 'Teilnehmende' },
       { id: 'nachmeldungen', label: `Nachmeldungen${pendingNachmeldungen.length ? ` (${pendingNachmeldungen.length})` : ''}` },
-      { id: 'tische', label: 'Tische' },
+      { id: 'tische', label: 'Themengebiete' },
       { id: 'studis', label: 'Studi-Zuweisung' },
       { id: 'export', label: 'Export' },
     ] as tab}
@@ -332,7 +332,7 @@
             <th class="py-2 pr-4">E-Mail</th>
             <th class="py-2 pr-4">Rolle</th>
             <th class="py-2 pr-4">Workshop</th>
-            <th class="py-2 pr-4">Tischwunsch</th>
+            <th class="py-2 pr-4">Themenwunsch</th>
             <th class="py-2 pr-4">Abend</th>
             <th class="py-2">Begl.</th>
           </tr>
@@ -359,7 +359,7 @@
               </td>
               <td class="py-2 pr-4">{reg.attends_workshop ? 'Ja' : '–'}</td>
               <td class="py-2 pr-4 text-xs">
-                {reg.workshop_tables ? `T${reg.workshop_tables.number}: ${reg.workshop_tables.title}` : '–'}
+                {reg.workshop_tables ? reg.workshop_tables.title : '–'}
               </td>
               <td class="py-2 pr-4">{reg.attends_dinner ? 'Ja' : '–'}</td>
               <td class="py-2">{reg.companion_count || '–'}</td>
@@ -444,7 +444,7 @@
           {:else}
             <div class="flex items-start justify-between">
               <div>
-                <p class="text-xs text-haw-blau-50">Tisch {table.number}</p>
+                <p class="text-xs text-haw-blau-50">Themengebiet {table.number}</p>
                 <h3 class="font-bold text-haw-blau">{table.title}</h3>
                 {#if table.description}
                   <p class="text-xs text-haw-blau-70 mt-1">{table.description}</p>
@@ -466,7 +466,7 @@
   {:else if activeTab === 'studis'}
     <div class="max-w-lg space-y-6">
       <div class="bg-haw-blau-10 rounded-lg p-5">
-        <h3 class="font-bold text-haw-blau mb-3">Studi einem Tisch zuweisen</h3>
+        <h3 class="font-bold text-haw-blau mb-3">Studi einem Themengebiet zuweisen</h3>
         <div class="space-y-3">
           <select bind:value={selectedStudi} class="w-full border border-haw-blau-30 rounded px-3 py-2 text-sm">
             <option value="">Studi wählen...</option>
@@ -477,7 +477,7 @@
           <select bind:value={selectedTable} class="w-full border border-haw-blau-30 rounded px-3 py-2 text-sm">
             <option value="">Tisch wählen...</option>
             {#each tables as table}
-              <option value={table.id}>Tisch {table.number}: {table.title}</option>
+              <option value={table.id}>{table.title} (#{table.number})</option>
             {/each}
           </select>
           <button
@@ -502,7 +502,7 @@
                 <div class="text-sm">
                   <span class="font-bold">{a.profiles?.full_name}</span>
                   <span class="text-haw-blau-50 mx-2">&rarr;</span>
-                  <span>Tisch {a.workshop_tables?.number}: {a.workshop_tables?.title}</span>
+                  <span>{a.workshop_tables?.title} (#{a.workshop_tables?.number})</span>
                 </div>
                 <button onclick={() => removeAssignment(a.id)} class="text-xs text-red-500 hover:text-red-700 cursor-pointer">Entfernen</button>
               </div>

@@ -83,6 +83,16 @@ export interface TableNote {
   updated_at: string;
 }
 
+export interface TopicEntry {
+  id: string;
+  table_id: string;
+  author_id: string;
+  content: string;
+  created_at: string;
+  // Joined relations (optional)
+  profiles?: Pick<Profile, 'full_name'>;
+}
+
 export interface NachmeldungRequest {
   id: string;
   name: string;

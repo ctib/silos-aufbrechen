@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import LanguageToggle from '../components/LanguageToggle.svelte';
+import NavLinks from '../components/NavLinks.svelte';
 
 interface Props {
   title?: string;
@@ -8,7 +10,7 @@ interface Props {
 
 const {
   title = 'Silos aufbrechen – Zukunft bauen | HAW Kiel',
-  description = 'Interdisziplinärer Workshop für visionäre Köpfe unserer Region. 7. Mai 2026, HAW Kiel.',
+  description = 'Interdisziplinäre Plattform für Wissenschaft, Wirtschaft und Stadtgesellschaft. HAW Kiel.',
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -34,21 +36,17 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <!-- Header -->
     <header class="w-full bg-white">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-        <nav class="flex items-center gap-4 text-sm">
-          <a href={`${base}/`} class="text-haw-blau font-bold hover:text-haw-hellblau transition-colors">
-            Start
+        <NavLinks client:load />
+        <div class="flex items-center gap-4">
+          <LanguageToggle client:load />
+          <a href={`${base}/`} aria-label="HAW Kiel Startseite">
+            <img
+              src={`${base}/images/haw_kiel_logo.svg`}
+              alt="HAW Kiel – Hochschule für Angewandte Wissenschaften Kiel"
+              class="h-12 sm:h-16"
+            />
           </a>
-          <a href={`${base}/intern`} class="text-haw-blau-50 hover:text-haw-blau transition-colors">
-            Veranstaltungsbereich
-          </a>
-        </nav>
-        <a href={`${base}/`} aria-label="HAW Kiel Startseite">
-          <img
-            src={`${base}/images/haw_kiel_logo.svg`}
-            alt="HAW Kiel – Hochschule für Angewandte Wissenschaften Kiel"
-            class="h-12 sm:h-16"
-          />
-        </a>
+        </div>
       </div>
       <div class="haw-gradient-line"></div>
     </header>
@@ -75,10 +73,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             </a>
           </div>
           <div>
-            <p class="font-bold mb-2">Veranstaltung</p>
-            <p>7. Mai 2026, 14:30 – 18:00 Uhr</p>
+            <p class="font-bold mb-2">Plattform</p>
+            <p>Interdisziplinäre Zusammenarbeit</p>
             <p>HAW Kiel, Sokratesplatz 1, 24149 Kiel</p>
-            <p>Großes Hörsaalgebäude C2, Hörsaal 11</p>
           </div>
           <div>
             <p class="font-bold mb-2">Links</p>

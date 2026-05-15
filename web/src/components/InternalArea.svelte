@@ -355,7 +355,7 @@
 {:else if !authenticated}
   <!-- Login Flow -->
   <div class="max-w-lg mx-auto py-12">
-    <h1 class="font-serif text-3xl font-bold text-haw-blau mb-4 text-center">Veranstaltungsbereich</h1>
+    <h1 class="font-serif text-3xl font-bold text-haw-blau mb-4 text-center">Interner Bereich</h1>
 
     <div class="bg-haw-blau-10 rounded-lg p-6 mb-8">
       <p class="text-haw-blau-70 text-sm">
@@ -409,7 +409,7 @@
   <!-- Authenticated: Internal Area -->
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
     <div>
-      <h1 class="font-serif text-3xl font-bold text-haw-blau">Veranstaltungsbereich</h1>
+      <h1 class="font-serif text-3xl font-bold text-haw-blau">Interner Bereich</h1>
       <p class="text-haw-blau-70">
         Willkommen, {profile?.full_name}
         {#if userRole !== 'teilnehmer'}
@@ -531,7 +531,7 @@
 
               {#if editWorkshop}
                 <fieldset>
-                  <legend class="text-sm font-bold text-haw-blau mb-2">Wunsch-Workshoptische (Mehrfachauswahl)</legend>
+                  <legend class="text-sm font-bold text-haw-blau mb-2">Wunsch-Themengebiete (Mehrfachauswahl)</legend>
                   <div class="flex flex-wrap gap-2">
                     {#each tables as table}
                       <button
@@ -541,7 +541,7 @@
                           {editTablePrefs.includes(table.id)
                             ? 'bg-haw-blau text-white'
                             : 'bg-haw-blau-10 text-haw-blau-50 hover:bg-haw-blau-30 hover:text-haw-blau'}"
-                      >T{table.number}: {table.title}</button>
+                      >{table.title}</button>
                     {/each}
                   </div>
                 </fieldset>
@@ -623,7 +623,7 @@
                 {/if}
               </div>
               <div>
-                <p class="text-haw-blau-50">Workshoptische</p>
+                <p class="text-haw-blau-50">Themengebiete</p>
                 <p class="font-bold">
                   {#if tablePreferences.length > 0}
                     {tablePreferences.map(tp => {
@@ -687,14 +687,14 @@
     <div>
       {#if userRole !== 'gast'}
         <div class="bg-white border border-haw-blau-10 rounded-lg p-6">
-          <h2 class="font-bold text-haw-blau text-lg mb-4">Workshoptische</h2>
+          <h2 class="font-bold text-haw-blau text-lg mb-4">Themengebiete</h2>
           <div class="space-y-2">
             {#each tables as table}
               <a
                 href={basePath(`/tisch/${table.number}`)}
                 class="block p-3 rounded border border-haw-blau-10 hover:bg-haw-blau-10 transition-colors"
               >
-                <p class="font-bold text-sm text-haw-blau">Tisch {table.number}: {table.title}</p>
+                <p class="font-bold text-sm text-haw-blau">{table.title}</p>
               </a>
             {/each}
           </div>
@@ -746,7 +746,7 @@
                           {@const table = tables.find(t => t.id === tag.table_id)}
                           {#if table}
                             <span class="text-[10px] bg-haw-hellblau-20 text-haw-blau px-1.5 py-0.5 rounded">
-                              Tisch {table.number}
+                              {table.title}
                             </span>
                           {/if}
                         {/each}

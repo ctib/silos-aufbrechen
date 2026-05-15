@@ -3,39 +3,31 @@
   import { supabase } from '../lib/supabase';
   import { basePath } from '../lib/paths';
   import { callTypeLabel } from '../lib/callTypes';
-  import type { WorkshopTable, TableNote, TableAssignment, ResearchCall, NoteSection } from '../lib/types';
+  import type { WorkshopTable, TableAssignment, ResearchCall, TopicEntry } from '../lib/types';
 
   interface Props {
     tableNumber: number;
   }
   let { tableNumber }: Props = $props();
 
-  const sectionOrder: NoteSection[] = ['offene_notizen', 'ideensammlung', 'protokoll'];
-  const sectionLabels: Partial<Record<NoteSection, string>> = {
-    offene_notizen: 'Offene Notizen',
-    ideensammlung: 'Ideensammlung',
-    protokoll: 'Protokoll',
-  };
-
   let loading = $state(true);
   let authorized = $state(false);
   let userRole = $state('');
+  let userId = $state('');
   let table = $state<WorkshopTable | null>(null);
-  let notes = $state<TableNote[]>([]);
+  let entries = $state<TopicEntry[]>([]);
   let participants = $state<TableAssignment[]>([]);
   let calls = $state<ResearchCall[]>([]);
   let interests = $state<{ full_name: string; role: string; total_tables: number }[]>([]);
-  let activeSection = $state<NoteSection>('offene_notizen');
-  // canEdit depends on section: offene_notizen is writable by everyone, others only by studi/orga
-  const canEdit = $derived(
-    userRole === 'studi' || userRole === 'orga' || userRole === 'admin' || activeSection === 'offene_notizen'
-  );
   let allProfiles = $state<{ id: string; full_name: string; role: string }[]>([]);
   let selectedProfileId = $state('');
   let assigning = $state(false);
-  let saving = $state(false);
   let loadError = $state('');
   let realtimeChannel: ReturnType<typeof supabase.channel> | null = null;
+
+  // Chat input
+  let newContent = $state('');
+  let sending = $state(false);
 
   const canManageAssignments = $derived(
     userRole === 'studi' || userRole === 'admin' || userRole === 'orga'
@@ -49,16 +41,6 @@
   const filteredInterests = $derived(
     interests.filter(i => i.role !== 'studi')
   );
-
-  // Current note content for active section
-  const currentNote = $derived(notes.find(n => n.section === activeSection));
-  let editContent = $state('');
-
-  // Sync editContent when section changes
-  $effect(() => {
-    const note = notes.find(n => n.section === activeSection);
-    editContent = note?.content ?? '';
-  });
 
   onMount(async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -75,6 +57,7 @@
     if (!role || role === 'gast') { loading = false; return; }
     authorized = true;
     userRole = role;
+    userId = session.user.id;
 
     // Load table by number
     const { data: tableData } = await supabase
@@ -97,16 +80,25 @@
       allProfiles = profileData ?? [];
     }
 
-    // Realtime subscription for notes
+    // Realtime subscription for topic entries
     realtimeChannel = supabase
-      .channel(`table-notes-${tableData.id}`)
+      .channel(`topic-entries-${tableData.id}`)
       .on('postgres_changes', {
-        event: 'UPDATE',
+        event: 'INSERT',
         schema: 'public',
-        table: 'table_notes',
+        table: 'topic_entries',
         filter: `table_id=eq.${tableData.id}`,
       }, (payload: any) => {
-        notes = notes.map(n => n.id === payload.new.id ? { ...n, ...payload.new } : n);
+        // Fetch the full entry with joined profile name
+        loadEntries(tableData.id);
+      })
+      .on('postgres_changes', {
+        event: 'DELETE',
+        schema: 'public',
+        table: 'topic_entries',
+        filter: `table_id=eq.${tableData.id}`,
+      }, () => {
+        loadEntries(tableData.id);
       })
       .subscribe();
 
@@ -119,41 +111,65 @@
     }
   });
 
+  async function loadEntries(tableId: string) {
+    const { data } = await supabase
+      .from('topic_entries')
+      .select('*, profiles(full_name)')
+      .eq('table_id', tableId)
+      .order('created_at', { ascending: true });
+    entries = data ?? [];
+  }
+
   async function loadData(tableId: string) {
     try {
-      const [notesRes, assignRes, callsRes, interestsRes] = await Promise.all([
-        supabase.from('table_notes').select('*').eq('table_id', tableId).order('section'),
+      const [assignRes, callsRes, interestsRes] = await Promise.all([
         supabase.from('table_assignments').select('*, profiles!table_assignments_profile_id_fkey(full_name, email, role)').eq('table_id', tableId),
         supabase.from('research_calls').select('*, call_table_tags!inner(table_id)').eq('call_table_tags.table_id', tableId).order('deadline'),
         supabase.rpc('get_table_interests', { p_table_number: tableNumber }),
       ]);
-      notes = notesRes.data ?? [];
+      await loadEntries(tableId);
       participants = assignRes.data ?? [];
       calls = callsRes.data ?? [];
       interests = interestsRes.data ?? [];
       loadError = '';
     } catch (err) {
-      console.error('Tischdaten laden fehlgeschlagen:', err);
+      console.error('Themengebiet-Daten laden fehlgeschlagen:', err);
       loadError = 'Daten konnten nicht geladen werden. Bitte Seite neu laden.';
     }
   }
 
-  async function saveNote() {
-    if (!currentNote || !canEdit) return;
-    saving = true;
-    const { data: { session } } = await supabase.auth.getSession();
-    await supabase.from('table_notes').update({
-      content: editContent,
-      last_edited_by: session?.user.id,
-    }).eq('id', currentNote.id);
-    saving = false;
+  async function submitEntry() {
+    if (!newContent.trim() || !table) return;
+    sending = true;
+    const { error } = await supabase.from('topic_entries').insert({
+      table_id: table.id,
+      author_id: userId,
+      content: newContent.trim(),
+    });
+    if (error) {
+      console.error('Eintrag senden fehlgeschlagen:', error);
+    } else {
+      newContent = '';
+    }
+    sending = false;
   }
 
-  // Auto-save with debounce
-  let saveTimeout: ReturnType<typeof setTimeout>;
-  function handleInput() {
-    clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(saveNote, 1500);
+  function handleKeydown(e: KeyboardEvent) {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      submitEntry();
+    }
+  }
+
+  async function deleteEntry(id: string) {
+    await supabase.from('topic_entries').delete().eq('id', id);
+    if (table) await loadEntries(table.id);
+  }
+
+  function formatTime(iso: string): string {
+    const d = new Date(iso);
+    return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: '2-digit' })
+      + ' ' + d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
   }
 
   let assignError = $state('');
@@ -193,16 +209,16 @@
 {:else if !authorized || !table}
   <div class="max-w-md mx-auto text-center py-12">
     <h1 class="font-serif text-3xl font-bold text-haw-blau mb-4">Kein Zugang</h1>
-    <p class="text-haw-blau-70 mb-6">Bitte melden Sie sich an, um den Tischbereich zu sehen.</p>
+    <p class="text-haw-blau-70 mb-6">Bitte melden Sie sich an, um das Themengebiet zu sehen.</p>
     <a href={basePath('/intern')} class="inline-block bg-haw-blau text-white font-bold py-3 px-8 rounded hover:bg-haw-blau-90 transition-colors">
-      Zum Veranstaltungsbereich
+      Zum internen Bereich
     </a>
   </div>
 {:else}
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
     <div>
-      <p class="text-sm text-haw-blau-50">Tisch {table.number}</p>
+      <p class="text-sm text-haw-blau-50">Themengebiet {table.number}</p>
       <h1 class="font-serif text-3xl font-bold text-haw-blau">{table.title}</h1>
       {#if table.description}
         <p class="text-haw-blau-70 mt-1">{table.description}</p>
@@ -220,45 +236,52 @@
   {/if}
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Left: Notes (Etherpad) -->
+    <!-- Left: Chat-Pad -->
     <div class="lg:col-span-2">
-      <!-- Section tabs -->
-      <div class="flex gap-1 mb-4 overflow-x-auto">
-        {#each sectionOrder as section}
-          <button
-            onclick={() => activeSection = section}
-            class="px-3 py-1.5 text-xs font-bold rounded-t transition-colors cursor-pointer whitespace-nowrap
-              {activeSection === section
-                ? 'bg-haw-blau text-white'
-                : 'bg-haw-blau-10 text-haw-blau-50 hover:bg-haw-blau-30 hover:text-haw-blau'}"
-          >{sectionLabels[section]}</button>
-        {/each}
-      </div>
+      <div class="bg-white border border-haw-blau-10 rounded-lg overflow-hidden">
+        <!-- Entries -->
+        <div class="max-h-[500px] overflow-y-auto p-4 space-y-4" id="entries-list">
+          {#if entries.length === 0}
+            <p class="text-sm text-haw-blau-50 text-center py-8">Noch keine Einträge. Schreiben Sie den ersten Beitrag!</p>
+          {:else}
+            {#each entries as entry}
+              <div class="group flex gap-3">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-baseline gap-2 flex-wrap">
+                    <span class="font-bold text-sm text-haw-blau">{entry.profiles?.full_name ?? 'Unbekannt'}</span>
+                    <span class="text-[10px] text-haw-blau-50">{formatTime(entry.created_at)}</span>
+                    {#if entry.author_id === userId || userRole === 'orga' || userRole === 'admin'}
+                      <button
+                        onclick={() => deleteEntry(entry.id)}
+                        class="text-[10px] text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                        title="Eintrag löschen"
+                      >löschen</button>
+                    {/if}
+                  </div>
+                  <p class="text-sm text-haw-blau-70 whitespace-pre-wrap mt-0.5">{entry.content}</p>
+                </div>
+              </div>
+            {/each}
+          {/if}
+        </div>
 
-      <!-- Note editor -->
-      <div class="bg-white border border-haw-blau-10 rounded-lg rounded-tl-none p-1">
-        {#if canEdit}
-          <textarea
-            bind:value={editContent}
-            oninput={handleInput}
-            class="w-full min-h-[400px] p-4 text-sm font-mono resize-y border-0 focus:outline-none focus:ring-0"
-            placeholder="Hier Notizen erfassen..."
-          ></textarea>
-          <div class="flex items-center justify-between px-4 py-2 border-t border-haw-blau-10 text-xs text-haw-blau-50">
-            <span>{saving ? 'Speichern...' : 'Automatische Speicherung'}</span>
+        <!-- Input -->
+        <div class="border-t border-haw-blau-10 p-4">
+          <form onsubmit={(e) => { e.preventDefault(); submitEntry(); }} class="flex gap-3">
+            <textarea
+              bind:value={newContent}
+              onkeydown={handleKeydown}
+              placeholder="Neuer Beitrag... (Ctrl+Enter zum Absenden)"
+              rows="2"
+              class="flex-1 border border-haw-blau-30 rounded px-3 py-2 text-sm resize-none focus:border-haw-blau focus:outline-none"
+            ></textarea>
             <button
-              onclick={saveNote}
-              class="text-haw-blau hover:underline cursor-pointer"
-            >Jetzt speichern</button>
-          </div>
-        {:else}
-          <div class="p-4 min-h-[400px] text-sm whitespace-pre-wrap">
-            {currentNote?.content || 'Noch keine Notizen vorhanden.'}
-          </div>
-          <div class="px-4 py-2 border-t border-haw-blau-10 text-xs text-haw-blau-50">
-            Nur Studis und Orga können Notizen bearbeiten.
-          </div>
-        {/if}
+              type="submit"
+              disabled={sending || !newContent.trim()}
+              class="self-end bg-haw-blau text-white px-4 py-2 rounded text-sm font-bold cursor-pointer hover:bg-haw-blau-90 disabled:opacity-50 disabled:cursor-not-allowed"
+            >{sending ? '...' : 'Senden'}</button>
+          </form>
+        </div>
       </div>
     </div>
 
@@ -290,7 +313,7 @@
 
       <!-- Participants at this table (assigned, with management) -->
       <div class="bg-white border border-haw-blau-10 rounded-lg p-5">
-        <h3 class="font-bold text-haw-blau mb-3">Am Tisch ({participants.length})</h3>
+        <h3 class="font-bold text-haw-blau mb-3">Am Themengebiet ({participants.length})</h3>
         {#if participants.length === 0}
           <p class="text-xs text-haw-blau-50">Noch keine Teilnehmenden zugewiesen.</p>
         {:else}
@@ -340,7 +363,7 @@
 
       <!-- Quick links to other tables -->
       <div class="bg-haw-blau-10 rounded-lg p-5">
-        <h3 class="font-bold text-haw-blau mb-3 text-sm">Andere Tische</h3>
+        <h3 class="font-bold text-haw-blau mb-3 text-sm">Andere Themengebiete</h3>
         <div class="flex flex-wrap gap-2">
           {#each [
             { nr: 1, short: 'Nahrung' },
@@ -354,7 +377,7 @@
               <a
                 href={basePath(`/tisch/${t.nr}`)}
                 class="text-xs bg-white text-haw-blau px-3 py-1.5 rounded hover:bg-haw-blau hover:text-white transition-colors"
-                title="Tisch {t.nr}"
+                title="Themengebiet {t.nr}"
               >{t.short}</a>
             {/if}
           {/each}
@@ -363,11 +386,11 @@
     </div>
   </div>
 
-  <!-- Tischteam (Moderator + Studis, full width below notes) -->
+  <!-- Team (Moderator + Studis, full width below chat) -->
   {#if table.moderator_name || studiInterests.length > 0}
     <div class="mt-8">
       <div class="bg-white border border-haw-blau-10 rounded-lg p-6">
-        <h2 class="font-bold text-haw-blau text-lg mb-4">Tischteam</h2>
+        <h2 class="font-bold text-haw-blau text-lg mb-4">Team</h2>
         <div class="flex flex-wrap gap-4">
           {#if table.moderator_name}
             <div class="flex items-center gap-2 text-sm">
@@ -388,11 +411,11 @@
     </div>
   {/if}
 
-  <!-- Research calls for this table (full width, below notes) -->
+  <!-- Research calls for this table (full width, below chat) -->
   {#if calls.length > 0}
     <div class="mt-8">
       <div class="bg-white border border-haw-blau-10 rounded-lg p-6">
-        <h2 class="font-bold text-haw-blau text-lg mb-4">Forschungscalls für diesen Tisch</h2>
+        <h2 class="font-bold text-haw-blau text-lg mb-4">Forschungscalls für dieses Themengebiet</h2>
         <div class="space-y-4">
           {#each calls as call}
             <div class="border-b border-haw-blau-10 pb-4 last:border-0 last:pb-0">

@@ -8,3 +8,17 @@ export const EVENT_DATE = new Date('2026-05-07T14:30:00');
 export const EVENT_END = new Date('2026-05-07T20:00:00');
 
 export const CONTACT_EMAIL = 'christoph.goebel@haw-kiel.de';
+
+// Temporäre CTA-Links auf der Landingpage (verschwinden nach Ablaufdatum)
+export const TEMP_CTAS = [
+  {
+    label: 'Fragebogen ausfüllen',
+    url: 'https://forms.office.com/pages/responsepage.aspx?id=SlFZYNubNECdLWtc9Zdpa95yTsFJlbBDntdDxMV4KBtUNjdTUzM4NVpXSkc5Tk9OM1JEUlJNNFNPMi4u&route=shorturl',
+    expires: new Date('2026-08-31T23:59:59'),
+  },
+  {
+    label: 'ResearchArk entdecken',
+    url: 'https://researchark.zukunftbauen.org',
+    expires: new Date('2026-08-31T23:59:59'),
+  },
+];
