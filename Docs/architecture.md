@@ -47,9 +47,12 @@ SilosAufbrechen/
       005_security_fixes.sql       <-- Security + Performance
       006_domain_switch.sql        <-- Domain-Wechsel Trigger-Update
     src/
+      data/
+        events.ts                  <-- Veranstaltungsdaten (zentral, kein DB)
       components/
         AdminPanel.svelte          <-- Forschungscalls CRUD + Tisch-Tagging
         CountdownBanner.svelte     <-- Phasen-Zeitleiste, Countdown, Kalender
+        EventsOverview.svelte      <-- Veranstaltungskalender (Filter, ICS-Download)
         InternalArea.svelte        <-- Veranstaltungsbereich (Login, Anmeldung, Workshoptische, Forschungscalls-Akkordeon)
         OrgaPanel.svelte           <-- Teilnehmer, Tische, Export
         NachmeldungForm.svelte     <-- Nachmeldung nach Anmeldeschluss
@@ -69,6 +72,7 @@ SilosAufbrechen/
         orga.astro                 <-- Orga-Panel
         nachmeldung.astro          <-- Nachmeldung
         tisch/[nr].astro           <-- Etherpad pro Tisch (1-6)
+        calendar.ics.ts            <-- ICS-Feed (alle Veranstaltungen)
         auth/callback.astro        <-- Magic Link Callback
     public/
       CNAME                        <-- Custom Domain: zukunftbauen.org

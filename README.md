@@ -32,7 +32,8 @@ Hervorgegangen aus der Veranstaltung "Silos aufbrechen -- Zukunft bauen" am 7. M
 | Route | Zugang | Inhalt |
 |-------|--------|--------|
 | `/` | Oeffentlich | Landingpage: Hero, Kiel-Motiv, Rueckblick, Team, Ausblick (DE/EN) |
-| `/veranstaltungen` | Oeffentlich | Veranstaltungsuebersicht (DE/EN) |
+| `/veranstaltungen` | Oeffentlich | Veranstaltungskalender mit Filter, ICS-Download (DE/EN) |
+| `/calendar.ics` | Oeffentlich | ICS-Feed: alle Veranstaltungen als Kalender-Abo |
 | `/veranstaltungen/silos-aufbrechen-2026` | Oeffentlich | Archiv: Programm, Vortraege, Workshop-Tische |
 | `/intern` | Teilnehmer | Interner Bereich: Anmeldung, Teilnehmerliste, Themengebiete, Forschungscalls |
 | `/tisch/:nr` | Teilnehmer | Chat-Etherpad pro Themengebiet (Realtime) |
@@ -43,6 +44,7 @@ Hervorgegangen aus der Veranstaltung "Silos aufbrechen -- Zukunft bauen" am 7. M
 ## Features
 
 - **Zweisprachigkeit (DE/EN):** Landingpage, Navigation, Veranstaltungsuebersicht. Sprachumschalter im Header, Praeferenz in localStorage.
+- **Veranstaltungskalender:** Filter nach Kategorie (intern/extern) und Zielgruppe (alle/HAW). Automatische Aufteilung in kommende und vergangene Events. ICS-Download pro Event, Kalender-Abo unter `/calendar.ics`. Eventdaten zentral in `web/src/data/events.ts`.
 - **Event-Archiv:** Vergangene Veranstaltungen als statische Archivseiten, erweiterbar.
 - **Chat-Etherpad:** Pro Themengebiet ein Chat-artiges Pad mit Eintraegen (Name + Zeitstempel). Realtime via Supabase.
 - **Temporaere CTAs:** Konfigurierbar in `config.ts` mit Ablaufdatum -- verschwinden automatisch.
