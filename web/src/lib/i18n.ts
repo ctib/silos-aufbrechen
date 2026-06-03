@@ -75,6 +75,36 @@ const translations: Record<string, Record<Locale, string>> = {
   'events.status.done': { de: 'Durchgeführt', en: 'Completed' },
   'events.status.planned': { de: 'Geplant', en: 'Planned' },
 
+  // Veranstaltungskalender – Filter
+  'events.filter.category': { de: 'Kategorie', en: 'Category' },
+  'events.filter.audience': { de: 'Zielgruppe', en: 'Audience' },
+  'events.filter.all': { de: 'Alle', en: 'All' },
+  'events.filter.intern': { de: 'Intern', en: 'Internal' },
+  'events.filter.extern': { de: 'Extern', en: 'External' },
+  'events.filter.open': { de: 'Offen für alle', en: 'Open to all' },
+  'events.filter.haw': { de: 'Nur HAW', en: 'HAW only' },
+
+  // Veranstaltungskalender – Abschnitte
+  'events.upcoming': { de: 'Kommende Veranstaltungen', en: 'Upcoming Events' },
+  'events.past': { de: 'Vergangene Veranstaltungen', en: 'Past Events' },
+  'events.none': { de: 'Keine Veranstaltungen gefunden.', en: 'No events found.' },
+
+  // Veranstaltungskalender – Badges
+  'events.badge.intern': { de: 'Intern', en: 'Internal' },
+  'events.badge.extern': { de: 'Extern', en: 'External' },
+  'events.badge.alle': { de: 'Offen für alle', en: 'Open to all' },
+  'events.badge.haw': { de: 'Nur HAW', en: 'HAW only' },
+
+  // Veranstaltungskalender – Buttons
+  'events.btn.website': { de: 'Zur Webseite', en: 'Visit Website' },
+  'events.btn.archive': { de: 'Zum Archiv', en: 'View Archive' },
+  'events.btn.ical': { de: 'Kalendereintrag', en: 'Add to Calendar' },
+
+  // Veranstaltungskalender – Abo
+  'events.abo.text': { de: 'Alle Termine als Kalender-Abo:', en: 'Subscribe to all events:' },
+  'events.abo.link': { de: 'Kalender abonnieren (ICS)', en: 'Subscribe to Calendar (ICS)' },
+  'events.abo.hint': { de: 'Füge die URL in deinem Kalender-Programm als Abo hinzu, um stets aktuelle Termine zu erhalten.', en: 'Add the URL to your calendar app as a subscription to stay up to date.' },
+
   // Footer
   'footer.contact': { de: 'Kontakt', en: 'Contact' },
   'footer.platform': { de: 'Plattform', en: 'Platform' },
