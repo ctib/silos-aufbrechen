@@ -30,7 +30,7 @@ export const GET: APIRoute = () => {
       `DTSTART:${toIcsDate(event.start)}`,
       `DTEND:${toIcsDate(event.end)}`,
       `SUMMARY:${escapeIcs(event.title)}`,
-      `DESCRIPTION:${escapeIcs(event.description)}`,
+      `DESCRIPTION:${escapeIcs(event.organizer ? `${event.organizer} — ${event.description}` : event.description)}`,
     );
     if (event.location) lines.push(`LOCATION:${escapeIcs(event.location)}`);
     if (event.url) lines.push(`URL:${event.url}`);

@@ -100,6 +100,17 @@ const translations: Record<string, Record<Locale, string>> = {
   'events.btn.archive': { de: 'Zum Archiv', en: 'View Archive' },
   'events.btn.ical': { de: 'Kalendereintrag', en: 'Add to Calendar' },
 
+  // Veranstaltungskalender – Veranstalter
+  'events.label.organizer': { de: 'Veranstalter', en: 'Organizer' },
+
+  // Veranstaltungskalender – Ansicht
+  'events.view.list': { de: 'Liste', en: 'List' },
+  'events.view.calendar': { de: 'Kalender', en: 'Calendar' },
+
+  // Veranstaltungskalender – Kalenderansicht
+  'events.calendar.today': { de: 'Heute', en: 'Today' },
+  'events.calendar.noEvents': { de: 'Keine Veranstaltungen an diesem Tag.', en: 'No events on this day.' },
+
   // Veranstaltungskalender – Abo
   'events.abo.text': { de: 'Alle Termine als Kalender-Abo:', en: 'Subscribe to all events:' },
   'events.abo.link': { de: 'Kalender abonnieren (ICS)', en: 'Subscribe to Calendar (ICS)' },
