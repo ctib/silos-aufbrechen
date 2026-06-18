@@ -218,6 +218,16 @@
               {#if event.location}
                 <p class="text-xs text-haw-blau/50 mt-1">{event.location}</p>
               {/if}
+              {#if event.url}
+                <a
+                  href={event.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-block mt-2 text-xs px-3 py-1.5 rounded border border-haw-blau text-haw-blau hover:bg-haw-blau hover:text-white transition-colors"
+                >
+                  {$t('events.btn.website')}
+                </a>
+              {/if}
             </div>
           {/each}
         </div>
