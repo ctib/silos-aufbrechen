@@ -40,45 +40,65 @@ interface CalendarEvent {
 }
 ```
 
-## Workflow: Veranstaltungen ergänzen
+## Workflow: Veranstaltungen updaten
 
-### 1. Ordner scannen
+Wenn der User „Veranstaltungen updaten" o.ä. sagt, folge diesem Ablauf:
 
-Prüfe `Veranstaltungen/` auf neue `.msg`- oder `.pdf`-Dateien.
+### 1. Ordner scannen + abgleichen
 
-### 2. Dateinamen mit events.ts abgleichen
+```bash
+ls Veranstaltungen/
+```
 
-Vergleiche die Dateien mit den bestehenden Events in `web/src/data/events.ts`.
+Dann `web/src/data/events.ts` lesen und prüfen, welche Dateien im Ordner noch keinem Event zugeordnet sind. Dem User die Zuordnung als Tabelle zeigen:
 
-### 3. Prefix-Konventionen beachten
+```
+Datei                                          → Event in events.ts
+──────────────────────────────────────────────────────────────────────
+Extern-IfB_Infokurs_Holz_trägt_Baukultur...    → holz-traegt-baukultur-molfsee-2026 ✓
+IfB_Infokurs_Get_Together...                   → get-together-ende-vorlesungszeit-2026 ✓
+CONBAU_Nord_2026...                            → ✗ NEU – muss angelegt werden
+```
+
+### 2. Prefix-Konventionen
 
 | Prefix | Bedeutung |
 |--------|-----------|
 | `Extern-` | Externe Veranstaltung → `category: 'extern'` |
 | `Intern-` | Interne Veranstaltung → `category: 'intern'` |
-| `IfB_Infokurs_` | **Nur E-Mail-Quelle!** Kein Titel-/Veranstalter-Bestandteil. |
-| Kein Prefix | Kategorie aus Kontext ableiten oder nachfragen |
+| `IfB_Infokurs_` | **Nur E-Mail-Quelle!** Kein Titel-/Veranstalter-Bestandteil. Kategorie aus Kontext ableiten. |
+| Kein Prefix | Kategorie aus Kontext ableiten oder nachfragen. |
 
-### 4. Fehlende Informationen abfragen
+### 3. Informationen sammeln
 
-Per `AskUserQuestion` beim User erfragen:
-- Datum und Uhrzeit (Start/Ende)
+Für jede neue Veranstaltung Infos aus drei Quellen versuchen:
+
+1. **Dateiname:** Enthält oft Datum, Ort, Titel (Underscores/Punkte als Trennzeichen).
+2. **PDF-Dateien im Ordner:** Können direkt gelesen werden → `Read`-Tool verwenden.
+3. **Web-Suche:** Bei externen Events (CONBAU, Awards etc.) Veranstalter-Website suchen.
+
+`.msg`-Dateien (Outlook-E-Mails) können **nicht** gelesen werden. Falls nötig, den User bitten, die E-Mail als PDF in `Veranstaltungen/` abzulegen oder die Details per `AskUserQuestion` anzugeben.
+
+**Fehlende Pflichtfelder per `AskUserQuestion` beim User erfragen:**
+- Datum und Uhrzeit (Start/Ende, ISO 8601 mit Zeitzone `+02:00` Sommer / `+01:00` Winter)
 - Ort
-- URL (falls vorhanden)
 - Veranstalter
-- Kategorie (`intern`/`extern`)
+- Kategorie (`intern`/`extern`) – falls nicht aus Prefix ableitbar
 - Zielgruppe (`alle`/`haw`)
+
+**Optional, falls nicht offensichtlich:**
+- URL
 - EN-Übersetzungen (Titel, Beschreibung, Veranstalter falls abweichend)
 
-### 5. In events.ts eintragen
+### 4. In events.ts eintragen
 
-Events **chronologisch sortiert** in `web/src/data/events.ts` einfügen.
+Events **chronologisch sortiert** (nach `start`) in `web/src/data/events.ts` einfügen. Alle Felder gemäß CalendarEvent-Interface oben ausfüllen.
 
-### 6. Build, Commit, Push
+### 5. Build + Commit + Push
 
 ```bash
 cd web && npm run build   # Prüfen, ob alles kompiliert
-git add web/src/data/events.ts
-git commit -m "Veranstaltung(en) ergänzt: <Titel>"
-git push
 ```
+
+Dann die geänderten Dateien committen und pushen. Commit-Nachricht im Stil:
+`Veranstaltung(en) ergänzt: <Titel1>, <Titel2>`
