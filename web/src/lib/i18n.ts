@@ -9,6 +9,7 @@ const translations: Record<string, Record<Locale, string>> = {
   // Navigation
   'nav.start': { de: 'Start', en: 'Home' },
   'nav.events': { de: 'Veranstaltungen', en: 'Events' },
+  'nav.ifbfest': { de: '10 Jahre IfB', en: '10 Years IfB' },
   'nav.intern': { de: 'Intern', en: 'Internal' },
 
   // Hero
@@ -98,6 +99,7 @@ const translations: Record<string, Record<Locale, string>> = {
   // Veranstaltungskalender – Buttons
   'events.btn.website': { de: 'Zur Webseite', en: 'Visit Website' },
   'events.btn.archive': { de: 'Zum Archiv', en: 'View Archive' },
+  'events.btn.details': { de: 'Details & Anmeldung', en: 'Details & Registration' },
   'events.btn.ical': { de: 'Kalendereintrag', en: 'Add to Calendar' },
 
   // Veranstaltungskalender – Veranstalter

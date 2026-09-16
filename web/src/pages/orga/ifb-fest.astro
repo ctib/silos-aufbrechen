@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import IfbFestAdmin from '../../components/IfbFestAdmin.svelte';
+---
+
+<BaseLayout title="IfB-Fest – Anmeldungen | Orga-Bereich">
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <IfbFestAdmin client:load />
+  </section>
+</BaseLayout>

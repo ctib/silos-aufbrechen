@@ -10,6 +10,12 @@
   <a href={basePath('/veranstaltungen')} class="text-haw-blau-50 hover:text-haw-blau transition-colors">
     {$t('nav.events')}
   </a>
+  <a
+    href={basePath('/veranstaltungen/10-jahre-ifb')}
+    class="text-haw-blau-50 hover:text-haw-blau transition-colors"
+  >
+    {$t('nav.ifbfest')}
+  </a>
   <a href={basePath('/intern')} class="text-haw-blau-50 hover:text-haw-blau transition-colors">
     {$t('nav.intern')}
   </a>

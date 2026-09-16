@@ -24,7 +24,10 @@ Fonts/
 # Lokale Daten (nicht ins Repo)
 Anmeldungen/
 Archiv/
-Veranstaltungen/
+# Nur der Eingangsordner im Repo-Root (E-Mails mit personenbezogenen Daten).
+# Anker "/" ist wichtig: sonst trifft das Muster auf Windows case-insensitiv
+# auch web/src/pages/veranstaltungen/.
+/Veranstaltungen/
 
 # SSL certificates
 **/SSLCertificate/

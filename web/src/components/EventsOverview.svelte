@@ -212,9 +212,9 @@
                 {#if event.archivePath}
                   <a
                     href={basePath(event.archivePath)}
-                    class="text-xs px-3 py-1.5 rounded border border-haw-blau text-haw-blau hover:bg-haw-blau hover:text-white transition-colors"
+                    class="text-xs px-3 py-1.5 rounded bg-haw-blau text-white border border-haw-blau hover:bg-haw-blau-90 transition-colors"
                   >
-                    {$t('events.btn.archive')}
+                    {$t('events.btn.details')}
                   </a>
                 {/if}
                 <button

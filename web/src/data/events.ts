@@ -1,3 +1,5 @@
+import { FEST_START, FEST_END, FEST_LOCATION } from '../lib/ifbFest';
+
 export type EventCategory = 'intern' | 'extern';
 export type EventAudience = 'alle' | 'haw';
 
@@ -189,5 +191,22 @@ export const events: CalendarEvent[] = [
     location: 'Regionales Trainingscenter, Hamburg',
     category: 'extern',
     audience: 'alle',
+  },
+  {
+    id: '10-jahre-ifb',
+    title: '10 Jahre Institut für Bauwesen',
+    title_en: '10 Years Institute of Civil Engineering',
+    description:
+      'Festakt zum zehnjährigen Bestehen des Instituts für Bauwesen der HAW Kiel – mit Rückblick, Laborführung und Abendempfang. Teilnahme kostenfrei, Anmeldung erforderlich.',
+    description_en:
+      'Ceremony marking ten years of the Institute of Civil Engineering at HAW Kiel – with a retrospective, lab tour, and evening reception. Free admission, registration required.',
+    organizer: 'Institut für Bauwesen, HAW Kiel',
+    organizer_en: 'Institute of Civil Engineering, HAW Kiel',
+    start: FEST_START,
+    end: FEST_END,
+    location: FEST_LOCATION,
+    category: 'intern',
+    audience: 'alle',
+    archivePath: '/veranstaltungen/10-jahre-ifb',
   },
 ];
