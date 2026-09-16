@@ -127,6 +127,40 @@ export const events: CalendarEvent[] = [
     audience: 'alle',
   },
   {
+    id: 'kieler-perspektiven-platz-da-2026',
+    title: 'PLATZ DA – Pavillons weiterdenken!',
+    title_en: 'MAKE ROOM – Rethinking the Pavilions',
+    description:
+      'Kieler Perspektiven 2026: Fünf Architekturbüros präsentieren ihre Nutzungskonzepte für die sechs Pavillons am Alten Markt. Moderation: Reiner Nagel, Vorstandsvorsitzender der Bundesstiftung Baukultur. Eintritt frei, Anmeldung erbeten.',
+    description_en:
+      'Kieler Perspektiven 2026: Five architecture practices present their concepts for the six pavilions at Alter Markt. Moderated by Reiner Nagel, chairman of the German Federal Foundation of Baukultur. Free admission, registration requested.',
+    organizer: 'Landeshauptstadt Kiel',
+    organizer_en: 'City of Kiel',
+    start: '2026-09-22T19:00:00+02:00',
+    end: '2026-09-22T21:00:00+02:00',
+    location: 'Rathaus Kiel, Ratssaal, Fleethörn 9, 24103 Kiel',
+    url: 'https://www.kiel.de/kielerperspektiven',
+    category: 'extern',
+    audience: 'alle',
+  },
+  {
+    id: 'vlr-kiel-nachhaltige-stadt-2026',
+    title: 'Kiel auf dem Weg zur nachhaltigen Stadt',
+    title_en: 'Kiel on the Path to a Sustainable City',
+    description:
+      'Vorstellung des 3. Kieler Voluntary Local Review zur Umsetzung der UN-Nachhaltigkeitsziele. Keynote von Prof. Dr. Christian Berg: „Städte als Treiber der sozial-ökologischen Transformation", anschließend Podiumsdiskussion. Einlass ab 17:30 Uhr, ab 20 Uhr Empfang.',
+    description_en:
+      'Presentation of Kiel’s 3rd Voluntary Local Review on implementing the UN Sustainable Development Goals. Keynote by Prof. Dr. Christian Berg: "Cities as Drivers of Socio-Ecological Transformation", followed by a panel discussion. Doors open 5:30 pm, reception from 8 pm.',
+    organizer: 'Landeshauptstadt Kiel, Büro der Stadtpräsidentin',
+    organizer_en: 'City of Kiel, Office of the City Council President',
+    start: '2026-09-24T18:00:00+02:00',
+    end: '2026-09-24T21:00:00+02:00',
+    location: 'Rathaus Kiel, Ratssaal, Fleethörn 9, 24103 Kiel',
+    url: 'https://eveeno.com/148482015',
+    category: 'extern',
+    audience: 'alle',
+  },
+  {
     id: 'waermepumpen-fachforum-lollar-2026',
     title: 'Wärmepumpen-Fachforum Lollar',
     title_en: 'Heat Pump Expert Forum Lollar',
