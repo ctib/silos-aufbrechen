@@ -74,10 +74,27 @@ CONBAU_Nord_2026...                            → ✗ NEU – muss angelegt wer
 Für jede neue Veranstaltung Infos aus drei Quellen versuchen:
 
 1. **Dateiname:** Enthält oft Datum, Ort, Titel (Underscores/Punkte als Trennzeichen).
-2. **PDF-Dateien im Ordner:** Können direkt gelesen werden → `Read`-Tool verwenden.
-3. **Web-Suche:** Bei externen Events (CONBAU, Awards etc.) Veranstalter-Website suchen.
+2. **`.msg`-Dateien (Outlook):** Mit dem Repo-Skript lesen – kein Outlook nötig:
 
-`.msg`-Dateien (Outlook-E-Mails) können **nicht** gelesen werden. Falls nötig, den User bitten, die E-Mail als PDF in `Veranstaltungen/` abzulegen oder die Details per `AskUserQuestion` anzugeben.
+   ```bash
+   node web/scripts/read-msg.mjs "Veranstaltungen/Einladung.msg"
+   ```
+
+   Gibt Betreff, Absender und Textkörper aus. Anhänge (Flyer-PDFs mit Uhrzeit
+   und Ort) zusätzlich herausschreiben:
+
+   ```bash
+   node web/scripts/read-msg.mjs --attachments /tmp/anhaenge "Veranstaltungen/Einladung.msg"
+   ```
+
+3. **PDF-Dateien:** Das `Read`-Tool scheitert hier an fehlendem poppler. Stattdessen:
+
+   ```bash
+   mutool draw -F txt "Datei.pdf"
+   ```
+
+4. **Web-Suche:** Bei externen Events (CONBAU, Awards etc.) Veranstalter-Website
+   suchen. Anmeldelinks (eveeno o.ä.) enthalten oft Start-/Endzeit und Adresse.
 
 **Fehlende Pflichtfelder per `AskUserQuestion` beim User erfragen:**
 - Datum und Uhrzeit (Start/Ende, ISO 8601 mit Zeitzone `+02:00` Sommer / `+01:00` Winter)
@@ -94,7 +111,24 @@ Für jede neue Veranstaltung Infos aus drei Quellen versuchen:
 
 Events **chronologisch sortiert** (nach `start`) in `web/src/data/events.ts` einfügen. Alle Felder gemäß CalendarEvent-Interface oben ausfüllen.
 
-### 5. Build + Commit + Push
+Nicht jede Mail ist ein Termin. Reine Info-Ankündigungen (Mensa-Eröffnung,
+Rundschreiben) gehören **nicht** in `events.ts` – beim User nachfragen, ob die
+Mail trotzdem ins Archiv soll.
+
+### 5. Verarbeitete Mails ins Archiv verschieben
+
+Sobald ein Termin in `events.ts` steht, die zugehörige Datei nach
+`Veranstaltungen/Archiv/` verschieben. Im Eingangsordner bleibt so nur, was
+noch offen ist.
+
+```bash
+mv "Veranstaltungen/<datei>.msg" Veranstaltungen/Archiv/
+```
+
+`Veranstaltungen/` ist gitignored (personenbezogene Daten in den E-Mails) – die
+Dateien werden nie committet.
+
+### 6. Build + Commit + Push
 
 ```bash
 cd web && npm run build   # Prüfen, ob alles kompiliert
@@ -102,3 +136,19 @@ cd web && npm run build   # Prüfen, ob alles kompiliert
 
 Dann die geänderten Dateien committen und pushen. Commit-Nachricht im Stil:
 `Veranstaltung(en) ergänzt: <Titel1>, <Titel2>`
+
+## Fest "10 Jahre Institut für Bauwesen"
+
+Eigenes Veranstaltungsportal mit öffentlicher Anmeldung (ohne Login).
+
+| Datei | Zweck |
+|-------|-------|
+| `web/src/lib/ifbFest.ts` | **Einzige Quelle** für Datum, Ort, Programm, Anmeldeschluss. Nur hier ändern. |
+| `web/src/pages/veranstaltungen/10-jahre-ifb.astro` | Öffentliche Event-Seite |
+| `web/src/components/IfbFestRegistration.svelte` | Anmeldeformular |
+| `web/src/pages/orga/ifb-fest.astro` | Gästeliste für die Orga (CSV-Export) |
+| `web/supabase/027_ifb_fest_registrations.sql` | Tabelle, RLS, Benachrichtigungs-Mails |
+
+Programmpunkte in `FEST_PROGRAM` haben eine stabile `id`, die in der Datenbank
+landet – Titel und Zeiten sind frei änderbar, **die `id` nicht mehr**, sobald
+Anmeldungen vorliegen.
