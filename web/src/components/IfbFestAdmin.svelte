@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { supabase } from '../lib/supabase';
   import { basePath } from '../lib/paths';
-  import { BOOKABLE_PROGRAM, MEAL_OPTIONS } from '../lib/ifbFest';
+  import { BOOKABLE_OPTIONS, MEAL_OPTIONS, bookableLabel } from '../lib/ifbFest';
 
   interface FestRegistration {
     id: string;
@@ -17,6 +17,8 @@
     comment: string | null;
     status: 'confirmed' | 'waitlist' | 'cancelled';
     orga_note: string | null;
+    is_internal: boolean;
+    is_moderator: boolean;
     created_at: string;
   }
 
@@ -101,9 +103,7 @@
     await loadData();
   }
 
-  function itemLabel(id: string) {
-    return BOOKABLE_PROGRAM.find((p) => p.id === id)?.title ?? id;
-  }
+  const itemLabel = bookableLabel;
 
   function mealLabel(id: string) {
     return MEAL_OPTIONS.find((m) => m.id === id)?.label ?? id;
@@ -226,9 +226,9 @@
     <div>
       <h2 class="font-bold text-haw-blau mb-3">Personen je Programmteil</h2>
       <div class="space-y-1 text-sm">
-        {#each BOOKABLE_PROGRAM as item (item.id)}
+        {#each BOOKABLE_OPTIONS as item (item.id)}
           <div class="flex justify-between border-b border-haw-blau-10 py-1.5">
-            <span class="text-haw-blau-70">{item.time} – {item.title}</span>
+            <span class="text-haw-blau-70">{item.label}</span>
             <span class="font-bold text-haw-blau">{countForItem(item.id)}</span>
           </div>
         {/each}
@@ -292,9 +292,16 @@
                 {/if}
               </p>
             </div>
-            <span class="text-xs font-bold px-3 py-1 rounded {statusStyles[r.status]}">
-              {statusLabels[r.status]}
-            </span>
+            <div class="flex flex-wrap gap-1.5">
+              {#if r.is_internal}
+                <span class="text-xs font-bold px-3 py-1 rounded bg-haw-blau-10 text-haw-blau">
+                  HAW intern
+                </span>
+              {/if}
+              <span class="text-xs font-bold px-3 py-1 rounded {statusStyles[r.status]}">
+                {statusLabels[r.status]}
+              </span>
+            </div>
           </div>
 
           <p class="text-sm text-haw-blau-70">

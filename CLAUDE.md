@@ -139,16 +139,49 @@ Dann die geänderten Dateien committen und pushen. Commit-Nachricht im Stil:
 
 ## Fest "10 Jahre Institut für Bauwesen"
 
-Eigenes Veranstaltungsportal mit öffentlicher Anmeldung (ohne Login).
+**21. und 22. Oktober 2027.** Do: Konferenztag mit Vorträgen der
+Professor:innen. Fr: vormittags Vorträge, ab dem frühen Nachmittag Festakt
+(Grußworte aus der Politik → Keynote → Ehrung der besten Abschlussarbeiten des
+Jahrzehnts → Zertifikatsverleihung an den aktuellen Jahrgang) und Feier.
 
 | Datei | Zweck |
 |-------|-------|
-| `web/src/lib/ifbFest.ts` | **Einzige Quelle** für Datum, Ort, Programm, Anmeldeschluss. Nur hier ändern. |
+| `web/src/lib/ifbFest.ts` | **Einzige Quelle** für Datum, Ort, Programm, Phasen. Nur hier ändern. |
 | `web/src/pages/veranstaltungen/10-jahre-ifb.astro` | Öffentliche Event-Seite |
-| `web/src/components/IfbFestRegistration.svelte` | Anmeldeformular |
+| `web/src/components/IfbFestPhases.svelte` | Phasen-Zeitstrahl + Countdowns |
+| `web/src/components/IfbFestRegistration.svelte` | Anmeldeformular (phasenabhängig) |
+| `web/src/pages/intern/10-jahre-ifb.astro` | Interner Bereich für Hochschulangehörige |
 | `web/src/pages/orga/ifb-fest.astro` | Gästeliste für die Orga (CSV-Export) |
-| `web/supabase/027_ifb_fest_registrations.sql` | Tabelle, RLS, Benachrichtigungs-Mails |
+| `web/supabase/027_…sql`, `028_…sql` | Anmeldungen bzw. interner Bereich |
 
-Programmpunkte in `FEST_PROGRAM` haben eine stabile `id`, die in der Datenbank
-landet – Titel und Zeiten sind frei änderbar, **die `id` nicht mehr**, sobald
-Anmeldungen vorliegen.
+### Phasen
+
+Vier Phasen in `FEST_PHASES`, eine Phase läuft bis zum Start der nächsten:
+
+1. **Anmeldung intern** (ab 17.09.2026) – nur `@haw-kiel.de`. Diese Personen
+   bekommen einen Magic Link und Moderator:innen-Status.
+2. **Anmeldung extern** (ab 01.03.2027) – offen für alle.
+3. **Anmeldeschluss & Programm** (ab 21.09.2027) – Anmeldung zu, Programm raus.
+4. **Veranstaltung** (ab 21.10.2027).
+
+`currentPhase()` leitet die aktive Phase aus dem Datum ab – es gibt keinen
+manuellen Schalter. Wer die Phase zum Testen vorziehen will, ändert das
+`start`-Datum in `FEST_PHASES`.
+
+### Moderator:innen-Status
+
+`is_internal`/`is_moderator` werden **serverseitig** aus der Mail-Domain gesetzt
+(Trigger `set_ifb_fest_internal_flag`), nie aus dem Request – das INSERT steht
+allen offen. Die globale `user_role` bleibt unangetastet; der Fest-Status ist
+bewusst nur ein Flag an der Anmeldung.
+
+### Stabile IDs
+
+Die `id`-Werte in `BOOKABLE_OPTIONS` landen in der Datenbank. Labels sind frei
+änderbar, **die `id` nicht mehr**, sobald Anmeldungen vorliegen.
+
+### Mail-Probleme
+
+Die Trigger-Funktionen fangen Fehler ab, damit eine Anmeldung nie an einer Mail
+scheitert – Fehler sind dadurch unsichtbar. `web/supabase/diagnose_mail.sql` im
+SQL-Editor ausführen, um Vault-Key, pg_net-Antworten und Trigger zu prüfen.

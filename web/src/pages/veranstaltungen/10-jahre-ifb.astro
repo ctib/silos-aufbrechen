@@ -1,20 +1,18 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import IfbFestPhases from '../../components/IfbFestPhases.svelte';
 import IfbFestRegistration from '../../components/IfbFestRegistration.svelte';
 import {
-  FEST_PROGRAM,
+  FEST_DAYS,
+  FEST_PHASES,
   FEST_LOCATION,
   FEST_LOCATION_URL,
-  FEST_CAPACITY,
   festDateLabel,
-  festTimeLabel,
   regDeadlineLabel,
-  festIsOver,
+  formatDate,
 } from '../../lib/ifbFest';
 
 const dateLabel = festDateLabel();
-const timeLabel = festTimeLabel();
-const over = festIsOver();
 ---
 
 <BaseLayout title={`10 Jahre Institut für Bauwesen | ${dateLabel} | HAW Kiel`}>
@@ -26,7 +24,6 @@ const over = festIsOver();
       <div>
         <p class="text-2xl sm:text-3xl font-bold">{dateLabel}</p>
         <p class="text-haw-hellblau">
-          {timeLabel} ·
           <a
             href={FEST_LOCATION_URL}
             target="_blank"
@@ -37,22 +34,17 @@ const over = festIsOver();
           </a>
         </p>
       </div>
-      {
-        over ? (
-          <span class="inline-block bg-white/20 text-white font-bold py-2 px-6 rounded text-sm">
-            Veranstaltung durchgeführt
-          </span>
-        ) : (
-          <a
-            href="#anmeldung"
-            class="inline-block bg-white text-haw-blau font-bold py-2 px-6 rounded text-sm hover:bg-haw-hellblau hover:text-white transition-colors text-center"
-          >
-            Jetzt anmelden
-          </a>
-        )
-      }
+      <a
+        href="#anmeldung"
+        class="inline-block bg-white text-haw-blau font-bold py-2 px-6 rounded text-sm hover:bg-haw-hellblau hover:text-white transition-colors text-center"
+      >
+        Jetzt anmelden
+      </a>
     </div>
   </div>
+
+  <!-- Phasen-Zeitstrahl + Countdowns -->
+  <IfbFestPhases client:load />
 
   <!-- Hero -->
   <section class="bg-haw-blau-10 py-12 sm:py-16">
@@ -66,78 +58,121 @@ const over = festIsOver();
         10 Jahre<br />Institut für Bauwesen
       </h1>
       <p class="mt-4 text-xl sm:text-2xl text-haw-blau-70 font-serif italic">
-        Ein Jahrzehnt Lehre, Forschung und Praxis am Bau – wir feiern gemeinsam.
+        Zwei Tage Bauwesen: Konferenz, Festakt und Feier mit unseren Studierenden.
       </p>
       <p class="mt-6 text-haw-blau-70 max-w-2xl">
         Zehn Jahre Institut für Bauwesen heißt: zehn Jahrgänge Absolventinnen und Absolventen,
-        zahllose Projekte mit Partnern aus der Region und ein Institut, das sich immer wieder
-        neu erfunden hat. Das feiern wir – mit Rückblick, Einblick und Ausblick.
+        zahllose Projekte mit Partnern aus der Region und ein Institut, das sich immer wieder neu
+        erfunden hat. Am 21. Oktober zeigen unsere Professorinnen und Professoren, woran sie
+        arbeiten. Am 22. Oktober feiern wir – mit Gästen aus der Politik, einer Keynote, der Ehrung
+        der besten Abschlussarbeiten des Jahrzehnts und der Zertifikatsverleihung an den aktuellen
+        Jahrgang.
       </p>
-      {
-        !over && (
-          <a
-            href="#anmeldung"
-            class="mt-8 inline-block bg-haw-blau text-white font-bold py-3 px-8 rounded hover:bg-haw-blau-90 transition-colors"
-          >
-            Zur Anmeldung
-          </a>
-        )
-      }
+      <a
+        href="#anmeldung"
+        class="mt-8 inline-block bg-haw-blau text-white font-bold py-3 px-8 rounded hover:bg-haw-blau-90 transition-colors"
+      >
+        Zur Anmeldung
+      </a>
     </div>
   </section>
 
   <!-- Programm -->
   <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <h2 class="font-serif text-3xl font-bold text-haw-blau mb-8">Programm</h2>
-    <div class="space-y-0">
-      {
-        FEST_PROGRAM.map((item) => (
-          <div
-            class={`flex border-b border-haw-blau-10 py-4 ${item.highlight ? 'bg-haw-blau-10 -mx-4 px-4 rounded' : ''}`}
-          >
-            <span class="w-24 shrink-0 font-bold text-haw-blau">{item.time}</span>
-            <span class={item.highlight ? 'font-bold' : ''}>
-              {item.title}
-              {item.description && (
-                <span class="block text-haw-blau-50 font-normal text-sm">{item.description}</span>
-              )}
-              {item.location && (
-                <span class="block text-haw-blau-50 font-normal text-sm">{item.location}</span>
-              )}
-            </span>
+    <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2">
+      <h2 class="font-serif text-3xl font-bold text-haw-blau">Programm</h2>
+      <span class="text-xs font-bold px-3 py-1 rounded bg-amber-100 text-amber-800">
+        Entwurf – Stand der Planung
+      </span>
+    </div>
+    <p class="text-sm text-haw-blau-50 mb-8">
+      Das finale Programm wird mit dem Anmeldeschluss am {regDeadlineLabel()} bekannt gegeben.
+    </p>
+
+    {
+      FEST_DAYS.map((day) => (
+        <div class="mb-10">
+          <h3 class="font-serif text-2xl font-bold text-haw-blau">{day.label}</h3>
+          <p class="text-haw-blau-50 text-sm mb-4">{day.subtitle}</p>
+          <div class="space-y-0">
+            {day.items.map((item) => (
+              <div
+                class={`flex border-b border-haw-blau-10 py-4 ${item.highlight ? 'bg-haw-blau-10 -mx-4 px-4 rounded' : ''}`}
+              >
+                <span class="w-20 shrink-0 font-bold text-haw-blau">{item.time}</span>
+                <span class={item.highlight ? 'font-bold' : ''}>
+                  {item.title}
+                  {item.tbd && (
+                    <span class="ml-2 text-[10px] font-bold px-2 py-0.5 rounded bg-haw-blau-10 text-haw-blau-50 align-middle">
+                      offen
+                    </span>
+                  )}
+                  {item.description && (
+                    <span class="block text-haw-blau-50 font-normal text-sm">
+                      {item.description}
+                    </span>
+                  )}
+                </span>
+              </div>
+            ))}
           </div>
-        ))
-      }
+        </div>
+      ))
+    }
+  </section>
+
+  <!-- Phasen erklärt -->
+  <section class="bg-haw-blau-10 py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="font-serif text-3xl font-bold text-haw-blau mb-8">Der Weg zum Fest</h2>
+      <div class="space-y-0">
+        {
+          FEST_PHASES.map((phase, i) => (
+            <div class="flex gap-4 border-b border-haw-blau-30 py-4 last:border-0">
+              <span class="w-8 h-8 shrink-0 rounded-full bg-haw-blau text-white flex items-center justify-center text-sm font-bold">
+                {i + 1}
+              </span>
+              <div>
+                <p class="font-bold text-haw-blau">
+                  {phase.label}
+                  <span class="font-normal text-haw-blau-50 text-sm">
+                    {' '}
+                    · ab {formatDate(phase.start)}
+                  </span>
+                </p>
+                <p class="text-sm text-haw-blau-70">{phase.description}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
     </div>
   </section>
 
-  <!-- Anfahrt & Infos -->
-  <section class="bg-haw-blau-10 py-12">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 grid sm:grid-cols-3 gap-8">
-      <div>
-        <h3 class="font-bold text-haw-blau mb-2">Wann</h3>
-        <p class="text-sm text-haw-blau-70">{dateLabel}<br />{timeLabel}</p>
-      </div>
-      <div>
-        <h3 class="font-bold text-haw-blau mb-2">Wo</h3>
-        <p class="text-sm text-haw-blau-70">
-          <a
-            href={FEST_LOCATION_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="underline decoration-dotted hover:text-haw-blau"
-          >
-            {FEST_LOCATION}
-          </a>
-        </p>
-      </div>
-      <div>
-        <h3 class="font-bold text-haw-blau mb-2">Teilnahme</h3>
-        <p class="text-sm text-haw-blau-70">
-          Kostenfrei, Anmeldung bis {regDeadlineLabel()}.
-          {FEST_CAPACITY && <span>Begrenzt auf {FEST_CAPACITY} Gäste.</span>}
-        </p>
-      </div>
+  <!-- Infos -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid sm:grid-cols-3 gap-8">
+    <div>
+      <h3 class="font-bold text-haw-blau mb-2">Wann</h3>
+      <p class="text-sm text-haw-blau-70">{dateLabel}</p>
+    </div>
+    <div>
+      <h3 class="font-bold text-haw-blau mb-2">Wo</h3>
+      <p class="text-sm text-haw-blau-70">
+        <a
+          href={FEST_LOCATION_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="underline decoration-dotted hover:text-haw-blau"
+        >
+          {FEST_LOCATION}
+        </a>
+      </p>
+    </div>
+    <div>
+      <h3 class="font-bold text-haw-blau mb-2">Teilnahme</h3>
+      <p class="text-sm text-haw-blau-70">
+        Kostenfrei, Anmeldung bis {regDeadlineLabel()}.
+      </p>
     </div>
   </section>
 

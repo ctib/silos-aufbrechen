@@ -2,11 +2,13 @@
   import { supabase } from '../lib/supabase';
   import { basePath } from '../lib/paths';
   import {
-    BOOKABLE_PROGRAM,
+    BOOKABLE_OPTIONS,
     MEAL_OPTIONS,
     FEST_MAX_COMPANIONS,
     FEST_CONTACT_EMAIL,
-    registrationOpen,
+    INTERNAL_EMAIL_DOMAIN,
+    isInternalEmail,
+    currentPhase,
     festIsOver,
     regDeadlineLabel,
     type MealPreference,
@@ -15,7 +17,7 @@
   let fullName = $state('');
   let email = $state('');
   let organization = $state('');
-  let selectedItems = $state<string[]>(BOOKABLE_PROGRAM.map((p) => p.id));
+  let selectedItems = $state<string[]>(BOOKABLE_OPTIONS.map((o) => o.id));
   let mealPreference = $state<MealPreference>('egal');
   let allergies = $state('');
   let companionCount = $state(0);
@@ -25,14 +27,24 @@
 
   let sending = $state(false);
   let sent = $state(false);
+  let linkSent = $state(false);
+  let linkWarning = $state('');
   let error = $state('');
 
-  const isOpen = registrationOpen();
+  const phase = currentPhase();
   const isOver = festIsOver();
+  /** Phase 1: nur Hochschulangehörige */
+  const internalOnly = phase.id === 'intern';
+  const isOpen = phase.id === 'intern' || phase.id === 'extern';
+
+  const emailValid = $derived(/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim()));
+  const emailAllowed = $derived(!internalOnly || isInternalEmail(email));
+  const willBeInternal = $derived(emailValid && isInternalEmail(email));
 
   const canSubmit = $derived(
     fullName.trim().length >= 2 &&
-      /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim()) &&
+      emailValid &&
+      emailAllowed &&
       selectedItems.length > 0 &&
       gdprConsent &&
       !sending
@@ -50,10 +62,13 @@
 
     sending = true;
     error = '';
+    linkWarning = '';
+
+    const address = email.trim().toLowerCase();
 
     const { error: dbError } = await supabase.from('ifb_fest_registrations').insert({
       full_name: fullName.trim(),
-      email: email.trim(),
+      email: address,
       organization: organization.trim() || null,
       program_items: selectedItems,
       meal_preference: mealPreference,
@@ -73,6 +88,28 @@
       return;
     }
 
+    // Hochschulangehörige bekommen sofort einen Zugangslink für den
+    // internen Fest-Bereich (Moderator:innen-Status).
+    if (isInternalEmail(address)) {
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+        email: address,
+        options: {
+          data: { full_name: fullName.trim() },
+          shouldCreateUser: true,
+          emailRedirectTo: window.location.origin + basePath('/auth/callback'),
+        },
+      });
+
+      if (otpError) {
+        console.error('[IfB-Fest] Zugangslink fehlgeschlagen:', otpError);
+        linkWarning =
+          'Die Anmeldung ist gespeichert, der Zugangslink konnte aber nicht versendet werden. ' +
+          'Sie können ihn jederzeit im internen Bereich erneut anfordern.';
+      } else {
+        linkSent = true;
+      }
+    }
+
     sent = true;
     sending = false;
   }
@@ -89,16 +126,32 @@
       <span class="text-2xl text-haw-blau">&#10003;</span>
     </div>
     <h2 class="font-serif text-3xl font-bold text-haw-blau mb-4">Anmeldung eingegangen</h2>
-    <p class="text-haw-blau-70 mb-2">Wir freuen uns auf Sie!</p>
-    <p class="text-haw-blau-70 mb-6">
-      Eine Bestätigung geht an <strong>{email}</strong>. Sollte die E-Mail nicht ankommen,
-      schauen Sie bitte auch in den Spam-Ordner.
-    </p>
+    <p class="text-haw-blau-70 mb-4">Wir freuen uns auf Sie!</p>
+
+    {#if linkSent}
+      <div class="p-4 bg-haw-blau-10 rounded text-left text-sm text-haw-blau-70 mb-4">
+        <p class="font-bold text-haw-blau mb-1">Zugangslink unterwegs</p>
+        <p>
+          An <strong>{email}</strong> ist ein Login-Link für den internen Fest-Bereich gegangen.
+          Dort können Sie Gäste, Vortragsthemen und Vorschläge für die Ehrung eintragen.
+        </p>
+      </div>
+    {:else if linkWarning}
+      <p class="text-sm text-amber-800 bg-amber-50 rounded px-4 py-3 mb-4 text-left">
+        {linkWarning}
+      </p>
+    {:else}
+      <p class="text-haw-blau-70 mb-4">
+        Eine Bestätigung geht an <strong>{email}</strong>. Sollte die E-Mail nicht ankommen,
+        schauen Sie bitte auch in den Spam-Ordner.
+      </p>
+    {/if}
+
     <a
-      href={basePath('/veranstaltungen')}
+      href={basePath(linkSent ? '/intern/10-jahre-ifb' : '/veranstaltungen')}
       class="text-sm text-haw-blau-50 hover:text-haw-blau transition-colors"
     >
-      Zur Veranstaltungsübersicht
+      {linkSent ? 'Zum internen Fest-Bereich' : 'Zur Veranstaltungsübersicht'}
     </a>
   </div>
 {:else if isOver}
@@ -121,15 +174,28 @@
   </div>
 {:else}
   <h2 class="font-serif text-3xl font-bold text-haw-blau mb-2">Anmeldung</h2>
-  <p class="text-haw-blau-70 mb-6">
-    Die Teilnahme ist kostenfrei. Wir bitten um Anmeldung bis zum
-    <strong>{regDeadlineLabel()}</strong>, damit wir planen können.
-  </p>
+
+  {#if internalOnly}
+    <div class="p-4 bg-haw-blau-10 rounded text-sm text-haw-blau-70 mb-6">
+      <p class="font-bold text-haw-blau mb-1">Phase 1 – Anmeldung für Hochschulangehörige</p>
+      <p>
+        Zurzeit können sich Angehörige der HAW Kiel mit einer
+        <strong>@{INTERNAL_EMAIL_DOMAIN}</strong>-Adresse anmelden. Sie erhalten einen Zugangslink
+        zum internen Fest-Bereich und Moderator:innen-Status, um Gäste, Vortragsthemen und
+        Vorschläge für die Ehrung einzubringen.
+      </p>
+      <p class="mt-2">Ab dem 1. März 2027 öffnet die Anmeldung für alle.</p>
+    </div>
+  {:else}
+    <p class="text-haw-blau-70 mb-6">
+      Die Teilnahme ist kostenfrei. Wir bitten um Anmeldung bis zum
+      <strong>{regDeadlineLabel()}</strong>, damit wir planen können.
+    </p>
+  {/if}
 
   <div class="haw-gradient-line w-12 mb-6"></div>
 
   <form onsubmit={handleSubmit} class="space-y-6">
-    <!-- Basisdaten -->
     <div class="space-y-4">
       <div>
         <label for="fest-name" class="block text-sm font-bold text-haw-blau mb-1">Name *</label>
@@ -152,12 +218,22 @@
           required
           autocomplete="email"
           class={inputClass}
-          placeholder="ihre.email@beispiel.de"
+          placeholder={internalOnly ? `vorname.nachname@${INTERNAL_EMAIL_DOMAIN}` : 'ihre.email@beispiel.de'}
         />
+        {#if internalOnly && email.trim() !== '' && !emailAllowed}
+          <p class="text-xs text-red-600 mt-1">
+            In dieser Phase sind nur Adressen auf <strong>@{INTERNAL_EMAIL_DOMAIN}</strong> möglich.
+            Die Anmeldung für alle öffnet am 1. März 2027.
+          </p>
+        {:else if willBeInternal}
+          <p class="text-xs text-haw-blau-50 mt-1">
+            Sie erhalten an diese Adresse einen Zugangslink zum internen Fest-Bereich.
+          </p>
+        {/if}
       </div>
       <div>
         <label for="fest-org" class="block text-sm font-bold text-haw-blau mb-1">
-          Organisation / Hochschule
+          Organisation / Fachbereich
         </label>
         <input
           id="fest-org"
@@ -165,21 +241,21 @@
           bind:value={organization}
           autocomplete="organization"
           class={inputClass}
-          placeholder="z. B. HAW Kiel, Musterbau GmbH"
+          placeholder="z. B. FB Medien/Bauwesen, Musterbau GmbH"
         />
       </div>
     </div>
 
-    <!-- Programmteile -->
     <fieldset>
       <legend class="block text-sm font-bold text-haw-blau mb-1">
         Woran möchten Sie teilnehmen? *
       </legend>
       <p class="text-xs text-haw-blau-50 mb-3">
-        Mehrfachauswahl möglich – bitte mindestens einen Punkt wählen.
+        Mehrfachauswahl möglich – bitte mindestens einen Punkt wählen. Änderungen sind bis zum
+        Anmeldeschluss möglich.
       </p>
       <div class="space-y-2">
-        {#each BOOKABLE_PROGRAM as item (item.id)}
+        {#each BOOKABLE_OPTIONS as item (item.id)}
           <label
             class="flex items-start gap-3 border border-haw-blau-30 rounded px-4 py-3 cursor-pointer hover:border-haw-blau transition-colors"
           >
@@ -190,9 +266,9 @@
               class="mt-1 accent-haw-blau"
             />
             <span class="text-sm">
-              <span class="font-bold text-haw-blau">{item.time} – {item.title}</span>
-              {#if item.description}
-                <span class="block text-haw-blau-50">{item.description}</span>
+              <span class="font-bold text-haw-blau">{item.label}</span>
+              {#if item.hint}
+                <span class="block text-haw-blau-50">{item.hint}</span>
               {/if}
             </span>
           </label>
@@ -200,7 +276,6 @@
       </div>
     </fieldset>
 
-    <!-- Verpflegung -->
     <fieldset>
       <legend class="block text-sm font-bold text-haw-blau mb-1">Verpflegung</legend>
       <div class="flex flex-wrap gap-2 mb-3">
@@ -231,7 +306,6 @@
       />
     </fieldset>
 
-    <!-- Begleitpersonen -->
     <fieldset>
       <legend class="block text-sm font-bold text-haw-blau mb-1">Begleitpersonen</legend>
       <div class="flex items-center gap-3 mb-3">
@@ -260,7 +334,6 @@
       {/if}
     </fieldset>
 
-    <!-- Kommentar -->
     <div>
       <label for="fest-comment" class="block text-sm font-bold text-haw-blau mb-1">
         Anmerkungen
@@ -274,7 +347,6 @@
       ></textarea>
     </div>
 
-    <!-- DSGVO -->
     <label class="flex items-start gap-3 text-sm text-haw-blau-70 cursor-pointer">
       <input type="checkbox" bind:checked={gdprConsent} class="mt-1 accent-haw-blau" required />
       <span>

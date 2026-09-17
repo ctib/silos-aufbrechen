@@ -35,7 +35,8 @@ Hervorgegangen aus der Veranstaltung "Silos aufbrechen -- Zukunft bauen" am 7. M
 | `/veranstaltungen` | Oeffentlich | Veranstaltungskalender mit Filter, ICS-Download (DE/EN) |
 | `/calendar.ics` | Oeffentlich | ICS-Feed: alle Veranstaltungen als Kalender-Abo |
 | `/veranstaltungen/silos-aufbrechen-2026` | Oeffentlich | Archiv: Programm, Vortraege, Workshop-Tische |
-| `/veranstaltungen/10-jahre-ifb` | Oeffentlich | Fest "10 Jahre Institut fuer Bauwesen": Programm + Anmeldung |
+| `/veranstaltungen/10-jahre-ifb` | Oeffentlich | Fest "10 Jahre IfB": Phasen, Countdown, Programm, Anmeldung |
+| `/intern/10-jahre-ifb` | HAW-intern | Gaeste, Vortragsthemen und Vorschlaege fuer die Ehrung sammeln |
 | `/orga/ifb-fest` | Orga | Gaesteliste IfB-Fest: Kennzahlen, Status, CSV-Export |
 | `/intern` | Teilnehmer | Interner Bereich: Anmeldung, Teilnehmerliste, Themengebiete, Forschungscalls |
 | `/tisch/:nr` | Teilnehmer | Chat-Etherpad pro Themengebiet (Realtime) |
@@ -50,7 +51,7 @@ Hervorgegangen aus der Veranstaltung "Silos aufbrechen -- Zukunft bauen" am 7. M
 - **Event-Archiv:** Vergangene Veranstaltungen als statische Archivseiten, erweiterbar.
 - **Chat-Etherpad:** Pro Themengebiet ein Chat-artiges Pad mit Eintraegen (Name + Zeitstempel). Realtime via Supabase.
 - **Temporaere CTAs:** Konfigurierbar in `config.ts` mit Ablaufdatum -- verschwinden automatisch.
-- **IfB-Fest-Portal:** Eigene Event-Seite fuer "10 Jahre Institut fuer Bauwesen" mit oeffentlicher Anmeldung ohne Login. Programmteile, Verpflegung und Begleitpersonen werden abgefragt; Bestaetigungsmail an Gaeste und Benachrichtigung an die Orga laufen ueber Resend. Alle Fakten zentral in `web/src/lib/ifbFest.ts`.
+- **IfB-Fest-Portal:** Event-Seite fuer "10 Jahre Institut fuer Bauwesen" (21./22. Oktober 2027) mit Phasen-Zeitstrahl, Countdown bis zur Veranstaltung und bis zum Ende der laufenden Phase. Die Anmeldung ist phasenabhaengig: erst nur `@haw-kiel.de` (mit Magic Link und Moderator:innen-Status), ab 1. Maerz 2027 fuer alle. Alle Fakten zentral in `web/src/lib/ifbFest.ts`.
 - **E-Mail-Import:** `node web/scripts/read-msg.mjs <datei.msg>` liest Outlook-Mails (inkl. Anhaenge) ohne Outlook -- Basis fuer den Workflow "Veranstaltungen updaten".
 
 ---
@@ -88,8 +89,10 @@ git push origin master
 
 - [ ] PDF-Export der Themengebiet-Protokolle
 - [ ] Migration 026 (topic_entries) im Supabase-Dashboard ausfuehren
-- [ ] Migration 027 (ifb_fest_registrations) im Supabase-Dashboard ausfuehren
-- [ ] IfB-Fest: echtes Datum, Ort und Programm in `web/src/lib/ifbFest.ts` eintragen (aktuell Platzhalter)
+- [ ] Migration 028 (ifb_fest_internal) im Supabase-Dashboard ausfuehren
+- [ ] IfB-Fest: Bestaetigungsmail kommt nicht an -- `web/supabase/diagnose_mail.sql` ausfuehren
+- [ ] IfB-Fest: Veranstaltungsort bestaetigen (aktuell Sokratesplatz 1 angenommen)
+- [ ] IfB-Fest: Programmzeiten sind ein Entwurf -- mit dem Institut abstimmen
 
 ---
 
