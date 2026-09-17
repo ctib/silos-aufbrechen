@@ -68,5 +68,7 @@ In Cloudflare Dashboard > zukunftbauen.org > **DNS** > **Records**:
 - [ ] DNS-Records fuer GitHub Pages in Cloudflare gesetzt
 - [ ] Custom Domain in GitHub Pages aktiviert + HTTPS erzwungen
 - [ ] Supabase Redirect URLs angepasst
-- [ ] Resend Domain verifiziert + DNS-Records gesetzt
+- [x] Resend Domain verifiziert + DNS-Records gesetzt
+      (bestaetigt 17.09.2026: `net.http_post` an Resend liefert HTTP 200 mit
+      Message-ID; eine unverifizierte Absenderdomain wuerde mit 403 abgelehnt)
 - [ ] `006_domain_switch.sql` auf Supabase ausgefuehrt

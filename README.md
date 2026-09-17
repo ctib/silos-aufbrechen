@@ -90,7 +90,9 @@ git push origin master
 - [ ] PDF-Export der Themengebiet-Protokolle
 - [ ] Migration 026 (topic_entries) im Supabase-Dashboard ausfuehren
 - [ ] Migration 028 (ifb_fest_internal) im Supabase-Dashboard ausfuehren
-- [ ] IfB-Fest: Bestaetigungsmail kommt nicht an -- `web/supabase/diagnose_mail.sql` ausfuehren
+- [ ] IfB-Fest: Bestaetigungsmail kommt nicht an. Diagnose 17.09.2026: Trigger feuern,
+      Resend nimmt mit HTTP 200 an (Domain also verifiziert) -- Problem liegt in der
+      Zustellung. Naechster Schritt: Zustellstatus im Resend-Dashboard pruefen.
 - [ ] IfB-Fest: Veranstaltungsort bestaetigen (aktuell Sokratesplatz 1 angenommen)
 - [ ] IfB-Fest: Programmzeiten sind ein Entwurf -- mit dem Institut abstimmen
 
