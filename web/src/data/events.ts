@@ -163,6 +163,56 @@ export const events: CalendarEvent[] = [
     audience: 'alle',
   },
   {
+    id: 'innovationstag-bauen-der-zukunft-hamburg-2026',
+    title: 'Innovationstag „Bauen der Zukunft"',
+    title_en: 'Innovation Day "Building the Future"',
+    description:
+      'Planung, Bauunternehmen, Bauaufsicht, Feuerwehr, Industrie und Wissenschaft an einem Tisch: Vorträge zu Gebäudetyp E, Brandschutz und Heißbemessung, CO₂-reduziertem Beton, Bauen mit Holz und Erde, KlimaEngineering, PV und Speicher sowie Healing Architecture. Experten- und Positionsgespräch am Nachmittag, moderiert von Markus Lanz. Für Angehörige der HAW Kiel steht ein begrenztes Kontingent an Freikarten zur Verfügung – Gutscheincode über das Institut für Bauwesen. Die Teilnahme ist privat und keine Veranstaltung der Hochschule.',
+    description_en:
+      'Planners, contractors, building authorities, fire services, industry and academia at one table: talks on building type E, fire safety, low-carbon concrete, timber and earth construction, climate engineering, PV and storage, and healing architecture. Afternoon panel moderated by Markus Lanz. A limited number of free tickets is available for HAW Kiel members via the Institute of Civil Engineering. Attendance is private and not a university event.',
+    organizer: 'Bauen der Zukunft',
+    start: '2026-09-25T08:00:00+02:00',
+    end: '2026-09-25T18:00:00+02:00',
+    location: 'Gleishalle Oberhafen, Hamburg',
+    url: 'https://www.bauenderzukunft.com/events-2026-bauen-der-zukunft-konferenzen/?event_id=5459700a65b14b819b05a8563d784aac',
+    category: 'extern',
+    audience: 'alle',
+  },
+  {
+    id: 'hackathon-lebenstraum-niederung-2026',
+    title: 'Hackathon „Lebens(t)raum Niederung"',
+    title_en: 'Hackathon "Lebens(t)raum Niederung"',
+    description:
+      'Drei Tage entwickeln Studierende aus ganz Deutschland in interdisziplinären Teams Zukunftsideen für die Eider-Treene-Sorge-Region. Drei Challenges zu Nutztierhaltung, Dorfentwicklung und Smart Region, begleitet von Exkursionen und Fachleuten aus Verwaltung und Praxis. Richtet sich besonders an Bauingenieurwesen, Vermessung, Informatik, Agrarwissenschaft und Geographie. Teilnahme, Unterkunft und Verpflegung kostenfrei; Anmeldung bis 9. Oktober 2026, Plätze begrenzt.',
+    description_en:
+      'Over three days, students from across Germany develop ideas for the future of the Eider-Treene-Sorge region in interdisciplinary teams. Three challenges on livestock farming, village development and smart regions, accompanied by field trips and experts from public administration and practice. Aimed at civil engineering, surveying, computer science, agricultural science and geography. Participation, accommodation and meals are free; registration until 9 October 2026, places limited.',
+    organizer: 'Landesamt für Landwirtschaft und nachhaltige Landentwicklung Schleswig-Holstein',
+    organizer_en: 'State Office for Agriculture and Sustainable Rural Development Schleswig-Holstein',
+    start: '2026-11-06T09:00:00+01:00',
+    end: '2026-11-08T17:00:00+01:00',
+    location: 'Stapel, Eider-Treene-Sorge-Region',
+    url: 'https://www.leonie-sh.de/u6i7',
+    category: 'extern',
+    audience: 'alle',
+  },
+  {
+    id: 'gender-ki-inclusive-language-2026',
+    title: 'Gender und KI: Intersections of Gender-Inclusive Language and AI',
+    title_en: 'Gender and AI: Intersections of Gender-Inclusive Language and AI',
+    description:
+      'Online-Vortrag von Dr. Marion Bartl in der Reihe „Gender und Künstliche Intelligenz": Fortschritte und Forschungslücken an der Schnittstelle von geschlechtergerechter Sprache und KI. Moderation: Merle Heyrock.',
+    description_en:
+      'Online lecture by Dr. Marion Bartl in the series "Gender and Artificial Intelligence": progress and research gaps at the intersection of gender-inclusive language and AI. Moderated by Merle Heyrock.',
+    organizer: 'GARD – Institut für interdisziplinäre Genderforschung und Diversity, HAW Kiel',
+    organizer_en: 'GARD – Institute for Interdisciplinary Gender Research and Diversity, HAW Kiel',
+    start: '2026-11-11T16:15:00+01:00',
+    end: '2026-11-11T17:15:00+01:00',
+    location: 'Online',
+    url: 'https://www.haw-kiel.de/wir/organisation/zentrale-einrichtungen/institut-fuer-interdisziplinaere-genderforschung-und-diversity/gard-gender-in-applied-research-development/veranstaltungen/',
+    category: 'intern',
+    audience: 'alle',
+  },
+  {
     id: 'waermepumpen-fachforum-lollar-2026',
     title: 'Wärmepumpen-Fachforum Lollar',
     title_en: 'Heat Pump Expert Forum Lollar',
@@ -190,6 +240,23 @@ export const events: CalendarEvent[] = [
     end: '2026-11-17T17:00:00+01:00',
     location: 'Regionales Trainingscenter, Hamburg',
     category: 'extern',
+    audience: 'alle',
+  },
+  {
+    id: 'gender-ki-deepfakes-2026',
+    title: 'Gender und KI: Sexualisierende Deepfakes',
+    title_en: 'Gender and AI: Sexualised Deepfakes',
+    description:
+      'Online-Vortrag von Maria Pawelec (IZEW, Universität Tübingen) in der Reihe „Gender und Künstliche Intelligenz": Täter:innen, Verbreitungswege, Risiken und Handlungsspielräume. Moderation: Lara Bökamp.',
+    description_en:
+      'Online lecture by Maria Pawelec (IZEW, University of Tübingen) in the series "Gender and Artificial Intelligence": perpetrators, distribution channels, risks and room for action. Moderated by Lara Bökamp.',
+    organizer: 'GARD – Institut für interdisziplinäre Genderforschung und Diversity, HAW Kiel',
+    organizer_en: 'GARD – Institute for Interdisciplinary Gender Research and Diversity, HAW Kiel',
+    start: '2026-11-17T15:00:00+01:00',
+    end: '2026-11-17T16:30:00+01:00',
+    location: 'Online',
+    url: 'https://www.haw-kiel.de/wir/organisation/zentrale-einrichtungen/institut-fuer-interdisziplinaere-genderforschung-und-diversity/gard-gender-in-applied-research-development/veranstaltungen/',
+    category: 'intern',
     audience: 'alle',
   },
   {
