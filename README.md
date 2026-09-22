@@ -89,7 +89,9 @@ git push origin master
 
 - [ ] PDF-Export der Themengebiet-Protokolle
 - [ ] Migration 026 (topic_entries) im Supabase-Dashboard ausfuehren
-- [ ] Migration 029 (reply_to fuer die Fest-Mails) im Supabase-Dashboard ausfuehren
+- [ ] Migration 030 (eine Mail pro Anmeldung) im Supabase-Dashboard ausfuehren
+- [ ] Magic-Link-Vorlage aus `web/supabase/email-templates/magic-link.html` in
+      Supabase unter Authentication > Emails > Magic Link einfuegen
 - [ ] IfB-Fest: Veranstaltungsort bestaetigen (aktuell Sokratesplatz 1 angenommen)
 - [ ] IfB-Fest: Programmzeiten sind ein Entwurf -- mit dem Institut abstimmen
 

@@ -1,0 +1,73 @@
+<!--
+  Magic-Link-Vorlage für Supabase Auth
+  ====================================
+  Einfügen unter: Supabase Dashboard > Authentication > Emails > Magic Link
+  (Feld "Message body", Betreff separat setzen)
+
+  Betreff:  Ihr Zugang: 10 Jahre Institut für Bauwesen
+
+  ACHTUNG – diese Vorlage gilt projektweit:
+  Sie wird für JEDEN Magic Link verschickt, auch für Logins in den alten
+  Bereich /intern der Veranstaltung "Silos aufbrechen" vom Mai 2026. Da diese
+  Veranstaltung vorbei ist und alle aktuellen Logins zum IfB-Fest gehören, ist
+  der fest-spezifische Text hier richtig. Sollte später ein weiteres Format
+  Magic Links brauchen, muss der Text wieder neutraler werden.
+
+  Verfügbare Platzhalter: {{ .ConfirmationURL }} {{ .Token }} {{ .SiteURL }} {{ .Email }}
+-->
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; line-height: 1.6; color: #1a2b42; max-width: 560px; margin: 0 auto; padding: 24px;">
+
+  <p style="font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; color: #6b7f99; margin: 0 0 4px;">
+    Institut für Bauwesen · HAW Kiel
+  </p>
+
+  <h1 style="font-size: 24px; color: #003366; margin: 0 0 4px;">
+    10 Jahre Institut für Bauwesen
+  </h1>
+
+  <p style="font-size: 16px; color: #44607f; margin: 0 0 24px;">
+    21. und 22. Oktober 2027
+  </p>
+
+  <p>Hallo,</p>
+
+  <p>
+    hier ist Ihr persönlicher Zugang zum internen Bereich des Fests. Ein Klick genügt,
+    ein Passwort brauchen Sie nicht.
+  </p>
+
+  <p style="margin: 28px 0;">
+    <a href="{{ .ConfirmationURL }}"
+       style="background: #003366; color: #ffffff; text-decoration: none; font-weight: bold; padding: 14px 28px; border-radius: 4px; display: inline-block;">
+      Zugang öffnen
+    </a>
+  </p>
+
+  <p style="font-size: 14px; color: #44607f;">
+    Dort sammeln wir gemeinsam, was das Fest tragen soll: Gäste, die eingeladen werden
+    sollen, Themen für die Vortragsblöcke und Vorschläge für die Ehrung der besten
+    Abschlussarbeiten des Jahrzehnts.
+  </p>
+
+  <p style="font-size: 13px; color: #6b7f99; margin-top: 28px;">
+    Falls der Button nicht funktioniert, kopieren Sie diese Adresse in Ihren Browser:<br>
+    <span style="word-break: break-all;">{{ .ConfirmationURL }}</span>
+  </p>
+
+  <p style="font-size: 13px; color: #6b7f99;">
+    Der Link gilt nur für kurze Zeit. Haben Sie ihn nicht angefordert, können Sie
+    diese Nachricht einfach ignorieren.
+  </p>
+
+  <hr style="border: 0; border-top: 1px solid #d7dfe8; margin: 28px 0;">
+
+  <p style="margin: 0;">Wir freuen uns auf Sie!</p>
+
+  <p style="font-size: 13px; color: #6b7f99; margin-top: 16px;">
+    Institut für Bauwesen, HAW Kiel<br>
+    <a href="https://zukunftbauen.org/veranstaltungen/10-jahre-ifb" style="color: #003366;">
+      zukunftbauen.org
+    </a>
+  </p>
+
+</div>

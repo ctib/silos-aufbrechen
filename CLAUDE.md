@@ -180,6 +180,21 @@ bewusst nur ein Flag an der Anmeldung.
 Die `id`-Werte in `BOOKABLE_OPTIONS` landen in der Datenbank. Labels sind frei
 änderbar, **die `id` nicht mehr**, sobald Anmeldungen vorliegen.
 
+### Mails pro Anmeldung
+
+Genau **eine** Mail pro angemeldeter Person (Migration 030):
+
+| Fall | Mail |
+|------|------|
+| `@haw-kiel.de` | nur der Magic Link (enthält den Zugang) |
+| extern | nur die Bestätigung von `noreply@` |
+| Orga meldet sich selbst an | keine Orga-Benachrichtigung an sich selbst |
+
+Die Magic-Link-Mail kommt von **Supabase Auth**, nicht aus einer Migration.
+Vorlage: `web/supabase/email-templates/magic-link.html`, einzufügen unter
+*Authentication → Emails → Magic Link*. Sie gilt **projektweit** für jeden
+Magic Link – auch für Logins in `/intern`.
+
 ### Mail-Probleme
 
 Die Trigger-Funktionen fangen Fehler ab, damit eine Anmeldung nie an einer Mail
