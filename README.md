@@ -36,9 +36,10 @@ Hervorgegangen aus der Veranstaltung "Silos aufbrechen -- Zukunft bauen" am 7. M
 | `/calendar.ics` | Oeffentlich | ICS-Feed: alle Veranstaltungen als Kalender-Abo |
 | `/veranstaltungen/silos-aufbrechen-2026` | Oeffentlich | Archiv: Programm, Vortraege, Workshop-Tische |
 | `/veranstaltungen/10-jahre-ifb` | Oeffentlich | Fest "10 Jahre IfB": Phasen, Countdown, Programm, Anmeldung |
-| `/intern/10-jahre-ifb` | HAW-intern | Gaeste, Vortragsthemen und Vorschlaege fuer die Ehrung sammeln |
+| `/intern/10-jahre-ifb` | HAW-intern | Gaeste (VIP/Alumni/normal), Referent:innen und Abschlussarbeiten sammeln |
 | `/orga/ifb-fest` | Orga | Gaesteliste IfB-Fest: Kennzahlen, Status, CSV-Export |
-| `/intern` | Teilnehmer | Interner Bereich: Anmeldung, Teilnehmerliste, Themengebiete, Forschungscalls |
+| `/intern` | Oeffentlich | Uebersicht: aktuelle Veranstaltung + vergangene Veranstaltungen |
+| `/intern/silos-aufbrechen-2026` | Teilnehmer | Archiv: Teilnehmerliste, Themengebiete, Forschungscalls |
 | `/tisch/:nr` | Teilnehmer | Chat-Etherpad pro Themengebiet (Realtime) |
 | `/admin` | Admin | Forschungsmoeglichkeiten: Calls CRUD + Themengebiet-Tags |
 | `/orga` | Orga | Teilnehmerverwaltung, Export, Nachmeldungen |
@@ -90,6 +91,7 @@ git push origin master
 - [ ] PDF-Export der Themengebiet-Protokolle
 - [ ] Migration 026 (topic_entries) im Supabase-Dashboard ausfuehren
 - [ ] Migration 030 (eine Mail pro Anmeldung) im Supabase-Dashboard ausfuehren
+- [ ] Migration 031 (Gaestetypen, Referent:innen) im Supabase-Dashboard ausfuehren
 - [ ] Magic-Link-Vorlage aus `web/supabase/email-templates/magic-link.html` in
       Supabase unter Authentication > Emails > Magic Link einfuegen
 - [ ] IfB-Fest: Veranstaltungsort bestaetigen (aktuell Sokratesplatz 1 angenommen)

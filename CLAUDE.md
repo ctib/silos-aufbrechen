@@ -150,7 +150,9 @@ Jahrzehnts → Zertifikatsverleihung an den aktuellen Jahrgang) und Feier.
 | `web/src/pages/veranstaltungen/10-jahre-ifb.astro` | Öffentliche Event-Seite |
 | `web/src/components/IfbFestPhases.svelte` | Phasen-Zeitstrahl + Countdowns |
 | `web/src/components/IfbFestRegistration.svelte` | Anmeldeformular (phasenabhängig) |
+| `web/src/pages/intern/index.astro` | Übersicht: aktuelle + vergangene Veranstaltungen |
 | `web/src/pages/intern/10-jahre-ifb.astro` | Interner Bereich für Hochschulangehörige |
+| `web/src/pages/intern/silos-aufbrechen-2026.astro` | Archivbereich der Veranstaltung vom Mai 2026 |
 | `web/src/pages/orga/ifb-fest.astro` | Gästeliste für die Orga (CSV-Export) |
 | `web/supabase/027_…sql`, `028_…sql` | Anmeldungen bzw. interner Bereich |
 
@@ -179,6 +181,13 @@ bewusst nur ein Flag an der Anmeldung.
 
 Die `id`-Werte in `BOOKABLE_OPTIONS` landen in der Datenbank. Labels sind frei
 änderbar, **die `id` nicht mehr**, sobald Anmeldungen vorliegen.
+
+### Magic-Link-Ziele
+
+Fest-Logins gehen **direkt** auf `/intern/10-jahre-ifb`, nicht über
+`/auth/callback`. Der Callback gehört zur Veranstaltung vom Mai 2026 und legt
+dort eine `registrations`-Zeile an – Fest-Gäste würden sonst in deren
+Teilnehmerliste auftauchen.
 
 ### Mails pro Anmeldung
 

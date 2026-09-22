@@ -181,7 +181,7 @@
     <p class="text-haw-blau-70 mb-6">
       Diese Seite ist dem Orga-Team vorbehalten. Bitte melden Sie sich an.
     </p>
-    <a href={basePath('/intern')} class="text-haw-blau underline">Zur Anmeldung</a>
+    <a href={basePath('/intern/10-jahre-ifb')} class="text-haw-blau underline">Zur Anmeldung</a>
   </div>
 {:else}
   <div class="flex flex-wrap items-center justify-between gap-4 mb-2">

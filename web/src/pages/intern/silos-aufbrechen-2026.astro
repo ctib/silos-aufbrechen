@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import InternalArea from '../../components/InternalArea.svelte';
+---
+
+<BaseLayout title="Silos aufbrechen 2026 – Veranstaltungsbereich | Zukunft bauen">
+  <!-- Archivhinweis: die Veranstaltung ist abgeschlossen -->
+  <div class="bg-haw-blau-10 border-b border-haw-blau-30 py-3 px-4">
+    <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-2 text-sm">
+      <p class="text-haw-blau-70">
+        <strong class="text-haw-blau">Archiv:</strong> Silos aufbrechen – Zukunft bauen,
+        7. Mai 2026
+      </p>
+      <a href="/intern/10-jahre-ifb" class="text-haw-blau font-bold underline">
+        Zur aktuellen Veranstaltung: 10 Jahre IfB →
+      </a>
+    </div>
+  </div>
+
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <InternalArea client:load />
+  </section>
+</BaseLayout>

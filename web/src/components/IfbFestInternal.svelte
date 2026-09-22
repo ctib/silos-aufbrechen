@@ -13,6 +13,8 @@
   interface Author {
     full_name: string | null;
   }
+  type GuestType = 'vip' | 'alumni' | 'normal';
+
   interface Guest {
     id: string;
     created_by: string;
@@ -20,8 +22,7 @@
     organization: string | null;
     role_title: string | null;
     email: string | null;
-    is_vip: boolean;
-    may_speak: boolean;
+    guest_type: GuestType;
     note: string | null;
     created_at: string;
     profiles?: Author;
@@ -29,7 +30,9 @@
   interface Talk {
     id: string;
     created_by: string;
-    title: string;
+    title: string | null;
+    speaker_name: string | null;
+    speaker_affiliation: string | null;
     abstract: string | null;
     preferred_day: string | null;
     duration_minutes: number | null;
@@ -150,7 +153,10 @@
 
     const { error } = await supabase.auth.signInWithOtp({
       email: address,
-      options: { emailRedirectTo: window.location.origin + basePath('/auth/callback') },
+      // Zurück in den Fest-Bereich; /auth/callback gehört zur alten Veranstaltung
+      options: {
+        emailRedirectTo: window.location.origin + basePath('/intern/10-jahre-ifb'),
+      },
     });
 
     if (error) {
@@ -171,12 +177,13 @@
     organization: '',
     role_title: '',
     email: '',
-    is_vip: false,
-    may_speak: false,
+    guest_type: 'normal' as GuestType,
     note: '',
   });
 
   let talkForm = $state({
+    speaker_name: '',
+    speaker_affiliation: '',
     title: '',
     abstract: '',
     preferred_day: '',
@@ -206,8 +213,7 @@
       organization: guestForm.organization.trim() || null,
       role_title: guestForm.role_title.trim() || null,
       email: guestForm.email.trim() || null,
-      is_vip: guestForm.is_vip,
-      may_speak: guestForm.may_speak,
+      guest_type: guestForm.guest_type,
       note: guestForm.note.trim() || null,
     });
 
@@ -219,8 +225,7 @@
         organization: '',
         role_title: '',
         email: '',
-        is_vip: false,
-        may_speak: false,
+        guest_type: 'normal',
         note: '',
       };
       await loadAll();
@@ -230,22 +235,31 @@
 
   async function addTalk(e: Event) {
     e.preventDefault();
-    if (!userId || talkForm.title.trim().length < 3) return;
+    if (!userId || !talkCanSubmit) return;
     saving = true;
     saveError = '';
 
     const { error } = await supabase.from('ifb_fest_talks').insert({
       created_by: userId,
-      title: talkForm.title.trim(),
+      speaker_name: talkForm.speaker_name.trim() || null,
+      speaker_affiliation: talkForm.speaker_affiliation.trim() || null,
+      title: talkForm.title.trim() || null,
       abstract: talkForm.abstract.trim() || null,
       preferred_day: talkForm.preferred_day || null,
       duration_minutes: talkForm.duration_minutes || null,
     });
 
     if (error) {
-      saveError = `Vortragsthema konnte nicht gespeichert werden: ${error.message}`;
+      saveError = `Vorschlag konnte nicht gespeichert werden: ${error.message}`;
     } else {
-      talkForm = { title: '', abstract: '', preferred_day: '', duration_minutes: 20 };
+      talkForm = {
+        speaker_name: '',
+        speaker_affiliation: '',
+        title: '',
+        abstract: '',
+        preferred_day: '',
+        duration_minutes: 20,
+      };
       await loadAll();
     }
     saving = false;
@@ -294,6 +308,26 @@
     await loadAll();
   }
 
+  /** Person oder Thema – eines von beidem muss angegeben sein */
+  const talkCanSubmit = $derived(
+    talkForm.speaker_name.trim().length >= 2 || talkForm.title.trim().length >= 3
+  );
+
+  const GUEST_TYPES: Array<{ id: GuestType; label: string; hint: string }> = [
+    { id: 'vip', label: 'VIP', hint: 'Ehrengast' },
+    { id: 'alumni', label: 'Alumni', hint: 'Ehemalige:r des IfB' },
+    { id: 'normal', label: 'Normal', hint: 'regulärer Gast' },
+  ];
+
+  const guestTypeStyles: Record<GuestType, string> = {
+    vip: 'bg-amber-100 text-amber-800',
+    alumni: 'bg-haw-hellblau/25 text-haw-blau',
+    normal: 'bg-haw-blau-10 text-haw-blau-70',
+  };
+
+  const guestTypeLabel = (t: GuestType) =>
+    GUEST_TYPES.find((g) => g.id === t)?.label ?? t;
+
   const authorName = (row: { profiles?: Author }) => row.profiles?.full_name || 'Unbekannt';
   const dayLabel = (d: string | null) =>
     d === 'tag1' ? 'Do., 21.10.' : d === 'tag2' ? 'Fr., 22.10.' : 'egal';
@@ -305,7 +339,7 @@
 
   const tabs: Array<[Tab, string]> = [
     ['gaeste', 'Gäste'],
-    ['vortraege', 'Vortragsthemen'],
+    ['vortraege', 'Referent:innen'],
     ['arbeiten', 'Abschlussarbeiten'],
   ];
 
@@ -451,16 +485,31 @@
         </div>
       </div>
 
-      <div class="flex flex-wrap gap-4">
-        <label class="flex items-center gap-2 text-sm text-haw-blau-70 cursor-pointer">
-          <input type="checkbox" bind:checked={guestForm.is_vip} class="accent-haw-blau" />
-          Ehrengast (VIP)
-        </label>
-        <label class="flex items-center gap-2 text-sm text-haw-blau-70 cursor-pointer">
-          <input type="checkbox" bind:checked={guestForm.may_speak} class="accent-haw-blau" />
-          Möglicher Vortrag / Rede / Laudatio / Keynote
-        </label>
-      </div>
+      <fieldset>
+        <legend class="block text-xs font-bold text-haw-blau mb-1">Art des Gastes</legend>
+        <div class="flex flex-wrap gap-2">
+          {#each GUEST_TYPES as type (type.id)}
+            <label
+              class="flex items-center gap-2 border border-haw-blau-30 rounded px-3 py-2 text-sm cursor-pointer hover:border-haw-blau transition-colors"
+            >
+              <input
+                type="radio"
+                name="guest_type"
+                value={type.id}
+                bind:group={guestForm.guest_type}
+                class="accent-haw-blau"
+              />
+              <span>
+                <span class="font-bold text-haw-blau">{type.label}</span>
+                <span class="text-haw-blau-50"> – {type.hint}</span>
+              </span>
+            </label>
+          {/each}
+        </div>
+        <p class="text-xs text-haw-blau-50 mt-2">
+          Personen, die reden sollen, bitte unter „Referent:innen“ eintragen.
+        </p>
+      </fieldset>
 
       <div>
         <label for="g-note" class="block text-xs font-bold text-haw-blau mb-1">Notiz</label>
@@ -492,16 +541,13 @@
               <div>
                 <p class="font-bold text-haw-blau">
                   {g.name}
-                  {#if g.is_vip}
-                    <span class="ml-2 text-xs font-bold px-2 py-0.5 rounded bg-haw-hellblau/20">
-                      VIP
-                    </span>
-                  {/if}
-                  {#if g.may_speak}
-                    <span class="ml-1 text-xs font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800">
-                      Redebeitrag möglich
-                    </span>
-                  {/if}
+                  <span
+                    class="ml-2 text-xs font-bold px-2 py-0.5 rounded {guestTypeStyles[
+                      g.guest_type
+                    ]}"
+                  >
+                    {guestTypeLabel(g.guest_type)}
+                  </span>
                 </p>
                 <p class="text-sm text-haw-blau-70">
                   {[g.role_title, g.organization].filter(Boolean).join(' · ') || '–'}
@@ -531,17 +577,43 @@
     {/if}
   {:else if activeTab === 'vortraege'}
     <!-- ---------- Vortragsthemen ---------- -->
-    <h2 class="font-bold text-haw-blau mb-1">Eigenes Vortragsthema vorschlagen</h2>
+    <h2 class="font-bold text-haw-blau mb-1">Referent:in vorschlagen</h2>
     <p class="text-sm text-haw-blau-50 mb-4">
-      Für die Vortragsblöcke am 21. und 22. Oktober.
+      Für die Vortragsblöcke und den Festakt – gern auch Sie selbst. Person oder Thema genügt,
+      beides ist besser.
     </p>
 
     <form onsubmit={addTalk} class="space-y-3 mb-10 border border-haw-blau-30 rounded p-4">
+      <div class="grid sm:grid-cols-2 gap-3">
+        <div>
+          <label for="t-speaker" class="block text-xs font-bold text-haw-blau mb-1">
+            Name der/des Referent:in
+          </label>
+          <input
+            id="t-speaker"
+            type="text"
+            bind:value={talkForm.speaker_name}
+            class={inputClass}
+            placeholder="leer lassen für ein reines Thema"
+          />
+        </div>
+        <div>
+          <label for="t-affil" class="block text-xs font-bold text-haw-blau mb-1">
+            Organisation / Funktion
+          </label>
+          <input
+            id="t-affil"
+            type="text"
+            bind:value={talkForm.speaker_affiliation}
+            class={inputClass}
+          />
+        </div>
+      </div>
       <div>
         <label for="t-title" class="block text-xs font-bold text-haw-blau mb-1">
-          Arbeitstitel *
+          Thema / Arbeitstitel
         </label>
-        <input id="t-title" type="text" bind:value={talkForm.title} required class={inputClass} />
+        <input id="t-title" type="text" bind:value={talkForm.title} class={inputClass} />
       </div>
       <div>
         <label for="t-abstract" class="block text-xs font-bold text-haw-blau mb-1">
@@ -580,21 +652,29 @@
       </div>
       <button
         type="submit"
-        disabled={saving || talkForm.title.trim().length < 3}
+        disabled={saving || !talkCanSubmit}
         class="bg-haw-blau text-white font-bold py-2 px-5 rounded text-sm hover:bg-haw-blau-90 transition-colors disabled:opacity-50 cursor-pointer"
       >
-        Thema eintragen
+        Vorschlag eintragen
       </button>
     </form>
 
     {#if talks.length === 0}
-      <p class="text-haw-blau-50">Noch keine Themen vorgeschlagen.</p>
+      <p class="text-haw-blau-50">Noch keine Referent:innen vorgeschlagen.</p>
     {:else}
       <div class="space-y-3">
         {#each talks as t (t.id)}
           <div class="border border-haw-blau-30 rounded p-4">
             <div class="flex flex-wrap items-start justify-between gap-2">
-              <p class="font-bold text-haw-blau">{t.title}</p>
+              <div>
+                <p class="font-bold text-haw-blau">{t.speaker_name || t.title}</p>
+                {#if t.speaker_name && t.title}
+                  <p class="text-sm text-haw-blau-70 italic">{t.title}</p>
+                {/if}
+                {#if t.speaker_affiliation}
+                  <p class="text-xs text-haw-blau-50">{t.speaker_affiliation}</p>
+                {/if}
+              </div>
               {#if t.created_by === userId}
                 <button
                   onclick={() => remove('ifb_fest_talks', t.id)}

@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { onMount } from 'svelte';
   import { supabase } from '../lib/supabase';
   import { basePath } from '../lib/paths';
@@ -158,7 +158,7 @@
   <div class="max-w-md mx-auto text-center py-12">
     <h1 class="font-serif text-3xl font-bold text-haw-blau mb-4">Kein Zugang</h1>
     <p class="text-haw-blau-70 mb-6">Dieser Bereich ist nur für F&amp;E und das Orga-Team zugänglich.</p>
-    <a href={basePath('/intern')} class="inline-block bg-haw-blau text-white font-bold py-3 px-8 rounded hover:bg-haw-blau-90 transition-colors">
+    <a href={basePath('/intern/silos-aufbrechen-2026')} class="inline-block bg-haw-blau text-white font-bold py-3 px-8 rounded hover:bg-haw-blau-90 transition-colors">
       Zum Veranstaltungsbereich
     </a>
   </div>
@@ -173,7 +173,7 @@
       {#if userRole === 'orga'}
         <a href={basePath('/orga')} class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">Orga</a>
       {/if}
-      <a href={basePath('/intern')} class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">Veranstaltung</a>
+      <a href={basePath('/intern/silos-aufbrechen-2026')} class="text-sm bg-haw-blau-10 text-haw-blau px-4 py-2 rounded hover:bg-haw-blau-30 transition-colors">Veranstaltung</a>
     </div>
   </div>
 

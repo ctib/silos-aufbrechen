@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { basePath } from '../lib/paths';
   import { supabase } from '../lib/supabase';
@@ -202,7 +202,7 @@
             </div>
           {:else}
             <a
-              href={basePath('/intern')}
+              href={basePath('/intern/silos-aufbrechen-2026')}
               class="inline-block bg-haw-hellblau text-haw-blau font-bold py-3 px-8 rounded hover:bg-white transition-colors text-lg"
             >
               Zum Veranstaltungsbereich

@@ -91,12 +91,14 @@
     // Hochschulangehörige bekommen sofort einen Zugangslink für den
     // internen Fest-Bereich (Moderator:innen-Status).
     if (isInternalEmail(address)) {
+      // Direkt in den Fest-Bereich, nicht über /auth/callback: der Callback
+      // gehört zur Veranstaltung vom Mai 2026 und legt dort eine Anmeldung an.
       const { error: otpError } = await supabase.auth.signInWithOtp({
         email: address,
         options: {
           data: { full_name: fullName.trim() },
           shouldCreateUser: true,
-          emailRedirectTo: window.location.origin + basePath('/auth/callback'),
+          emailRedirectTo: window.location.origin + basePath('/intern/10-jahre-ifb'),
         },
       });
 
