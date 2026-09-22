@@ -1,25 +1,17 @@
 <!--
-  Magic-Link-Vorlage für Supabase Auth
-  ====================================
-  Einfügen unter: Supabase Dashboard > Authentication > Emails > Magic Link
-  (Feld "Message body", Betreff separat setzen)
+  "Confirm signup"-Vorlage für Supabase Auth
+  ==========================================
+  Einfügen unter: Supabase Dashboard > Authentication > Emails > Confirm signup
 
   Betreff:  Ihr Zugang: 10 Jahre Institut für Bauwesen
 
-  ACHTUNG – ES GIBT EINE ZWEITE VORLAGE:
+  WARUM ZWEI VORLAGEN?
   signInWithOtp({ shouldCreateUser: true }) verschickt je nach Person eine
   andere Mail:
-      Person existiert bereits  -> diese Vorlage "Magic Link"
-      Person ist neu            -> Vorlage "Confirm signup"
-  Beide immer gemeinsam aktualisieren, sonst bekommen Erstanmeldungen den
-  alten Text. Siehe confirm-signup.html.
-
-  ACHTUNG – diese Vorlage gilt projektweit:
-  Sie wird für JEDEN Magic Link verschickt, auch für Logins in den alten
-  Bereich /intern der Veranstaltung "Silos aufbrechen" vom Mai 2026. Da diese
-  Veranstaltung vorbei ist und alle aktuellen Logins zum IfB-Fest gehören, ist
-  der fest-spezifische Text hier richtig. Sollte später ein weiteres Format
-  Magic Links brauchen, muss der Text wieder neutraler werden.
+      Person existiert bereits  -> Vorlage "Magic Link"
+      Person ist neu            -> Vorlage "Confirm signup"   <- diese hier
+  Wer nur "Magic Link" pflegt, schickt allen Erstanmeldungen den alten Text.
+  Beide Vorlagen also immer gemeinsam aktualisieren.
 
   Verfügbare Platzhalter: {{ .ConfirmationURL }} {{ .Token }} {{ .SiteURL }} {{ .Email }}
 -->
@@ -40,8 +32,8 @@
   <p>Hallo,</p>
 
   <p>
-    hier ist Ihr persönlicher Zugang zum internen Bereich des Fests. Ein Klick genügt,
-    ein Passwort brauchen Sie nicht.
+    vielen Dank für Ihre Anmeldung. Mit diesem Link öffnen Sie den internen Bereich
+    zum Fest – ein Klick genügt, ein Passwort brauchen Sie nicht.
   </p>
 
   <p style="margin: 28px 0;">
@@ -53,8 +45,8 @@
 
   <p style="font-size: 14px; color: #44607f;">
     Dort sammeln wir gemeinsam, was das Fest tragen soll: Gäste, die eingeladen werden
-    sollen, Themen für die Vortragsblöcke und Vorschläge für die Ehrung der besten
-    Abschlussarbeiten des Jahrzehnts.
+    sollen, Referentinnen und Referenten für die Vortragsblöcke und Vorschläge für die
+    Ehrung der besten Abschlussarbeiten des Jahrzehnts.
   </p>
 
   <p style="font-size: 13px; color: #6b7f99; margin-top: 28px;">
@@ -63,8 +55,9 @@
   </p>
 
   <p style="font-size: 13px; color: #6b7f99;">
-    Der Link gilt nur für kurze Zeit. Haben Sie ihn nicht angefordert, können Sie
-    diese Nachricht einfach ignorieren.
+    Der Link gilt nur für kurze Zeit. Sie können jederzeit einen neuen anfordern unter
+    <a href="https://zukunftbauen.org/intern/10-jahre-ifb" style="color: #003366;">
+      zukunftbauen.org/intern/10-jahre-ifb</a>.
   </p>
 
   <hr style="border: 0; border-top: 1px solid #d7dfe8; margin: 28px 0;">

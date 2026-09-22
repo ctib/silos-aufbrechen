@@ -199,10 +199,19 @@ Genau **eine** Mail pro angemeldeter Person (Migration 030):
 | extern | nur die Bestätigung von `noreply@` |
 | Orga meldet sich selbst an | keine Orga-Benachrichtigung an sich selbst |
 
-Die Magic-Link-Mail kommt von **Supabase Auth**, nicht aus einer Migration.
-Vorlage: `web/supabase/email-templates/magic-link.html`, einzufügen unter
-*Authentication → Emails → Magic Link*. Sie gilt **projektweit** für jeden
-Magic Link – auch für Logins in `/intern`.
+Die Zugangsmail kommt von **Supabase Auth**, nicht aus einer Migration. Es sind
+**zwei** Vorlagen nötig, weil `signInWithOtp({ shouldCreateUser: true })` je
+nach Person eine andere verschickt:
+
+| Person | Vorlage im Dashboard | Datei |
+|--------|----------------------|-------|
+| meldet sich zum ersten Mal an | *Confirm signup* | `email-templates/confirm-signup.html` |
+| existiert bereits | *Magic Link* | `email-templates/magic-link.html` |
+
+Wer nur *Magic Link* pflegt, schickt allen **Erstanmeldungen** den alten Text –
+und merkt es beim Selbsttest nicht, weil der eigene Account schon existiert.
+Beide Vorlagen also immer gemeinsam ändern. Sie gelten **projektweit**, auch für
+Logins in `/intern/silos-aufbrechen-2026`.
 
 ### Mail-Probleme
 
