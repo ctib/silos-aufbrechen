@@ -28,6 +28,8 @@ Archiv/
 # Anker "/" ist wichtig: sonst trifft das Muster auf Windows case-insensitiv
 # auch web/src/pages/veranstaltungen/.
 /Veranstaltungen/
+# DMARC-Aggregate-Reports (Mailadressen, Zustellwege)
+/Reports/
 
 # SSL certificates
 **/SSLCertificate/
