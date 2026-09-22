@@ -142,18 +142,11 @@ export const FEST_DAYS: FestDay[] = [
     items: [
       { time: '09:30', title: 'Empfang und Registrierung' },
       { time: '10:00', title: 'Eröffnung des Konferenztages' },
-      {
-        time: '10:30',
-        title: 'Vortragsblock I – Professor:innen des IfB',
-        description: 'Einblicke in aktuelle Forschung und Lehre',
-        highlight: true,
-      },
-      { time: '12:30', title: 'Mittagspause' },
-      {
-        time: '14:00',
-        title: 'Vortragsblock II – Professor:innen des IfB',
-        highlight: true,
-      },
+      { time: '10:30', title: 'Vortragsblock I', highlight: true },
+      { time: '11:30', title: 'Keynote', highlight: true, tbd: true },
+      { time: '12:15', title: 'Vortragsblock I – Fortsetzung', highlight: true },
+      { time: '13:00', title: 'Mittagspause' },
+      { time: '14:00', title: 'Vortragsblock II', highlight: true },
       { time: '17:00', title: 'Ausklang des Konferenztages', tbd: true },
     ],
   },
@@ -163,11 +156,7 @@ export const FEST_DAYS: FestDay[] = [
     label: 'Freitag, 22. Oktober 2027',
     subtitle: 'Vorträge am Vormittag, Festakt am Nachmittag',
     items: [
-      {
-        time: '09:00',
-        title: 'Vortragsblock III – Professor:innen des IfB',
-        highlight: true,
-      },
+      { time: '09:00', title: 'Vortragsblock III', highlight: true },
       {
         time: '12:00',
         title: 'Gemeinsames Mittagessen',
