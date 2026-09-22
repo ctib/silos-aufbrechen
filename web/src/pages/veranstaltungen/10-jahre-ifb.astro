@@ -95,26 +95,67 @@ const dateLabel = festDateLabel();
           <h3 class="font-serif text-2xl font-bold text-haw-blau">{day.label}</h3>
           <p class="text-haw-blau-50 text-sm mb-4">{day.subtitle}</p>
           <div class="space-y-0">
-            {day.items.map((item) => (
-              <div
-                class={`flex border-b border-haw-blau-10 py-4 ${item.highlight ? 'bg-haw-blau-10 -mx-4 px-4 rounded' : ''}`}
-              >
-                <span class="w-20 shrink-0 font-bold text-haw-blau">{item.time}</span>
-                <span class={item.highlight ? 'font-bold' : ''}>
-                  {item.title}
-                  {item.tbd && (
-                    <span class="ml-2 text-[10px] font-bold px-2 py-0.5 rounded bg-haw-blau-10 text-haw-blau-50 align-middle">
-                      offen
+            {day.items.map((item) =>
+              item.items ? (
+                /* Zusammenhängender Block: Kopfzeile + eingerückte Unterpunkte */
+                <div class="border border-haw-blau-30 rounded-lg overflow-hidden my-4">
+                  <div class="flex gap-3 sm:gap-4 bg-haw-blau text-white py-3 px-3 sm:px-4">
+                    <span class="w-20 sm:w-32 shrink-0 text-sm sm:text-base font-bold">
+                      {item.time}
                     </span>
-                  )}
-                  {item.description && (
-                    <span class="block text-haw-blau-50 font-normal text-sm">
-                      {item.description}
+                    <span class="font-bold">
+                      {item.title}
+                      {item.description && (
+                        <span class="block text-haw-hellblau font-normal text-sm">
+                          {item.description}
+                        </span>
+                      )}
                     </span>
-                  )}
-                </span>
-              </div>
-            ))}
+                  </div>
+                  <div class="px-3 sm:px-4 bg-haw-blau-10/40">
+                    {item.items.map((sub) => (
+                      <div class="flex gap-3 sm:gap-4 border-b border-haw-blau-30/40 py-3 pl-2 sm:pl-4 last:border-0">
+                        <span class="w-20 sm:w-28 shrink-0 text-xs sm:text-sm font-bold text-haw-blau">
+                          {sub.time}
+                        </span>
+                        <span class="text-sm">
+                          {sub.title}
+                          {sub.tbd && (
+                            <span class="ml-2 text-[10px] font-bold px-2 py-0.5 rounded bg-white text-haw-blau-50 align-middle">
+                              offen
+                            </span>
+                          )}
+                          {sub.description && (
+                            <span class="block text-haw-blau-50 text-sm">{sub.description}</span>
+                          )}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div
+                  class={`flex gap-4 border-b border-haw-blau-10 py-4 ${item.highlight ? 'bg-haw-blau-10 -mx-4 px-4 rounded' : ''}`}
+                >
+                  <span class="w-20 sm:w-32 shrink-0 text-sm sm:text-base font-bold text-haw-blau">
+                    {item.time}
+                  </span>
+                  <span class={item.highlight ? 'font-bold' : ''}>
+                    {item.title}
+                    {item.tbd && (
+                      <span class="ml-2 text-[10px] font-bold px-2 py-0.5 rounded bg-haw-blau-10 text-haw-blau-50 align-middle">
+                        offen
+                      </span>
+                    )}
+                    {item.description && (
+                      <span class="block text-haw-blau-50 font-normal text-sm">
+                        {item.description}
+                      </span>
+                    )}
+                  </span>
+                </div>
+              )
+            )}
           </div>
         </div>
       ))

@@ -123,6 +123,11 @@ export interface FestProgramItem {
   highlight?: boolean;
   /** Detail steht noch nicht fest – wird auf der Seite markiert */
   tbd?: boolean;
+  /**
+   * Unterpunkte. Ein Eintrag mit `items` wird als zusammenhängender Block
+   * dargestellt: eigener Rahmen, Kopfzeile, eingerückte Unterpunkte.
+   */
+  items?: FestProgramItem[];
 }
 
 export interface FestDay {
@@ -142,10 +147,16 @@ export const FEST_DAYS: FestDay[] = [
     items: [
       { time: '09:30', title: 'Empfang und Registrierung' },
       { time: '10:00', title: 'Eröffnung des Konferenztages' },
-      { time: '10:30', title: 'Vortragsblock I', highlight: true },
-      { time: '11:30', title: 'Keynote', highlight: true, tbd: true },
-      { time: '12:15', title: 'Vortragsblock I – Fortsetzung', highlight: true },
-      { time: '13:00', title: 'Mittagspause' },
+      {
+        time: '10:30 – 12:30',
+        title: 'Vortragsblock I',
+        highlight: true,
+        items: [
+          { time: '10:30 – 11:15', title: 'Keynote', tbd: true },
+          { time: '11:15 – 12:30', title: 'Vorträge' },
+        ],
+      },
+      { time: '12:30', title: 'Mittagspause' },
       { time: '14:00', title: 'Vortragsblock II', highlight: true },
       { time: '17:00', title: 'Ausklang des Konferenztages', tbd: true },
     ],
@@ -164,30 +175,29 @@ export const FEST_DAYS: FestDay[] = [
         tbd: true,
       },
       {
-        time: '14:00',
+        time: '14:00 – 17:30',
         title: 'Festakt – 10 Jahre Institut für Bauwesen',
-        description: 'Begrüßung und Eröffnung',
         highlight: true,
-      },
-      {
-        time: '14:15',
-        title: 'Grußworte aus der Politik',
-        description: 'Gäste aus Kiel, Schleswig-Holstein und dem Bund',
-      },
-      { time: '15:00', title: 'Keynote', tbd: true },
-      { time: '15:45', title: 'Pause' },
-      {
-        time: '16:15',
-        title: 'Ehrung der besten Abschlussarbeiten des Jahrzehnts',
-        description: 'Ausgezeichnete Arbeiten aus zehn Jahren IfB',
-        highlight: true,
-      },
-      {
-        time: '17:00',
-        title: 'Zertifikatsverleihung an die Absolvent:innen',
-        description:
-          'Der Jahrgang 2027 – erstmals mit Bachelorabsolvent:innen der Architektur',
-        highlight: true,
+        items: [
+          {
+            time: '14:00 – 14:45',
+            title: 'Grußworte aus Politik, Wirtschaft und Gesellschaft',
+            description: 'Gäste aus Kiel, Schleswig-Holstein und dem Bund',
+          },
+          { time: '14:45 – 15:30', title: 'Keynote', tbd: true },
+          { time: '15:30 – 16:00', title: 'Pause' },
+          {
+            time: '16:00 – 16:30',
+            title: 'Ehrung der besten Abschlussarbeiten des Jahrzehnts',
+            description: 'Ausgezeichnete Arbeiten aus zehn Jahren IfB',
+          },
+          {
+            time: '16:30 – 17:30',
+            title: 'Zertifikatsverleihung an die Absolvent:innen',
+            description:
+              'Der Jahrgang 2027 – erstmals mit Bachelorabsolvent:innen der Architektur',
+          },
+        ],
       },
       {
         time: '18:00',
