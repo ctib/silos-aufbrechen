@@ -179,6 +179,38 @@ export const events: CalendarEvent[] = [
     audience: 'alle',
   },
   {
+    id: 'baustelle-zukunft-weiblich-2026',
+    title: 'Baustelle Zukunft – Die Zukunft ist weiblich. Die Baustelle auch.',
+    title_en: 'Baustelle Zukunft – The Future is Female. So is the Construction Site.',
+    description:
+      'Online-Seminar von Dipl.-Ing. Wiebke Jipp. Von der Architekten- und Ingenieurkammer Schleswig-Holstein als Fortbildung anerkannt; ermäßigter Preis für Studierende und Berufseinsteigerinnen.',
+    description_en:
+      'Online seminar by Dipl.-Ing. Wiebke Jipp. Recognised as continuing education by the Chamber of Architects and Engineers of Schleswig-Holstein; reduced rate for students and early-career professionals.',
+    organizer: 'Wiebke Jipp',
+    start: '2026-10-06T18:30:00+02:00',
+    end: '2026-10-06T20:00:00+02:00',
+    location: 'Online',
+    url: 'https://wiebkejipp.com/akademie#baustelle-zukunft',
+    category: 'extern',
+    audience: 'alle',
+  },
+  {
+    id: 'sternbruecke-forever-2026',
+    title: 'Sternbrücke forever – Dokumentarfilm',
+    title_en: 'Sternbrücke forever – Documentary',
+    description:
+      'Der BDA Kiel zeigt den Dokumentarfilm von Christian Hornung (D 2026, 98 Min.) über den Abriss der Hamburger Sternbrücke: ein Viertel aus Clubs, Kiosken und Werkstätten im Wandel. Eintritt 7 €, ermäßigt 6 €.',
+    description_en:
+      'BDA Kiel screens the documentary by Christian Hornung (Germany 2026, 98 min) about the demolition of Hamburg’s Sternbrücke and a neighbourhood of clubs, kiosks and workshops in transition. Admission €7, reduced €6.',
+    organizer: 'BDA Kiel',
+    start: '2026-10-08T18:00:00+02:00',
+    end: '2026-10-08T20:00:00+02:00',
+    location: 'Kino in der Pumpe, Haßstraße 22, 24103 Kiel',
+    url: 'https://www.diepumpe.de/veranstaltungen/mit-dem-bda-sternbruecke-forever/',
+    category: 'extern',
+    audience: 'alle',
+  },
+  {
     id: 'hackathon-lebenstraum-niederung-2026',
     title: 'Hackathon „Lebens(t)raum Niederung"',
     title_en: 'Hackathon "Lebens(t)raum Niederung"',
@@ -257,6 +289,22 @@ export const events: CalendarEvent[] = [
     location: 'Online',
     url: 'https://www.haw-kiel.de/wir/organisation/zentrale-einrichtungen/institut-fuer-interdisziplinaere-genderforschung-und-diversity/gard-gender-in-applied-research-development/veranstaltungen/',
     category: 'intern',
+    audience: 'alle',
+  },
+  {
+    id: 'neues-europaeisches-bauhaus-kiel-2026',
+    title: 'Neues Europäisches Bauhaus in Kiel und Schleswig-Holstein',
+    title_en: 'New European Bauhaus in Kiel and Schleswig-Holstein',
+    description:
+      'Ko-kreativer Workshop im Rahmen des Projekts Baltic’s Past & Future: Wie lassen sich zukunftsfähige, nachhaltige und inklusive Lebensräume in Kiel gestalten? Mit Impulsen, internationalem Austausch mit Partner:innen aus Dänemark, Polen und Litauen sowie Akteur:innen aus Architektur, Stadtplanung, Kunst, Kultur, Zivilgesellschaft und Verwaltung. Persönliche Einladung, Plätze begrenzt – Uhrzeit wird noch bekannt gegeben.',
+    description_en:
+      'Co-creative workshop within the Baltic’s Past & Future project: how can liveable, sustainable and inclusive spaces be shaped in Kiel? With impulses, international exchange with partners from Denmark, Poland and Lithuania, and participants from architecture, urban planning, art, culture, civil society and public administration. By personal invitation, places limited – start time to be announced.',
+    organizer: 'Heinrich-Böll-Stiftung Schleswig-Holstein und Kunstverein Haus 8',
+    organizer_en: 'Heinrich Böll Foundation Schleswig-Holstein and Kunstverein Haus 8',
+    start: '2026-11-19T16:00:00+01:00',
+    end: '2026-11-19T19:00:00+01:00',
+    location: 'Atelierhaus im Anscharpark, Heiligendammer Str. 15, 24106 Kiel',
+    category: 'extern',
     audience: 'alle',
   },
   {
