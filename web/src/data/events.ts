@@ -211,6 +211,54 @@ export const events: CalendarEvent[] = [
     audience: 'alle',
   },
   {
+    id: 'ki-insights-kommunikationspraxis-oktober-2026',
+    title: 'KI-Insights: Vom Briefing zur Medienmitteilung',
+    title_en: 'AI Insights: From Briefing to Press Release',
+    description:
+      'Online-Vortrag von Tristan Cech (Convensis GmbH) in der Reihe „KI-Insights aus der Kommunikationspraxis“: Wie KI die PR- und Kommunikationsarbeit verändert. Kostenlos. Der Zoom-Zugang wird über den Fachbereich Medien verteilt.',
+    description_en:
+      'Online lecture by Tristan Cech (Convensis GmbH) in the series "AI Insights from Communication Practice": how AI is changing PR and communications work. Free of charge. Zoom access is distributed via the Department of Media.',
+    organizer: 'HAW Kiel, Fachbereich Medien mit dem PR-Beirat',
+    organizer_en: 'HAW Kiel, Department of Media with the PR Advisory Board',
+    start: '2026-10-16T10:15:00+02:00',
+    end: '2026-10-16T11:45:00+02:00',
+    location: 'Online (Zoom)',
+    category: 'intern',
+    audience: 'haw',
+  },
+  {
+    id: 'stegreif-kirchenumbau-2026',
+    title: 'Stegreif: Kirchenumbau – vom Sakral- zum Stadtraum',
+    title_en: 'Design Charrette: Church Conversion – From Sacred to Urban Space',
+    description:
+      'Ausgabe des Stegreifentwurfs für Architekturstudierende. Thema: Transformation vom Sakral- zum Stadtraum. Anmeldung bis 20.10.2026 per E-Mail an Sabina Hauers, Abgabe am 05.11.2026.',
+    description_en:
+      'Briefing for the short design project for architecture students. Topic: transformation from sacred to urban space. Registration until 20 October 2026 by email to Sabina Hauers, submission on 5 November 2026.',
+    organizer: 'IfB, HAW Kiel',
+    start: '2026-10-19T09:00:00+02:00',
+    end: '2026-10-19T10:00:00+02:00',
+    location: 'HAW Kiel, Studio I',
+    category: 'intern',
+    audience: 'haw',
+  },
+  {
+    id: 'ringvorlesung-lehmbau-down-to-earth-2026',
+    title: 'Ringvorlesung Lehmbau „Down to Earth“',
+    title_en: 'Lecture Series on Earthen Building "Down to Earth"',
+    description:
+      'Bundesweite Online-Ringvorlesung des Dachverbands Lehm zum Baustoff Lehm und zum nachhaltigen, ressourcenschonenden und zirkulären Bauen – getragen von 14 Hochschulen und über 30 Referierenden. 16 Termine, immer donnerstags 16:00–17:30 Uhr, vom 22.10.2026 bis 25.02.2027. Teilnahme kostenlos und ohne Anmeldung; die Teilnahme wird erfasst und kann bestätigt werden.',
+    description_en:
+      'Nationwide online lecture series by the German Association for Building with Earth on earth as a building material and on sustainable, resource-efficient and circular construction – supported by 14 universities and more than 30 speakers. 16 sessions, Thursdays 4:00–5:30 pm, from 22 October 2026 to 25 February 2027. Free, no registration required; attendance is recorded and can be certified.',
+    organizer: 'Dachverband Lehm e. V.',
+    organizer_en: 'Dachverband Lehm e. V. (German Association for Building with Earth)',
+    start: '2026-10-22T16:00:00+02:00',
+    end: '2026-10-22T17:30:00+02:00',
+    location: 'Online (Zoom)',
+    url: 'https://www.dachverband-lehm.de/bildung/ringvorlesung',
+    category: 'extern',
+    audience: 'alle',
+  },
+  {
     id: 'hackathon-lebenstraum-niederung-2026',
     title: 'Hackathon „Lebens(t)raum Niederung"',
     title_en: 'Hackathon "Lebens(t)raum Niederung"',
@@ -225,6 +273,21 @@ export const events: CalendarEvent[] = [
     location: 'Stapel, Eider-Treene-Sorge-Region',
     url: 'https://www.leonie-sh.de/u6i7',
     category: 'extern',
+    audience: 'alle',
+  },
+  {
+    id: 'promotionsstipendien-professorinnenprogramm-2026',
+    title: 'Bewerbungsschluss: Promotionsstipendien Professorinnenprogramm 2030',
+    title_en: 'Application Deadline: Doctoral Scholarships, Professorinnenprogramm 2030',
+    description:
+      'Ausschreibung von Grund- und Abschlussstipendien für Wissenschaftlerinnen in frühen Karrierephasen im Rahmen des Professorinnenprogramms 2030. Bewerbungsfrist: 8. November 2026.',
+    description_en:
+      'Call for basic and completion scholarships for female researchers in early career stages within the Professorinnenprogramm 2030. Application deadline: 8 November 2026.',
+    organizer: 'HAW Kiel',
+    start: '2026-11-08T23:59:00+01:00',
+    end: '2026-11-08T23:59:00+01:00',
+    url: 'https://stelle.pro/jobposting/0489a2daab5ca7478c290e9f64aae8583ecbf9a80',
+    category: 'intern',
     audience: 'alle',
   },
   {
@@ -292,20 +355,52 @@ export const events: CalendarEvent[] = [
     audience: 'alle',
   },
   {
+    id: 'fehmarnbelt-querung-grossprojekte-2026',
+    title: 'Hygge und trotzdem schneller? Feste Fehmarnbelt-Querung',
+    title_en: 'Hygge and Still Faster? The Fehmarnbelt Fixed Link',
+    description:
+      'Vortrag von Prof. Dr. Thilo Rohlfs (Professur für Umwelt-, Bau- und Planungsrecht, HAW Kiel): Was können wir von den Dänen bei Großprojekten lernen? Als ehemaliger schleswig-holsteinischer Verkehrsstaatssekretär war er intensiv in das Genehmigungsverfahren eingebunden. Um Anmeldung unter geschaeftsstelle@shjg.de wird gebeten.',
+    description_en:
+      'Lecture by Prof. Dr. Thilo Rohlfs (Professorship of Environmental, Construction and Planning Law, HAW Kiel): what can Germany learn from Denmark about major infrastructure projects? As former State Secretary for Transport of Schleswig-Holstein he was closely involved in the approval process. Registration requested at geschaeftsstelle@shjg.de.',
+    organizer: 'Schleswig-Holsteinische Juristische Gesellschaft e. V.',
+    organizer_en: 'Schleswig-Holstein Law Society',
+    start: '2026-11-18T18:30:00+01:00',
+    end: '2026-11-18T20:00:00+01:00',
+    location: 'Klaus-Murmann-Hörsaal, CAU zu Kiel, Leibnizstraße 1, 24118 Kiel',
+    category: 'extern',
+    audience: 'alle',
+  },
+  {
     id: 'neues-europaeisches-bauhaus-kiel-2026',
     title: 'Neues Europäisches Bauhaus in Kiel und Schleswig-Holstein',
     title_en: 'New European Bauhaus in Kiel and Schleswig-Holstein',
     description:
-      'Ko-kreativer Workshop im Rahmen des Projekts Baltic’s Past & Future: Wie lassen sich zukunftsfähige, nachhaltige und inklusive Lebensräume in Kiel gestalten? Mit Impulsen, internationalem Austausch mit Partner:innen aus Dänemark, Polen und Litauen sowie Akteur:innen aus Architektur, Stadtplanung, Kunst, Kultur, Zivilgesellschaft und Verwaltung. Persönliche Einladung, Plätze begrenzt – Uhrzeit wird noch bekannt gegeben.',
+      'Workshop im Rahmen des Projekts Baltic’s Past & Future: Wie lassen sich zukunftsfähige, nachhaltige und inklusive Lebensräume in Kiel gestalten? Mit einer Einführung von Pia Runge (Umweltbundesamt), NEB-Strategien aus Vilnius, Danzig und Aarhus, Beiträgen von Bastian Lipinski (Stadt Kiel), Sven Schuch (Muthesius Kunsthochschule) und der Künstlerin Ute Diez zu den drei NEB-Säulen, einem Rundgang durch den Anscharpark und abschließender Plenumsdiskussion. Persönliche Einladung, Plätze begrenzt. Anmeldung bis 12. November 2026.',
     description_en:
-      'Co-creative workshop within the Baltic’s Past & Future project: how can liveable, sustainable and inclusive spaces be shaped in Kiel? With impulses, international exchange with partners from Denmark, Poland and Lithuania, and participants from architecture, urban planning, art, culture, civil society and public administration. By personal invitation, places limited – start time to be announced.',
+      'Workshop within the Baltic’s Past & Future project: how can liveable, sustainable and inclusive spaces be shaped in Kiel? With an introduction by Pia Runge (German Environment Agency), NEB strategies from Vilnius, Gdańsk and Aarhus, contributions by Bastian Lipinski (City of Kiel), Sven Schuch (Muthesius Academy of Fine Arts) and artist Ute Diez on the three NEB pillars, a tour of the Anscharpark and a closing plenary discussion. By personal invitation, places limited. Registration until 12 November 2026.',
     organizer: 'Heinrich-Böll-Stiftung Schleswig-Holstein und Kunstverein Haus 8',
     organizer_en: 'Heinrich Böll Foundation Schleswig-Holstein and Kunstverein Haus 8',
     start: '2026-11-19T16:00:00+01:00',
-    end: '2026-11-19T19:00:00+01:00',
+    end: '2026-11-19T20:00:00+01:00',
     location: 'Atelierhaus im Anscharpark, Heiligendammer Str. 15, 24106 Kiel',
     category: 'extern',
     audience: 'alle',
+  },
+  {
+    id: 'ki-insights-kommunikationspraxis-november-2026',
+    title: 'KI-Insights: Der KI-Gendefekt',
+    title_en: 'AI Insights: The AI Gene Defect',
+    description:
+      'Online-Vortrag von Prof. Dr. Stefan Hencke (Convensis GmbH) in der Reihe „KI-Insights aus der Kommunikationspraxis“: Was haben Mäuse und Wildbienen mit KI zu tun? Kostenlos. Der Zoom-Zugang wird über den Fachbereich Medien verteilt.',
+    description_en:
+      'Online lecture by Prof. Dr. Stefan Hencke (Convensis GmbH) in the series "AI Insights from Communication Practice": what do mice and wild bees have to do with AI? Free of charge. Zoom access is distributed via the Department of Media.',
+    organizer: 'HAW Kiel, Fachbereich Medien mit dem PR-Beirat',
+    organizer_en: 'HAW Kiel, Department of Media with the PR Advisory Board',
+    start: '2026-11-27T10:15:00+01:00',
+    end: '2026-11-27T11:45:00+01:00',
+    location: 'Online (Zoom)',
+    category: 'intern',
+    audience: 'haw',
   },
   {
     id: '10-jahre-ifb',
