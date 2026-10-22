@@ -276,6 +276,21 @@ export const events: CalendarEvent[] = [
     audience: 'alle',
   },
   {
+    id: 'wildeboer-webinar-din-18017-3-2026',
+    title: 'Webinar: Brandschutz in Anlagen nach DIN 18017-3',
+    title_en: 'Webinar: Fire Protection in Systems to DIN 18017-3',
+    description:
+      'Kostenloses Online-Seminar mit Rainer Willms zum TS18 TopSchott: Welche Vorgaben macht die MLüAR, bei welchen Bauvorhaben lässt sich die Brandschutzabsperrung einsetzen, welche Abstände zu anderen Gewerken gelten und was ist zur Kaltrauchsicherheit zu beachten? Für Fachplanende, Ingenieurbüros, Sachverständige und ausführende Betriebe. Anmeldung über das Webinarprogramm auf wildeboer.de.',
+    description_en:
+      'Free online seminar with Rainer Willms on the TS18 TopSchott fire barrier: requirements of the MLüAR, suitable building projects, clearances to other trades and cold smoke tightness. Aimed at planners, engineering offices, experts and contractors. Registration via the webinar programme at wildeboer.de.',
+    organizer: 'Wildeboer Bauteile GmbH',
+    start: '2026-10-28T11:00:00+01:00',
+    end: '2026-10-28T11:45:00+01:00',
+    location: 'Online',
+    category: 'extern',
+    audience: 'alle',
+  },
+  {
     id: 'net-zero-valley-konferenz-sh-2026',
     title: '2. Net Zero Valley Konferenz Schleswig-Holstein',
     title_en: '2nd Net Zero Valley Conference Schleswig-Holstein',
@@ -288,6 +303,23 @@ export const events: CalendarEvent[] = [
     start: '2026-11-03T15:00:00+01:00',
     end: '2026-11-03T18:30:00+01:00',
     location: 'Holstenhallen Neumünster',
+    category: 'extern',
+    audience: 'alle',
+  },
+  {
+    id: 'detail-architekturtag-2026',
+    title: 'DETAIL Architekturtag 2026: Kostengünstig bauen – aber wie?',
+    title_en: 'DETAIL Architecture Day 2026: Building Affordably – But How?',
+    description:
+      'Online-Veranstaltung zum Spannungsfeld aus steigenden technischen Anforderungen, Wohnungsmangel und wachsenden Baukosten. Mit Beiträgen von Tilman Jarmer (TUMorrow Factory), Kilian Jonak (Strategien für kostengünstiges Bauen) und Chris Neuburger (nahezu unbeheiztes Haus in Ingolstadt), Moderation Eva Herrmann. Teilnahme kostenlos; als Fortbildung mit 4 Punkten von mehreren Architektenkammern anerkannt.',
+    description_en:
+      'Online event on the tension between rising technical requirements, housing shortage and growing construction costs. With contributions by Tilman Jarmer (TUMorrow Factory), Kilian Jonak (strategies for affordable construction) and Chris Neuburger (an almost unheated house in Ingolstadt), moderated by Eva Herrmann. Free of charge; recognised as continuing education with 4 credits by several chambers of architects.',
+    organizer: 'DETAIL mit A|U|F, Bundesverband Flachglas, ift Rosenheim, Rewindo und VFF',
+    organizer_en: 'DETAIL with A|U|F, Bundesverband Flachglas, ift Rosenheim, Rewindo and VFF',
+    start: '2026-11-03T16:00:00+01:00',
+    end: '2026-11-03T18:30:00+01:00',
+    location: 'Online',
+    url: 'https://www.detail.de/architekturtag-2026',
     category: 'extern',
     audience: 'alle',
   },
