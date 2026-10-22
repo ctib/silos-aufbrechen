@@ -5,19 +5,55 @@
 // Phasen-Zeitstrahl, Kalendereintrag und der interne Bereich lesen
 // aus dieser Datei.
 //
-// Do 21.10.2027  Konferenztag – Vorträge der Professor:innen des IfB
-// Fr 22.10.2027  vormittags Vorträge, ab dem frühen Nachmittag Festakt
+// „Parade des Bauwesen“ – in der 1. Woche der 37. Interdisziplinären
+// Wochen (IDW) der HAW Kiel:
+//
+// Do 28.10.2027  Rundgang durch die IDW-Ergebnisse, Podiumsdiskussion
+// Fr 29.10.2027  Seefischmarkt, Dampferfahrt, Festakt im Rathaus, Fête
 // ============================================================
 
-/** Donnerstag, 21. Oktober 2027 – Beginn Konferenztag */
-export const FEST_START = '2027-10-21T09:30:00+02:00';
-/** Freitag, 22. Oktober 2027 – Ausklang nach dem Festakt */
-export const FEST_END = '2027-10-22T22:00:00+02:00';
+/** Donnerstag, 28. Oktober 2027 */
+export const FEST_START = '2027-10-28T14:00:00+02:00';
+/** Freitag, 29. Oktober 2027 – Ausklang nach der Fête */
+export const FEST_END = '2027-10-29T23:59:00+02:00';
 
-/** PLATZHALTER – Veranstaltungsort noch bestätigen */
-export const FEST_LOCATION = 'HAW Kiel, Sokratesplatz 1, 24149 Kiel';
+/**
+ * Das Fest wandert über mehrere Orte. FEST_LOCATION ist die Kurzform für
+ * Banner, Kalendereintrag und Übersicht; die Stationen stehen in
+ * FEST_VENUES und erscheinen im Programm an den einzelnen Blöcken.
+ */
+export const FEST_LOCATION = 'Seefischmarkt, MS Stadt Kiel und Kieler Rathaus';
 export const FEST_LOCATION_URL =
-  'https://www.openstreetmap.org/#map=19/54.333591/10.181461';
+  'https://www.openstreetmap.org/#map=14/54.3340/10.1600';
+
+export interface FestVenue {
+  name: string;
+  address: string;
+  url?: string;
+}
+
+export const FEST_VENUES: FestVenue[] = [
+  {
+    name: 'Seefischmarkt',
+    address: 'Wischhofstraße 1–3, 24148 Kiel',
+    url: 'https://www.openstreetmap.org/#map=17/54.3303/10.1707',
+  },
+  {
+    name: 'MS Stadt Kiel',
+    address: 'Überfahrt vom Seefischmarkt zum Anleger Seegarten',
+    url: 'https://www.openstreetmap.org/#map=16/54.3220/10.1430',
+  },
+  {
+    name: 'Ratssaal im Kieler Rathaus',
+    address: 'Fleethörn 9, 24103 Kiel',
+    url: 'https://www.openstreetmap.org/#map=18/54.3217/10.1348',
+  },
+  {
+    name: 'Die Pumpe',
+    address: 'Haßstraße 22, 24103 Kiel',
+    url: 'https://www.openstreetmap.org/#map=18/54.3263/10.1366',
+  },
+];
 
 export const FEST_MAX_COMPANIONS = 3;
 export const FEST_CONTACT_EMAIL = 'christoph.goebel@haw-kiel.de';
@@ -68,16 +104,18 @@ export const FEST_PHASES: FestPhase[] = [
     id: 'programm',
     label: 'Anmeldeschluss & Programm',
     short: 'Programm',
-    start: '2027-09-21T00:00:00+02:00',
+    // Ein Monat vor der Veranstaltung
+    start: '2027-09-28T00:00:00+02:00',
     description:
-      'Die Anmeldung schließt, das finale Programm mit allen Vorträgen und Ehrungen wird bekannt gegeben.',
+      'Die Anmeldung schließt, das finale Programm mit allen Beiträgen und Ehrungen wird bekannt gegeben.',
   },
   {
     id: 'durchfuehrung',
     label: 'Veranstaltung',
     short: 'Fest',
     start: FEST_START,
-    description: 'Zwei Tage Institut für Bauwesen – Konferenz, Festakt und Feier.',
+    description:
+      'Zwei Tage Institut für Bauwesen – vom Seefischmarkt über die Förde bis ins Rathaus.',
   },
 ];
 
@@ -141,68 +179,92 @@ export interface FestDay {
 export const FEST_DAYS: FestDay[] = [
   {
     id: 'tag1',
-    date: '2027-10-21',
-    label: 'Donnerstag, 21. Oktober 2027',
-    subtitle: 'Konferenztag – Forschung und Lehre am Institut für Bauwesen',
+    date: '2027-10-28',
+    label: 'Donnerstag, 28. Oktober 2027',
+    subtitle: 'Die Ergebnisse der Interdisziplinären Wochen am Seefischmarkt',
     items: [
-      { time: '09:30', title: 'Empfang und Registrierung' },
-      { time: '10:00', title: 'Eröffnung des Konferenztages' },
       {
-        time: '10:30 – 12:30',
-        title: 'Vortragsblock I',
-        highlight: true,
-        items: [
-          { time: '10:30 – 11:15', title: 'Keynote', tbd: true },
-          { time: '11:15 – 12:30', title: 'Vorträge' },
-        ],
+        time: 'vormittags',
+        title: 'Vernissagen und Finissagen',
+        description: 'Ausstellungen rund um den Seefischmarkt',
+        tbd: true,
       },
-      { time: '12:30', title: 'Mittagspause' },
-      { time: '14:00', title: 'Vortragsblock II', highlight: true },
-      { time: '17:00', title: 'Ausklang des Konferenztages', tbd: true },
+      {
+        time: 'nachmittags',
+        title: '„Rundgang“ – Vorstellung der IDW-Ergebnisse',
+        description:
+          'Stegreife, Projekt- und Abschlussarbeiten mit umsetzbaren Interventionen, Ideen und Konzepten',
+        highlight: true,
+        tbd: true,
+      },
+      {
+        time: 'abends',
+        title: 'Podiumsdiskussion: Stadtentwicklung Seefischmarkt',
+        highlight: true,
+        tbd: true,
+      },
     ],
   },
   {
     id: 'tag2',
-    date: '2027-10-22',
-    label: 'Freitag, 22. Oktober 2027',
-    subtitle: 'Vorträge am Vormittag, Festakt am Nachmittag',
+    date: '2027-10-29',
+    label: 'Freitag, 29. Oktober 2027',
+    subtitle: 'Vom Seefischmarkt über die Förde ins Rathaus',
     items: [
-      { time: '09:00', title: 'Vortragsblock III', highlight: true },
       {
-        time: '12:00',
-        title: 'Gemeinsames Mittagessen',
-        description: 'Ort steht noch nicht fest',
-        tbd: true,
+        time: '08:00 – 10:00',
+        title: 'Gemeinsames „Jeder-bringt-was-mit-Buffet“',
+        description: 'Institutsintern, am Seefischmarkt',
       },
       {
-        time: '14:00 – 17:30',
-        title: 'Festakt – 10 Jahre Institut für Bauwesen',
+        time: '10:00 – 13:00',
+        title: 'Open Seefischmarkt',
         highlight: true,
         items: [
+          { time: 'ab 10:00', title: 'Empfang der Gäste' },
+          { time: 'ab 10:30', title: 'Thematische Rundgänge' },
+          { time: 'durchgehend', title: 'Open Labs und Workshops' },
+          { time: 'durchgehend', title: 'Projekt- und Stegreifpräsentationen' },
+          { time: 'durchgehend', title: 'Ausstellungen und IDW-Ergebnisse' },
+        ],
+      },
+      {
+        time: '13:00 – 15:00',
+        title: 'Dampferfahrt mit der MS Stadt Kiel',
+        description:
+          'Vom Seefischmarkt zum Anleger Seegarten, mit Buffet und Mittagssnack für IfB und Gäste',
+        highlight: true,
+      },
+      {
+        time: '16:00 – 18:00',
+        title: 'Offizielle Feierlichkeiten – 10 Jahre Institut für Bauwesen',
+        description: 'Ratssaal im Kieler Rathaus',
+        highlight: true,
+        items: [
+          { time: '16:00', title: 'Feierliche Eröffnung und Reden' },
+          { time: '16:45', title: 'Keynote', description: 'Gast von außerhalb', tbd: true },
           {
-            time: '14:00 – 14:45',
-            title: 'Grußworte aus Politik, Wirtschaft und Gesellschaft',
-            description: 'Gäste aus Kiel, Schleswig-Holstein und dem Bund',
+            time: '17:00',
+            title: 'Best Bachelor Awards',
+            description: 'Ehrung der besten Abschlussarbeiten',
           },
-          { time: '14:45 – 15:30', title: 'Keynote', tbd: true },
-          { time: '15:30 – 16:00', title: 'Pause' },
           {
-            time: '16:00 – 16:30',
-            title: 'Ehrung der besten Abschlussarbeiten des Jahrzehnts',
-            description: 'Ausgezeichnete Arbeiten aus zehn Jahren IfB',
-          },
-          {
-            time: '16:30 – 17:30',
-            title: 'Zertifikatsverleihung an die Absolvent:innen',
+            time: '17:30',
+            title: 'Graduation – Zertifikatsverleihung an alle',
             description:
               'Der Jahrgang 2027 – erstmals mit Bachelorabsolvent:innen der Architektur',
           },
         ],
       },
       {
-        time: '18:00',
-        title: 'Empfang und Feier',
-        description: 'Mit Studierenden, Ehemaligen und Gästen',
+        time: '18:00 – 20:00',
+        title: 'Posterpräsentationen der Bachelorarbeiten',
+        description: 'Mit Häppchen und Getränken im Ratssaal und davor',
+      },
+      {
+        time: 'ab 21:00',
+        title: 'IfB-Fête der Fachschaft',
+        description: 'In der Pumpe, Haßstraße 22',
       },
     ],
   },
@@ -221,15 +283,33 @@ export interface BookableOption {
 }
 
 export const BOOKABLE_OPTIONS: BookableOption[] = [
-  { id: 'tag1', label: 'Do., 21.10. – Konferenztag', hint: 'ganztägig' },
-  { id: 'tag2-vormittag', label: 'Fr., 22.10. – Vorträge am Vormittag' },
-  { id: 'tag2-mittag', label: 'Fr., 22.10. – Gemeinsames Mittagessen', hint: 'Ort offen' },
-  { id: 'festakt', label: 'Fr., 22.10. – Festakt', hint: 'ab 14:00' },
-  { id: 'empfang', label: 'Fr., 22.10. – Empfang und Feier', hint: 'ab 18:00' },
+  { id: 'do-rundgang', label: 'Do., 28.10. – Rundgang durch die IDW-Ergebnisse' },
+  { id: 'do-podium', label: 'Do., 28.10. – Podiumsdiskussion Stadtentwicklung SFM' },
+  { id: 'fr-seefischmarkt', label: 'Fr., 29.10. – Open Seefischmarkt', hint: '10:00 – 13:00' },
+  { id: 'fr-dampfer', label: 'Fr., 29.10. – Dampferfahrt MS Stadt Kiel', hint: '13:00 – 15:00' },
+  { id: 'fr-festakt', label: 'Fr., 29.10. – Offizielle Feierlichkeiten im Rathaus', hint: '16:00 – 18:00' },
+  { id: 'fr-poster', label: 'Fr., 29.10. – Posterpräsentationen', hint: '18:00 – 20:00' },
+  { id: 'fr-fete', label: 'Fr., 29.10. – IfB-Fête in der Pumpe', hint: 'ab 21:00' },
 ];
 
+/**
+ * Programmteile aus früheren Planungsständen. Sie stehen noch in
+ * Anmeldungen, die vor der Programmänderung eingegangen sind – damit die
+ * Orga-Liste und der CSV-Export sie lesbar anzeigen statt der rohen id.
+ * Nicht mehr buchbar, deshalb getrennt von BOOKABLE_OPTIONS.
+ */
+const RETIRED_BOOKABLE_LABELS: Record<string, string> = {
+  tag1: 'Do., 21.10. – Konferenztag (alte Planung)',
+  'tag2-vormittag': 'Fr., 22.10. – Vorträge am Vormittag (alte Planung)',
+  'tag2-mittag': 'Fr., 22.10. – Gemeinsames Mittagessen (alte Planung)',
+  festakt: 'Fr., 22.10. – Festakt (alte Planung)',
+  empfang: 'Fr., 22.10. – Empfang und Feier (alte Planung)',
+};
+
 export function bookableLabel(id: string): string {
-  return BOOKABLE_OPTIONS.find((o) => o.id === id)?.label ?? id;
+  return (
+    BOOKABLE_OPTIONS.find((o) => o.id === id)?.label ?? RETIRED_BOOKABLE_LABELS[id] ?? id
+  );
 }
 
 // ------------------------------------------------------------
@@ -254,8 +334,8 @@ const fmt = (opts: Intl.DateTimeFormatOptions) =>
 const DATE_FMT = fmt({ day: '2-digit', month: 'long', year: 'numeric' });
 const TIME_FMT = fmt({ hour: '2-digit', minute: '2-digit' });
 
-export const festDateLabel = () => '21. und 22. Oktober 2027';
-export const festDateShort = () => '21.–22.10.2027';
+export const festDateLabel = () => '28. und 29. Oktober 2027';
+export const festDateShort = () => '28.–29.10.2027';
 export const festTimeLabel = () =>
   `${TIME_FMT.format(new Date(FEST_START))} Uhr bis ${TIME_FMT.format(new Date(FEST_END))} Uhr`;
 export const regDeadlineLabel = () => DATE_FMT.format(regDeadlineDate());

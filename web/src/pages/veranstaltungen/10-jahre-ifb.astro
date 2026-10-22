@@ -7,6 +7,7 @@ import {
   FEST_PHASES,
   FEST_LOCATION,
   FEST_LOCATION_URL,
+  FEST_VENUES,
   festDateLabel,
   regDeadlineLabel,
   formatDate,
@@ -58,15 +59,16 @@ const dateLabel = festDateLabel();
         10 Jahre<br />Institut für Bauwesen
       </h1>
       <p class="mt-4 text-xl sm:text-2xl text-haw-blau-70 font-serif italic">
-        Zwei Tage Bauwesen: Konferenz, Festakt und Feier mit unseren Studierenden.
+        Gemeinsam – Gemeinwesen – Bauwesen
       </p>
       <p class="mt-6 text-haw-blau-70 max-w-2xl">
         Zehn Jahre Institut für Bauwesen heißt: zehn Jahrgänge Absolventinnen und Absolventen,
         zahllose Projekte mit Partnern aus der Region und ein Institut, das sich immer wieder neu
-        erfunden hat. Am 21. Oktober zeigen unsere Professorinnen und Professoren, woran sie
-        arbeiten. Am 22. Oktober feiern wir – mit Gästen aus der Politik, einer Keynote, der Ehrung
-        der besten Abschlussarbeiten des Jahrzehnts und der Zertifikatsverleihung an den aktuellen
-        Jahrgang.
+        erfunden hat. Wir feiern das in der ersten Woche der 37. Interdisziplinären Wochen –
+        am Donnerstag mit den Ergebnissen aus den IDW und einer Podiumsdiskussion zur
+        Stadtentwicklung am Seefischmarkt, am Freitag auf dem Weg vom Seefischmarkt über die
+        Förde bis in den Ratssaal des Kieler Rathauses: mit Keynote, Best Bachelor Awards,
+        Zertifikatsverleihung und anschließender Fête.
       </p>
       <a
         href="#anmeldung"
@@ -198,21 +200,35 @@ const dateLabel = festDateLabel();
     </div>
     <div>
       <h3 class="font-bold text-haw-blau mb-2">Wo</h3>
-      <p class="text-sm text-haw-blau-70">
-        <a
-          href={FEST_LOCATION_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="underline decoration-dotted hover:text-haw-blau"
-        >
-          {FEST_LOCATION}
-        </a>
-      </p>
+      <ul class="text-sm text-haw-blau-70 space-y-1">
+        {
+          FEST_VENUES.map((venue) => (
+            <li>
+              {venue.url ? (
+                <a
+                  href={venue.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="underline decoration-dotted hover:text-haw-blau"
+                >
+                  {venue.name}
+                </a>
+              ) : (
+                venue.name
+              )}
+              <span class="block text-haw-blau-50 text-xs">{venue.address}</span>
+            </li>
+          ))
+        }
+      </ul>
     </div>
     <div>
       <h3 class="font-bold text-haw-blau mb-2">Teilnahme</h3>
       <p class="text-sm text-haw-blau-70">
         Kostenfrei, Anmeldung bis {regDeadlineLabel()}.
+      </p>
+      <p class="text-sm text-haw-blau-70 mt-2">
+        Teil der 37. Interdisziplinären Wochen der HAW Kiel.
       </p>
     </div>
   </section>

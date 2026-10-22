@@ -139,10 +139,19 @@ Dann die geänderten Dateien committen und pushen. Commit-Nachricht im Stil:
 
 ## Fest "10 Jahre Institut für Bauwesen"
 
-**21. und 22. Oktober 2027.** Do: Konferenztag mit Vorträgen der
-Professor:innen. Fr: vormittags Vorträge, ab dem frühen Nachmittag Festakt
-(Grußworte aus der Politik → Keynote → Ehrung der besten Abschlussarbeiten des
-Jahrzehnts → Zertifikatsverleihung an den aktuellen Jahrgang) und Feier.
+**28. und 29. Oktober 2027**, in der 1. Woche der 37. Interdisziplinären
+Wochen. Titel der Planung: „Parade des Bauwesen“, Motto „Gemeinsam –
+Gemeinwesen – Bauwesen“.
+
+- **Do:** Vernissagen, Rundgang durch die IDW-Ergebnisse, Podiumsdiskussion
+  zur Stadtentwicklung am Seefischmarkt.
+- **Fr:** Institutsfrühstück → Open Seefischmarkt (Labs, Workshops,
+  Ausstellungen) → Dampferfahrt mit der MS Stadt Kiel zum Anleger Seegarten →
+  Festakt im Ratssaal des Kieler Rathauses (Reden → Keynote → Best Bachelor
+  Awards → Graduation) → Posterpräsentationen → IfB-Fête in der Pumpe.
+
+Das Fest wandert über vier Orte; sie stehen in `FEST_VENUES`, `FEST_LOCATION`
+ist nur die Kurzform für Banner und Kalendereintrag.
 
 | Datei | Zweck |
 |-------|-------|
@@ -181,6 +190,12 @@ bewusst nur ein Flag an der Anmeldung.
 
 Die `id`-Werte in `BOOKABLE_OPTIONS` landen in der Datenbank. Labels sind frei
 änderbar, **die `id` nicht mehr**, sobald Anmeldungen vorliegen.
+
+Ändert sich das Programm trotzdem grundlegend (wie bei der Umplanung auf den
+28./29.10.), bekommen die neuen Teile neue IDs und die alten wandern nach
+`RETIRED_BOOKABLE_LABELS`. `bookableLabel()` greift darauf zurück, damit
+Anmeldungen aus der alten Planung in Orga-Liste und CSV lesbar bleiben statt
+die rohe id anzuzeigen. Keine DB-Migration nötig.
 
 ### Magic-Link-Ziele
 

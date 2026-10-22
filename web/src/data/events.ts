@@ -456,9 +456,9 @@ export const events: CalendarEvent[] = [
     title: '10 Jahre Institut für Bauwesen',
     title_en: '10 Years Institute of Civil Engineering',
     description:
-      'Festakt zum zehnjährigen Bestehen des Instituts für Bauwesen der HAW Kiel – mit Rückblick, Laborführung und Abendempfang. Teilnahme kostenfrei, Anmeldung erforderlich.',
+      'Zwei Tage zum zehnjährigen Bestehen des Instituts für Bauwesen der HAW Kiel, eingebettet in die 37. Interdisziplinären Wochen: Donnerstag mit den IDW-Ergebnissen und einer Podiumsdiskussion zur Stadtentwicklung am Seefischmarkt, Freitag mit Open Labs am Seefischmarkt, Dampferfahrt über die Förde, Festakt im Ratssaal des Kieler Rathauses und anschließender Fête. Teilnahme kostenfrei, Anmeldung erforderlich.',
     description_en:
-      'Ceremony marking ten years of the Institute of Civil Engineering at HAW Kiel – with a retrospective, lab tour, and evening reception. Free admission, registration required.',
+      'Two days marking ten years of the Institute of Civil Engineering at HAW Kiel, embedded in the 37th Interdisciplinary Weeks: Thursday with the IDW results and a panel discussion on urban development at the Seefischmarkt, Friday with open labs at the Seefischmarkt, a steamer trip across the fjord, the ceremony in Kiel City Hall and a party afterwards. Free admission, registration required.',
     organizer: 'Institut für Bauwesen, HAW Kiel',
     organizer_en: 'Institute of Civil Engineering, HAW Kiel',
     start: FEST_START,

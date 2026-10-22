@@ -330,7 +330,7 @@
 
   const authorName = (row: { profiles?: Author }) => row.profiles?.full_name || 'Unbekannt';
   const dayLabel = (d: string | null) =>
-    d === 'tag1' ? 'Do., 21.10.' : d === 'tag2' ? 'Fr., 22.10.' : 'egal';
+    d === 'tag1' ? 'Do., 28.10.' : d === 'tag2' ? 'Fr., 29.10.' : 'egal';
   const degreeLabel = (d: string | null) =>
     d === 'bachelor' ? 'Bachelor' : d === 'master' ? 'Master' : d === 'sonstige' ? 'Sonstige' : '–';
 
@@ -425,8 +425,9 @@
     <p class="font-bold text-haw-blau mb-1">Phase {phaseNumber} – {phase.label}</p>
     <p>
       Wir sammeln, was das Fest am {festDateLabel()} tragen soll: Gäste, die eingeladen werden
-      sollen, Themen für die Vortragsblöcke und herausragende Abschlussarbeiten aus zehn Jahren IfB.
-      Alle Einträge sind für das Kollegium sichtbar – eigene Einträge können Sie wieder löschen.
+      sollen, Referent:innen und Themen für Keynote, Podium und Rundgänge sowie herausragende
+      Abschlussarbeiten aus zehn Jahren IfB. Alle Einträge sind für das Kollegium sichtbar –
+      eigene Einträge können Sie wieder löschen.
     </p>
   </div>
 
@@ -579,7 +580,7 @@
     <!-- ---------- Vortragsthemen ---------- -->
     <h2 class="font-bold text-haw-blau mb-1">Referent:in vorschlagen</h2>
     <p class="text-sm text-haw-blau-50 mb-4">
-      Für die Vortragsblöcke und den Festakt – gern auch Sie selbst. Person oder Thema genügt,
+      Für Keynote, Podium und Rundgänge – gern auch Sie selbst. Person oder Thema genügt,
       beides ist besser.
     </p>
 
@@ -632,8 +633,8 @@
           <label for="t-day" class="block text-xs font-bold text-haw-blau mb-1">Wunschtag</label>
           <select id="t-day" bind:value={talkForm.preferred_day} class={inputClass}>
             <option value="">egal</option>
-            <option value="tag1">Do., 21.10. – Konferenztag</option>
-            <option value="tag2">Fr., 22.10. – Vormittag</option>
+            <option value="tag1">Do., 28.10. – IDW-Ergebnisse und Podium</option>
+            <option value="tag2">Fr., 29.10. – Open Seefischmarkt und Festakt</option>
           </select>
         </div>
         <div>
