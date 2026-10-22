@@ -259,6 +259,39 @@ export const events: CalendarEvent[] = [
     audience: 'alle',
   },
   {
+    id: 'blaupause-statt-brache-2026',
+    title: 'Blaupause statt Brache – wie entstehen Orte, wo wir Demokratie mitgestalten?',
+    title_en: 'Blueprint Instead of Wasteland – How Do Places for Shaping Democracy Emerge?',
+    description:
+      'Podiumsabend zum Workshop „Gehen wir zu mir oder zu dir?“ – ein Abend zum Mitreden, von fehlenden Steckdosen bis zur Stadtentwicklung. „Dritte Orte“ sind Räume jenseits von Arbeit und Wohnung: Nachbarschaftstreff, Marktplatz, Pop-up-Store. Studierende haben während der Interdisziplinären Wochen an der HAW Kiel solche Orte besucht; das Konzept der gemeinsamen Erkundung wird nun auf die Stadtgesellschaft übertragen. Teil von „Science Comes to Town“. Der genaue Veranstaltungsort wird tagesaktuell veröffentlicht.',
+    description_en:
+      'Panel evening accompanying the workshop "Your place or mine?" – an evening for discussion, from missing power sockets to urban development. "Third places" are spaces beyond work and home: neighbourhood meeting points, marketplaces, pop-up stores. Students visited such places during the Interdisciplinary Weeks at HAW Kiel; the concept of joint exploration is now being extended to the wider city. Part of "Science Comes to Town". The exact venue is announced on the day.',
+    organizer: 'Science Comes to Town, HAW Kiel',
+    organizer_en: 'Science Comes to Town, HAW Kiel',
+    start: '2026-10-27T18:15:00+01:00',
+    end: '2026-10-27T20:45:00+01:00',
+    location: 'HAW Kiel, Sokratesplatz 1, 24149 Kiel',
+    url: 'https://kiel.de/de/_info/veranstaltungskalender.php#/de/kiel/default/detail/Event/e_101369952/blaupause-statt-brache-wie-entstehen-orte-wo-wir-demokratie-mitgestalten',
+    category: 'intern',
+    audience: 'alle',
+  },
+  {
+    id: 'net-zero-valley-konferenz-sh-2026',
+    title: '2. Net Zero Valley Konferenz Schleswig-Holstein',
+    title_en: '2nd Net Zero Valley Conference Schleswig-Holstein',
+    description:
+      'Vom Konzept zur Umsetzung: Wie gestalten wir das Net Zero Valley Schleswig-Holstein? Mit der offiziellen Übergabe der Bewerbung durch Umweltminister Tobias Goldschmidt, einem Beitrag von CustomCells zur Batteriezelltechnologie, der Vorstellung der nächsten Umsetzungsschritte sowie einem Panel mit Vertreter:innen aus EU, Bund und Land. Ab 17:30 Uhr Ausklang und Ausstellung.',
+    description_en:
+      'From concept to implementation: how do we shape the Net Zero Valley Schleswig-Holstein? With the official handover of the application by Environment Minister Tobias Goldschmidt, a contribution by CustomCells on battery cell technology, a presentation of the next implementation steps, and a panel with representatives from the EU, the federal government and the state. From 5:30 pm, networking and exhibition.',
+    organizer: 'Net Zero Valley Initiative Schleswig-Holstein und Wirtschaftsagentur Neumünster',
+    organizer_en: 'Net Zero Valley Initiative Schleswig-Holstein and Wirtschaftsagentur Neumünster',
+    start: '2026-11-03T15:00:00+01:00',
+    end: '2026-11-03T18:30:00+01:00',
+    location: 'Holstenhallen Neumünster',
+    category: 'extern',
+    audience: 'alle',
+  },
+  {
     id: 'hackathon-lebenstraum-niederung-2026',
     title: 'Hackathon „Lebens(t)raum Niederung"',
     title_en: 'Hackathon "Lebens(t)raum Niederung"',
@@ -367,6 +400,22 @@ export const events: CalendarEvent[] = [
     start: '2026-11-18T18:30:00+01:00',
     end: '2026-11-18T20:00:00+01:00',
     location: 'Klaus-Murmann-Hörsaal, CAU zu Kiel, Leibnizstraße 1, 24118 Kiel',
+    category: 'extern',
+    audience: 'alle',
+  },
+  {
+    id: 'get-nord-2026',
+    title: 'GET NORD 2026 – Fachmesse Elektro, Sanitär, Heizung, Klima',
+    title_en: 'GET NORD 2026 – Trade Fair for Electrical, Plumbing, Heating and Air Conditioning',
+    description:
+      'Fachmesse für Gebäudetechnik in Hamburg: Elektro, Sanitär, Heizung und Klima unter einem Dach, mit Fachprogramm und Ausstellung. Über Aktionscodes einzelner Aussteller sind kostenfreie Messetickets erhältlich.',
+    description_en:
+      'Trade fair for building services engineering in Hamburg: electrical, plumbing, heating and air conditioning under one roof, with a technical programme and exhibition. Free tickets are available via promotional codes from individual exhibitors.',
+    organizer: 'Hamburg Messe und Congress',
+    start: '2026-11-19T09:00:00+01:00',
+    end: '2026-11-21T18:00:00+01:00',
+    location: 'Hamburg Messe, Messeplatz 1, 20357 Hamburg',
+    url: 'https://www.get-nord.de/',
     category: 'extern',
     audience: 'alle',
   },
