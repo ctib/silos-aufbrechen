@@ -291,6 +291,22 @@ export const events: CalendarEvent[] = [
     audience: 'alle',
   },
   {
+    id: 'ehrenamtsmesse-kiel-2026',
+    title: '11. Ehrenamtsmesse Kiel',
+    title_en: '11th Kiel Volunteering Fair',
+    description:
+      'Unter dem Motto „Demokratie braucht Engagement“ stellen sich mehr als 80 Organisationen aus allen Bereichen des ehrenamtlichen Engagements vor. Vereine und Initiativen zeigen ihre Arbeit und suchen Unterstützung, Besucher:innen bekommen einen Überblick über die Engagementmöglichkeiten in Kiel und können direkt mit den Organisationen ins Gespräch kommen. Die Schirmherrschaft hat der Kieler Oberbürgermeister.',
+    description_en:
+      'Under the motto “Democracy requires engagement”, more than 80 organisations from all areas of voluntary work present themselves. Associations and initiatives show their work and look for supporters, while visitors get an overview of the opportunities for civic engagement in Kiel and can talk to the organisations directly. Under the patronage of the Mayor of Kiel.',
+    organizer: 'nettekieler Ehrenamtsbüro',
+    start: '2026-11-01T11:00:00+01:00',
+    end: '2026-11-01T17:00:00+01:00',
+    location: 'Altes Rathaus, Kiel',
+    url: 'https://www.nette-kieler.de/veranstaltungen/11-ehrenamtsmesse-2026',
+    category: 'extern',
+    audience: 'alle',
+  },
+  {
     id: 'net-zero-valley-konferenz-sh-2026',
     title: '2. Net Zero Valley Konferenz Schleswig-Holstein',
     title_en: '2nd Net Zero Valley Conference Schleswig-Holstein',
