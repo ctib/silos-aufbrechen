@@ -372,6 +372,22 @@ export const events: CalendarEvent[] = [
     audience: 'alle',
   },
   {
+    id: 'talent-transfair-2026',
+    title: 'talent transfair 2026',
+    title_en: 'talent transfair 2026',
+    description:
+      'Firmenkontaktmesse der HAW Kiel und größte Veranstaltung der Hochschule: über 90 ausstellende Unternehmen und Organisationen auf dem Campus. Studierende knüpfen Kontakte zu potenziellen Arbeitgeberinnen und Arbeitgebern – Lehrende sind gebeten, Lehrveranstaltungen an diesem Tag zu reduzieren oder den Messebesuch gemeinsam mit den Studierenden einzuplanen. Fragen an Andreas Borchardt.',
+    description_en:
+      'Career fair at HAW Kiel and the university’s largest event: more than 90 exhibiting companies and organisations on campus. Students make contact with potential employers – lecturers are asked to shorten classes that day or to visit the fair together with their students. Questions to Andreas Borchardt.',
+    organizer: 'HAW Kiel',
+    start: '2026-11-11T09:30:00+01:00',
+    end: '2026-11-11T16:00:00+01:00',
+    location: 'HAW Kiel, Sokratesplatz 1, 24149 Kiel',
+    url: 'https://www.talent-transfair.de/',
+    category: 'intern',
+    audience: 'alle',
+  },
+  {
     id: 'gender-ki-inclusive-language-2026',
     title: 'Gender und KI: Intersections of Gender-Inclusive Language and AI',
     title_en: 'Gender and AI: Intersections of Gender-Inclusive Language and AI',
@@ -433,6 +449,22 @@ export const events: CalendarEvent[] = [
     location: 'Online',
     url: 'https://www.haw-kiel.de/wir/organisation/zentrale-einrichtungen/institut-fuer-interdisziplinaere-genderforschung-und-diversity/gard-gender-in-applied-research-development/veranstaltungen/',
     category: 'intern',
+    audience: 'alle',
+  },
+  {
+    id: 'architekturclub-85-kundoo-2026',
+    title: '85. ArchitekturClub mit Prof.in Anupama Kundoo',
+    title_en: '85th ArchitekturClub with Prof. Anupama Kundoo',
+    description:
+      'Die gebürtige Inderin Anupama Kundoo hat sich direkt nach ihrem Studium in Mumbai im Süden Indiens selbstständig gemacht und über 100 Projekte realisiert – alle ressourceneffizient und ökologisch. Für eine Studie dazu erhielt sie ein Stipendium der Vastu-Shilpa Foundation des Pritzker-Preisträgers Balkrishna Doshi. Nach Lehrtätigkeiten in London, New York, Madrid, Potsdam und Karlsruhe lehrt sie heute als Professorin an der TU Berlin, wo sie auch promoviert hat. Einlass ab 18:30 Uhr, Vortragsbeginn 19:30 Uhr. Anmeldung bis 16. November ausschließlich über die BDA-Website.',
+    description_en:
+      'Born in India, Anupama Kundoo set up her own practice in southern India immediately after her studies in Mumbai and has realised more than 100 projects – all resource-efficient and ecological. A study on this work earned her a fellowship from the Vastu Shilpa Foundation of Pritzker laureate Balkrishna Doshi. After teaching in London, New York, Madrid, Potsdam and Karlsruhe, she is now a professor at TU Berlin, where she also earned her doctorate. Doors open 6:30 pm, lecture starts 7:30 pm. Registration until 16 November via the BDA website only.',
+    organizer: 'BDA Schleswig-Holstein',
+    start: '2026-11-17T18:30:00+01:00',
+    end: '2026-11-17T21:30:00+01:00',
+    location: 'Forum für Baukultur, Waisenhofstraße 3, 24103 Kiel',
+    url: 'https://www.bda-schleswigholstein.de/veranstaltungseinladungen/310806/',
+    category: 'extern',
     audience: 'alle',
   },
   {
@@ -498,6 +530,38 @@ export const events: CalendarEvent[] = [
     location: 'Online (Zoom)',
     category: 'intern',
     audience: 'haw',
+  },
+  {
+    id: 'forschung-fuer-die-sicherheit-2026',
+    title: 'Forschung für die Sicherheit – Sicherheit in der Forschung',
+    title_en: 'Research for Security – Security in Research',
+    description:
+      'Online-Vortrag von Prof. Dr. Wolfgang Dorner, Vizepräsident für Forschung und Transfer der TH Deggendorf, mit anschließendem Austausch. Er zeigt, wie die TH Deggendorf Verteidigungsforschung als Teil einer angewandten, transferorientierten Forschungsstrategie versteht, und warum der Begriff „Dual Use“ den Transfer zwischen ziviler und militärischer Forschung nur unscharf beschreibt. Im Mittelpunkt steht die Sicherheit in der Forschung: Wie lässt sich wirksamer Geheimschutz mit akademischer Freiheit verbinden, welche Strukturen und Qualifizierungen braucht eine Hochschule für den Umgang mit Verschlusssachen? Die TH Deggendorf kooperiert im Bereich Sicherheit und Verteidigung eng mit der HAW Kiel. Anmeldung bis 11. Dezember 2026, Zugangslink per Mail.',
+    description_en:
+      'Online lecture by Prof. Dr. Wolfgang Dorner, Vice President for Research and Transfer at Deggendorf Institute of Technology, followed by discussion. He shows how his university treats defence research as part of an applied, transfer-oriented research strategy, and why the term "dual use" only vaguely describes the transfer between civil and military research. The focus is on security in research: how can effective protection of classified information be reconciled with academic freedom, and what structures and qualifications does a university need to handle classified material? Deggendorf cooperates closely with HAW Kiel in the field of security and defence. Registration until 11 December 2026, access link by email.',
+    organizer: 'Wissenschaftszentrum Kiel GmbH',
+    start: '2026-12-15T16:00:00+01:00',
+    end: '2026-12-15T17:30:00+01:00',
+    location: 'Online (Microsoft Teams)',
+    url: 'https://events.teams.microsoft.com/event/e970b763-4483-4995-b087-66a4df0fb96e@8d86d25f-3dc4-46db-8ac0-04be3c890209',
+    category: 'extern',
+    audience: 'alle',
+  },
+  {
+    id: 'dmk-award-nachhaltiges-bauen-2027',
+    title: 'Bewerbungsschluss: DMK Award für nachhaltiges Bauen 2027',
+    title_en: 'Application Deadline: DMK Award for Sustainable Building 2027',
+    description:
+      'Die Dagmar + Matthias Krieger Stiftung lobt seit 2010 den DMK Award für nachhaltiges Bauen aus. Mit dem Nachwuchspreis für nachhaltige Studienprojekte bekommen Studierende eine eigene Bühne: Gesucht werden Studienprojekte, Entwürfe und Konzepte, die neue Wege aufzeigen, Gewohntes hinterfragen oder eine eigene Antwort darauf geben, wie nachhaltiges Bauen künftig aussehen kann. Das Projekt muss nicht realisiert oder perfekt sein – entscheidend ist die Idee. Weitere Kategorien: Wohnungsbau, gewerbliche und öffentliche Gebäude sowie der DMK Ehrenpreis. Bewerbungsfrist: 28. Februar 2027.',
+    description_en:
+      'The Dagmar + Matthias Krieger Foundation has been awarding the DMK Award for sustainable building since 2010. The emerging talent prize for sustainable student projects gives students a stage of their own: the foundation is looking for student projects, designs and concepts that open up new paths, question established practice, or offer their own answer to what sustainable building could look like. The project need not be built or perfect – the idea is what counts. Further categories: residential construction, commercial and public buildings, and the DMK honorary prize. Application deadline: 28 February 2027.',
+    organizer: 'Dagmar + Matthias Krieger Stiftung',
+    start: '2027-02-28T23:59:00+01:00',
+    end: '2027-02-28T23:59:00+01:00',
+    location: 'Online (Einreichung)',
+    url: 'https://www.dmk-award.de/',
+    category: 'extern',
+    audience: 'alle',
   },
   {
     id: '10-jahre-ifb',
