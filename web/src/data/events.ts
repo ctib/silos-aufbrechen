@@ -516,6 +516,56 @@ export const events: CalendarEvent[] = [
     audience: 'alle',
   },
   {
+    id: 'mitte-von-kiel-vorlesungsnacht-2026',
+    title: 'Wo ist die Mitte von Kiel? Eine Suche auf dem Weg in die Zukunft',
+    title_en: 'Where Is the Centre of Kiel? A Search on the Way into the Future',
+    description:
+      'Beitrag von Prof. Nikolaus Knebel und Dr. Felix Greiner-Petter (Institut für Bauwesen, HAW Kiel) zur Night of the Profs an der CAU. Stadt geht jeden an, die Zukunft auch – Ideen dazu, wie und was Kiel werden könnte, entstehen am besten im Dialog. Die Suche nach der Mitte der Stadt versteht diese als Ort, der alles verbindet, und als Konzept, aus dem alles abgeleitet wird: als Wissenschaftler schaffen die beiden durch eine kritische Analyse von Stadtstruktur und Stadtraum erste Gesprächsgrundlagen, als Entwerfer öffnen sie mit spekulativen Hypothesen neue Denkräume – untermalt von anschaulichen Zeichnungen und teils utopischen Skizzen. Teil von „Science Comes to Town“. Hörsaal A im Audimax.',
+    description_en:
+      'Contribution by Prof. Nikolaus Knebel and Dr. Felix Greiner-Petter (Institute of Civil Engineering, HAW Kiel) to the Night of the Profs at Kiel University. The city concerns everyone, and so does the future – ideas about how and what Kiel could become emerge best through dialogue. The search for the centre of the city treats it both as the place that connects everything and as the concept from which everything is derived: as researchers the two offer a critical analysis of urban structure and space as common ground, as designers they open new spaces of thought through speculative hypotheses – illustrated with drawings and partly utopian sketches. Part of "Science Comes to Town". Lecture hall A in the Audimax.',
+    organizer: 'Christian-Albrechts-Universität zu Kiel mit Science Comes to Town',
+    organizer_en: 'Kiel University with Science Comes to Town',
+    start: '2026-11-20T22:00:00+01:00',
+    end: '2026-11-20T23:00:00+01:00',
+    location: 'CAU zu Kiel, Audimax, Hörsaal A, Christian-Albrechts-Platz 2, 24118 Kiel',
+    url: 'https://www.wissenschafftzukunft-kiel.de/de/science_comes_to_town/night.php',
+    category: 'extern',
+    audience: 'alle',
+  },
+  {
+    id: 'dialogreihe-innenstadt-mv-waren-2026',
+    title: '15. Dialogreihe Innenstadt MV: Sichere, attraktive und lebendige Innenstädte gestalten',
+    title_en: '15th Inner City Dialogue MV: Shaping Safe, Attractive and Lively City Centres',
+    description:
+      'Aus der Praxis für die Praxis: Die Dialogreihe „City managen – Know-how für Stadtgestalter in MV“ ist eine Plattform für den Erfahrungsaustausch von Citymanager:innen, Stadtgestalter:innen, Wirtschaftsförder:innen und weiteren Innenstadtakteuren. Am Vormittag geht es um Sicherheits- und Kriminalprävention – mit Ergebnissen aus dem HDE-Standortmonitor und der Deutschlandstudie Innenstadt 2026/2027 –, am Nachmittag um kommunale Gestaltungsspielräume: Gestaltungs-, Sondernutzungs- und Vorkaufssatzungen, Grenzen des Denkmalschutzes und Praxisbeispiele aus Potsdam, Wismar und Hanau. Ankommen ab 9:30 Uhr, Mittagsimbiss inklusive. Teilnehmerzahl begrenzt, Bestätigung in der Reihenfolge der Anmeldungen.',
+    description_en:
+      'From practice for practice: the series "Managing the city – know-how for urban designers in MV" is a platform for exchange among city managers, urban designers, economic development officers and other inner-city stakeholders. The morning addresses safety and crime prevention – with findings from the HDE location monitor and the 2026/2027 German inner-city study – while the afternoon covers municipal scope for action: design, special-use and pre-emption by-laws, the limits set by heritage protection, and case studies from Potsdam, Wismar and Hanau. Doors open 9:30 am, lunch included. Places limited, confirmations in order of registration.',
+    organizer: 'Landesregierung Mecklenburg-Vorpommern und Dialogforum Einzelhandel MV',
+    organizer_en: 'State Government of Mecklenburg-Vorpommern and Dialogforum Einzelhandel MV',
+    start: '2026-11-24T10:00:00+01:00',
+    end: '2026-11-24T15:00:00+01:00',
+    location: 'Haus des Gastes, Waren (Müritz)',
+    url: 'https://events.rostock.ihk.de/b?p=DialogreiheInnenstadt2026',
+    category: 'extern',
+    audience: 'alle',
+  },
+  {
+    id: 'weiterbauen-architektur-im-bestand-2026',
+    title: 'Weiterbauen. Architektur im Bestand',
+    title_en: 'Building On. Architecture in the Existing Stock',
+    description:
+      'Nachverdichtung, Umbau und Sanierung als Zukunftsaufgabe: Der wichtigste Baustoff der Zukunft steht längst – der Gebäudebestand ist eine der wertvollsten Ressourcen für das Bauen von morgen. Ein Nachmittag über Haltung, Konzepte und konkrete Projekte, mit Beiträgen von Kim Le Roux (LXSY Architektur, „Never waste a good resource“), Kerstin Müller (Zirkular Basel, „Das Neue im Vorhandenen“), Philipp Bilke (Studio Baukunst, „Sample the City“) und Tabea Huth („DENSITIM – Baugruppensystematik in Holz“), Paneldiskussion und Ausklang. Moderation: Jakob Schoof (DETAIL) und Christian Krüger (VELUX). Teilnahme vor Ort in Stuttgart oder per Livestream; von der Architektenkammer Baden-Württemberg mit 3 Unterrichtsstunden als Fortbildung anerkannt.',
+    description_en:
+      'Densification, conversion and refurbishment as a task for the future: the most important building material of tomorrow is already standing – the existing building stock is one of the most valuable resources for future construction. An afternoon on attitude, concepts and built projects, with contributions by Kim Le Roux (LXSY Architektur, "Never waste a good resource"), Kerstin Müller (Zirkular Basel, "The new within the existing"), Philipp Bilke (Studio Baukunst, "Sample the City") and Tabea Huth ("DENSITIM – timber building-group systematics"), followed by a panel discussion and reception. Moderated by Jakob Schoof (DETAIL) and Christian Krüger (VELUX). On site in Stuttgart or via livestream; recognised by the Chamber of Architects of Baden-Württemberg as continuing education worth 3 teaching units.',
+    organizer: 'VELUX mit DETAIL',
+    start: '2026-11-24T14:30:00+01:00',
+    end: '2026-11-24T18:30:00+01:00',
+    location: 'Architektenkammer Baden-Württemberg, Danneckerstraße 54, 70182 Stuttgart (oder Livestream)',
+    url: 'https://hs.velux.de/de-de/weiterbauen-anmeldung',
+    category: 'extern',
+    audience: 'alle',
+  },
+  {
     id: 'ki-insights-kommunikationspraxis-november-2026',
     title: 'KI-Insights: Der KI-Gendefekt',
     title_en: 'AI Insights: The AI Gene Defect',
@@ -530,6 +580,39 @@ export const events: CalendarEvent[] = [
     location: 'Online (Zoom)',
     category: 'intern',
     audience: 'haw',
+  },
+  {
+    id: 'drehbuchpreis-sh-2026',
+    title: 'Drehbuchpreis Schleswig-Holstein 2026',
+    title_en: 'Schleswig-Holstein Screenplay Award 2026',
+    description:
+      'Die neunte und letzte Ausgabe des Drehbuchpreises Schleswig-Holstein, den Christian Mertens (Fachbereich Medien, HAW Kiel) 2018 ehrenamtlich ins Leben gerufen hat. Der Abend ist mehr als eine Preisverleihung: Die drei nominierten Kurzfilm-Drehbücher werden vor Ort szenisch gelesen, unter anderem von Björn Beton; zudem werden die Jurypreise und das Kurt-Denzer-Dokumentarfilm-Stipendium vergeben. Moderation: Horst Hoof (NDR Welle Nord) und Zara Zerbe. Über die Jahre waren Studierende der HAW Kiel regelmäßig nominiert und gewannen zweimal den Hauptpreis. Tickets 10 €, ermäßigt 7,50 €, direkt im Kino.',
+    description_en:
+      'The ninth and final edition of the Schleswig-Holstein Screenplay Award, founded in 2018 as a voluntary project by Christian Mertens (Department of Media, HAW Kiel). The evening is more than an award ceremony: the three nominated short-film screenplays are performed as staged readings, among others by Björn Beton, and the jury prizes and the Kurt Denzer documentary film scholarship are presented. Hosted by Horst Hoof (NDR Welle Nord) and Zara Zerbe. Over the years HAW Kiel students were regularly nominated and twice won the main prize. Tickets €10, reduced €7.50, available at the cinema.',
+    organizer: 'Drehbuchpreis Schleswig-Holstein',
+    start: '2026-11-28T16:00:00+01:00',
+    end: '2026-11-28T19:00:00+01:00',
+    location: 'STUDIO Filmtheater am Dreiecksplatz, Kiel',
+    url: 'https://www.studio-filmtheater.de/movie/drehbuchpreis-sh-2026',
+    category: 'extern',
+    audience: 'alle',
+  },
+  {
+    id: 'gard-austauschforum-green-by-design-2026',
+    title: 'Green by design. Fair by default? GARD-Austauschforum zu Geschlecht und Nachhaltigkeit',
+    title_en: 'Green by Design. Fair by Default? GARD Forum on Gender and Sustainability',
+    description:
+      'Unsere Zukunft soll nachhaltig werden – doch was bedeutet das für die verschiedenen Menschen und Lebensbedingungen, und welche Rolle spielt Geschlecht dabei? Diesen Fragen widmet sich das Projekt GARD (Gender in Applied Research & Development) mit einer interaktiven Forschungsausstellung. An verschiedenen Stationen lassen sich Forschungsprojekte und Perspektiven rund um Nachhaltigkeit entdecken – von Mikroplastik über Klimaresilienz und Planetary Health bis zu nachhaltigem Tourismus und Klimawandel. Eingeladen sind alle Interessierten, ob selbst forschend oder forschungsinteressiert. Kommen und Gehen jederzeit möglich, Snacks und Getränke sind gestellt, eine Anmeldung ist nicht erforderlich.',
+    description_en:
+      'Our future is meant to be sustainable – but what does that mean for different people and living conditions, and what role does gender play? The GARD project (Gender in Applied Research & Development) explores these questions with an interactive research exhibition. At various stations, visitors can discover research projects and perspectives on sustainability – from microplastics to climate resilience and planetary health, sustainable tourism and climate change. Everyone is welcome, whether doing research or simply interested in it. Come and go at any time, snacks and drinks provided, no registration required.',
+    organizer: 'GARD – Institut für interdisziplinäre Genderforschung und Diversity, HAW Kiel',
+    organizer_en: 'GARD – Institute for Interdisciplinary Gender Research and Diversity, HAW Kiel',
+    start: '2026-12-08T10:00:00+01:00',
+    end: '2026-12-08T13:00:00+01:00',
+    location: 'HAW Kiel, Foyer des Großen Hörsaalgebäudes (C2), Sokratesplatz 6, 24149 Kiel',
+    url: 'https://www.haw-kiel.de/wir/organisation/zentrale-einrichtungen/institut-fuer-interdisziplinaere-genderforschung-und-diversity/gard-gender-in-applied-research-development/veranstaltungen/',
+    category: 'intern',
+    audience: 'alle',
   },
   {
     id: 'forschung-fuer-die-sicherheit-2026',
